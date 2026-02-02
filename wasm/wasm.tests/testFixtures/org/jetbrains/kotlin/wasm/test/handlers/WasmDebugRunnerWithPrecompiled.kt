@@ -10,7 +10,8 @@ import org.jetbrains.kotlin.test.model.TestModule
 import org.jetbrains.kotlin.test.model.WasmCompilationSetsBinaryArtifact
 import org.jetbrains.kotlin.test.services.TestServices
 
-class WasmDebugRunnerWithPrecompiled(testServices: TestServices) : WasmDebugRunnerBase(testServices) {
+// TODO(REVIEW): do we need a variant that also has local variable info for this one? i.e. a new `AbstractFirWasmJsLocalVariableSingleFileTest`?
+class WasmDebugRunnerWithPrecompiled(testServices: TestServices) : WasmDebugRunnerBase(testServices, false) {
     override fun processModule(module: TestModule, info: BinaryArtifacts.Wasm) {
         require(info is WasmCompilationSetsBinaryArtifact)
         super.processModule(module, info)
