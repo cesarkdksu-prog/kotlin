@@ -93,6 +93,8 @@ abstract class KotlinIrLinker(
 
     open val moduleDependencyTracker: IrModuleDependencyTracker get() = IrModuleDependencyTracker.DISABLED
 
+    private var finished = false
+
     fun deserializeOrReturnUnboundIrSymbolIfPartialLinkageEnabled(
         idSignature: IdSignature,
         symbolKind: BinarySymbolData.SymbolKind,
@@ -217,6 +219,14 @@ abstract class KotlinIrLinker(
         return resolveModuleDeserializer(file)?.referencePropertyByLocalSignature(file, idSignature)
     }
 
+    override fun getSymbolAndPutIntoQueue(signature: IdSignature, kind: IrDeserializer.TopLevelSymbolKind): IrSymbol? {
+        return deserializersForModules.values.firstNotNullOfOrNull {
+            it.tryDeserializeIrSymbol(signature, topLevelKindToSymbolKind(kind))
+        }.also {
+            if (finished) deserializeAllReachableTopLevels()
+        }
+    }
+
     protected open fun createCurrentModuleDeserializer(moduleFragment: IrModuleFragment): IrModuleDeserializer =
         CurrentModuleDeserializer(moduleFragment)
 
@@ -234,6 +244,7 @@ abstract class KotlinIrLinker(
     }
 
     override fun postProcess(irBuiltIns: IrBuiltIns, inOrAfterLinkageStep: Boolean) {
+        finished = finished || inOrAfterLinkageStep
         if (inOrAfterLinkageStep) {
             // We have to exclude classifiers with unbound symbols in supertypes and in type parameter upper bounds from F.O. generation
             // to avoid failing with `Symbol for <signature> is unbound` error or generating fake overrides with incorrect signatures.
