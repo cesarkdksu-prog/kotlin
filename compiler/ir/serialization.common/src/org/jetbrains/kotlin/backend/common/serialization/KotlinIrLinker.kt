@@ -29,6 +29,8 @@ import org.jetbrains.kotlin.ir.util.SymbolTable
 import org.jetbrains.kotlin.ir.util.toIdSignature
 import org.jetbrains.kotlin.library.KotlinLibrary
 import org.jetbrains.kotlin.library.uniqueName
+import org.jetbrains.kotlin.name.CallableId
+import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.name.StandardClassIds
 import org.jetbrains.kotlin.resolve.descriptorUtil.module
@@ -354,6 +356,12 @@ abstract class KotlinIrLinker(
             if (it in dirtyFiles) DeserializationStrategy.ALL
             else DeserializationStrategy.WITH_INLINE_BODIES
         })
+    }
+
+    fun getAllMatchedSignatures(callableId: CallableId, signatureKind: IrDeserializer.TopLevelSymbolKind): List<IdSignature> {
+        return deserializersForModules.flatMap { (_, moduleDeserializer) ->
+            moduleDeserializer.getAllMatchedSignatures(callableId, signatureKind)
+        }
     }
 }
 
