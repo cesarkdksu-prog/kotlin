@@ -55,7 +55,7 @@ class KonanIrLinker(
     }
 
     private val forwardDeclarationDeserializer = forwardModuleDescriptor?.let {
-        KonanForwardDeclarationModuleDeserializer(it, this, stubGenerator)
+        KonanForwardDeclarationModuleDeserializer(it, this)
     }
 
     override val irMangler: KotlinMangler.IrMangler = KonanManglerIr
