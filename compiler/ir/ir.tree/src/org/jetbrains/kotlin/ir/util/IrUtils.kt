@@ -272,6 +272,10 @@ val IrClass.isObject get() = kind == ClassKind.OBJECT
 val IrClass.isAnonymousObject get() = isClass && name == SpecialNames.NO_NAME_PROVIDED
 val IrClass.isNonCompanionObject: Boolean get() = isObject && !isCompanion
 
+val IrSymbol.fqNameWhenAvailable: FqName?
+    get() = if (isBound) (owner as IrDeclarationWithName?)?.fqNameWhenAvailable
+    else (signature as? IdSignature.CommonSignature)?.let { FqName("${it.packageFqName}.${it.declarationFqName}") }
+
 val IrDeclarationWithName.fqNameWhenAvailable: FqName?
     get() {
         val sb = StringBuilder()
@@ -351,18 +355,21 @@ fun IrAnnotationContainer.hasAnnotation(symbol: IrClassSymbol) =
 
 fun IrAnnotation.getAnnotationStringValue() = (arguments[0] as? IrConst)?.value as String?
 
-fun IrAnnotation.getAnnotationStringValue(name: String): String {
-    val parameter = symbol.owner.parameters.single { it.name.asString() == name }
-    return (arguments[parameter.indexInParameters] as IrConst).value as String
-}
+fun IrAnnotation.getAnnotationStringValue(name: String): String =
+    getAnnotationValueOrNull<String>(name)!!
 
 inline fun <reified T> IrAnnotation.getAnnotationValueOrNull(name: String): T? =
     getAnnotationValueOrNullImpl(name) as T?
 
 @PublishedApi
 internal fun IrAnnotation.getAnnotationValueOrNullImpl(name: String): Any? {
-    val parameter = symbol.owner.parameters.atMostOne { it.name.asString() == name }
-    val argument = parameter?.let { arguments[it.indexInParameters] }
+    val argument = when (val argumentMapping = argumentMapping) {
+        null -> {
+            val parameter = symbol.owner.parameters.atMostOne { it.name.asString() == name }
+            parameter?.let { arguments[it.indexInParameters] }
+        }
+        else -> argumentMapping[Name.identifier(name)]
+    }
     return (argument as IrConst?)?.value
 }
 
@@ -372,13 +379,7 @@ inline fun <reified T> IrAnnotationContainer.getAnnotationArgumentValue(fqName: 
 @PublishedApi
 internal fun IrAnnotationContainer.getAnnotationArgumentValueImpl(fqName: FqName, argumentName: String): Any? {
     val annotation = this.annotations.findAnnotation(fqName) ?: return null
-    for (parameter in annotation.symbol.owner.parameters) {
-        if (parameter.name.asString() == argumentName) {
-            val actual = annotation.arguments[parameter.indexInParameters] as? IrConst
-            return actual?.value
-        }
-    }
-    return null
+    return annotation.getAnnotationValueOrNull(argumentName)
 }
 
 fun IrClass.getAnnotationRetention(): KotlinRetention? {

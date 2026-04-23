@@ -41,35 +41,13 @@ import org.jetbrains.kotlin.ir.util.*
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.utils.addToStdlib.runIf
 
-class FakeOverrideGlobalDeclarationTable(
-    mangler: KotlinMangler.IrMangler
-) : GlobalDeclarationTable(mangler) {
-    fun clear() = table.clear()
-}
-
-open class FakeOverrideDeclarationTable(
-    mangler: KotlinMangler.IrMangler,
-    globalDeclarationTable: FakeOverrideGlobalDeclarationTable = FakeOverrideGlobalDeclarationTable(mangler),
-) : DeclarationTable<FakeOverrideGlobalDeclarationTable>(globalDeclarationTable) {
-
-    fun clear() {
-        table.clear()
-        globalDeclarationTable.clear()
-    }
-
-    fun addDeserializedDeclarationAndSignature(declaration: IrDeclaration, signature: IdSignature) {
-        check(table[declaration] == null) { "Declaration table already has signature for ${declaration.render()}" }
-        table[declaration] = signature
-    }
-}
-
 interface FakeOverrideClassFilter {
     fun needToConstructFakeOverrides(clazz: IrClass): Boolean
 }
 
 interface FileLocalAwareLinker {
-    fun tryReferencingSimpleFunctionByLocalSignature(file: IrFile, idSignature: IdSignature): IrSimpleFunctionSymbol?
-    fun tryReferencingPropertyByLocalSignature(file: IrFile, idSignature: IdSignature): IrPropertySymbol?
+    fun tryReferencingSimpleFunctionByLocalSignature(file: IrFile?, idSignature: IdSignature): IrSimpleFunctionSymbol?
+    fun tryReferencingPropertyByLocalSignature(file: IrFile?, idSignature: IdSignature): IrPropertySymbol?
 }
 
 object DefaultFakeOverrideClassFilter : FakeOverrideClassFilter {
@@ -81,7 +59,7 @@ private class IrLinkerFakeOverrideBuilderStrategy(
     val symbolTable: SymbolTable,
     private val irBuiltIns: IrBuiltIns,
     private val partialLinkageSupport: PartialLinkageSupportForLinker,
-    private val fakeOverrideDeclarationTable: FakeOverrideDeclarationTable,
+    private val fakeOverrideDeclarationTable: DeclarationTable<*>,
     private val friendModules: Map<String, Collection<String>>,
     private val isMultipleInheritedImplementationsAllowed: (IrOverridableDeclaration<*>) -> Boolean,
 ) : FakeOverrideBuilderStrategy() {
@@ -190,7 +168,8 @@ private class IrLinkerFakeOverrideBuilderStrategy(
         function: IrFunctionWithLateBinding,
         manglerCompatibleMode: Boolean
     ): Pair<IdSignature, IrSimpleFunctionSymbol> {
-        val file = function.parentAsClass.file
+        // The class may be declared inside IrExternalPackageFragment instead of IrFile (e.g. in the case of C-interop stubs).
+        val file = function.parentAsClass.fileOrNull
 
         val signature = composeSignature(function, manglerCompatibleMode)
         val symbol = linker.tryReferencingSimpleFunctionByLocalSignature(file, signature)
@@ -224,7 +203,8 @@ private class IrLinkerFakeOverrideBuilderStrategy(
         property: IrPropertyWithLateBinding,
         manglerCompatibleMode: Boolean
     ): Pair<IdSignature, IrPropertySymbol> {
-        val file = property.parentAsClass.file
+        // The class may be declared inside IrExternalPackageFragment instead of IrFile (e.g. in the case of C-interop stubs).
+        val file = property.parentAsClass.fileOrNull
 
         val signature = composeSignature(property, manglerCompatibleMode)
         val symbol = linker.tryReferencingPropertyByLocalSignature(file, signature)
@@ -298,7 +278,7 @@ class IrLinkerFakeOverrideProvider(
     private val friendModules: Map<String, Collection<String>>,
     private val partialLinkageSupport: PartialLinkageSupportForLinker,
     val platformSpecificClassFilter: FakeOverrideClassFilter = DefaultFakeOverrideClassFilter,
-    private val fakeOverrideDeclarationTable: FakeOverrideDeclarationTable = FakeOverrideDeclarationTable(mangler),
+    private val fakeOverrideDeclarationTable: DeclarationTable<*> = DeclarationTable.Default(GlobalDeclarationTable(mangler)),
     private val externalOverridabilityConditions: List<IrExternalOverridabilityCondition> = emptyList(),
     private val isMultipleInheritedImplementationsAllowed: (IrOverridableDeclaration<*>) -> Boolean = { false },
 ) {

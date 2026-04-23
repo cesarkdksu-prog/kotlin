@@ -8,8 +8,8 @@
 
 package org.jetbrains.kotlin.ir.expressions
 
+import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
 import org.jetbrains.kotlin.ir.visitors.IrVisitor
-import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.types.model.AnnotationMarker
 
@@ -17,9 +17,9 @@ import org.jetbrains.kotlin.types.model.AnnotationMarker
  * Generated from: [org.jetbrains.kotlin.ir.generator.IrTree.annotation]
  */
 abstract class IrAnnotation : IrConstructorCall(), AnnotationMarker {
-    abstract var classId: ClassId?
+    abstract var annotationClassSymbol: IrClassSymbol?
 
-    abstract var argumentMapping: Map<Name, IrExpression>
+    abstract var argumentMapping: Map<Name, IrExpression>?
 
     override fun <R, D> accept(visitor: IrVisitor<R, D>, data: D): R =
         visitor.visitAnnotation(this, data)
