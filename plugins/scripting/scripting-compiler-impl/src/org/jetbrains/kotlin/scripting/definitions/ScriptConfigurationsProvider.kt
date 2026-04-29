@@ -8,6 +8,7 @@
 package org.jetbrains.kotlin.scripting.definitions
 
 import com.intellij.openapi.project.Project
+import org.jetbrains.kotlin.extensions.ExtensionPointDescriptor
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.scripting.resolve.KtFileScriptSource
 import org.jetbrains.kotlin.scripting.resolve.ScriptCompilationConfigurationResult
@@ -23,42 +24,41 @@ import kotlin.script.experimental.api.valueOrNull
 annotation class K1SpecificScriptingServiceAccessor
 
 // TODO: deprecate/optin in favor of K2 infrastructure (ScriptRefinedCompilationConfigurationCache for this one)
-open class ScriptConfigurationsProvider(
-    @property:K1SpecificScriptingServiceAccessor
-    protected val project: Project
-) {
+open class ScriptConfigurationsProvider {
 
     /**
      * Currently the main method that should be used to get the configuration, others should be deprecated
      */
     open fun getScriptCompilationConfiguration(
+        project: Project,
         scriptSource: SourceCode,
         providedConfiguration: ScriptCompilationConfiguration? = null,
     ): ScriptCompilationConfigurationResult? =
         (scriptSource as? KtFileScriptSource)?.ktFile?.let {
             // transitioning to the new API based on the generic source file representation
-            @Suppress("DEPRECATION")
-            getScriptConfigurationResult(it)
+            getScriptConfigurationResult(project, it)
         }
 
-    @Deprecated("Use getScriptCompilationConfiguration(KtFileScriptSource(ktFile)) instead")
-    open fun getScriptConfigurationResult(file: KtFile): ScriptCompilationConfigurationResult? = null
+    @Deprecated("Use getScriptCompilationConfiguration(project, KtFileScriptSource(ktFile)) instead")
+    open fun getScriptConfigurationResult(project: Project, file: KtFile): ScriptCompilationConfigurationResult? = null
 
     // TODO: consider fixing implementations and removing default implementation
-    @Deprecated("Use getScriptCompilationConfiguration(KtFileScriptSource(ktFile), provided configuration) instead")
+    @Deprecated("Use getScriptCompilationConfiguration(project, KtFileScriptSource(ktFile), providedConfiguration) instead")
     open fun getScriptConfigurationResult(
-        file: KtFile, providedConfiguration: ScriptCompilationConfiguration?,
+        project: Project, file: KtFile, providedConfiguration: ScriptCompilationConfiguration?,
     ): ScriptCompilationConfigurationResult? {
-        return getScriptConfigurationResult(file)
+        return getScriptConfigurationResult(project, file)
     }
 
-    @Deprecated("Use getScriptCompilationConfiguration(KtFileScriptSource(ktFile)) instead")
-    open fun getScriptConfiguration(file: KtFile): ScriptCompilationConfigurationWrapper? {
-        @Suppress("DEPRECATION")
-        return getScriptConfigurationResult(file)?.valueOrNull()
+    @Deprecated("Use getScriptCompilationConfiguration(project, KtFileScriptSource(ktFile)) instead")
+    fun getScriptConfiguration(project: Project, file: KtFile): ScriptCompilationConfigurationWrapper? {
+        return getScriptConfigurationResult(project, file)?.valueOrNull()
     }
 
-    companion object {
+    companion object : ExtensionPointDescriptor<ScriptConfigurationsProvider>(
+        "org.jetbrains.kotlin.scriptConfigurationsProvider",
+        ScriptConfigurationsProvider::class.java
+    ) {
         @K1SpecificScriptingServiceAccessor
         fun getInstance(project: Project): ScriptConfigurationsProvider? =
             project.getService(ScriptConfigurationsProvider::class.java)
