@@ -4,10 +4,8 @@ import org.jetbrains.kotlin.backend.common.linkage.issues.checkNoUnboundSymbols
 import org.jetbrains.kotlin.backend.common.linkage.partial.partialLinkageConfig
 import org.jetbrains.kotlin.backend.common.overrides.FakeOverrideChecker
 import org.jetbrains.kotlin.backend.common.phaser.KotlinBackendIrHolder
-import org.jetbrains.kotlin.backend.common.serialization.DescriptorByIdSignatureFinderImpl
 import org.jetbrains.kotlin.backend.common.serialization.DeserializationStrategy
 import org.jetbrains.kotlin.backend.common.serialization.IrModuleDeserializer
-import org.jetbrains.kotlin.backend.common.serialization.kotlinLibrary
 import org.jetbrains.kotlin.backend.konan.driver.NativeBackendPhaseContext
 import org.jetbrains.kotlin.backend.konan.ir.BackendNativeSymbols
 import org.jetbrains.kotlin.backend.konan.ir.konanLibrary
@@ -37,8 +35,8 @@ import org.jetbrains.kotlin.library.metadata.impl.isForwardDeclarationModule
 import org.jetbrains.kotlin.library.metadata.isCInteropLibrary
 import org.jetbrains.kotlin.library.metadata.kotlinLibrary
 import org.jetbrains.kotlin.library.uniqueName
-import org.jetbrains.kotlin.psi2ir.Psi2IrConfiguration
-import org.jetbrains.kotlin.psi2ir.Psi2IrTranslator
+import org.jetbrains.kotlin.psi2ir.descriptors.IrBuiltInsOverDescriptors
+import org.jetbrains.kotlin.psi2ir.generators.TypeTranslatorImpl
 import org.jetbrains.kotlin.resolve.BindingContext
 import org.jetbrains.kotlin.resolve.CommonCompilerDeserializationConfiguration
 import org.jetbrains.kotlin.resolve.descriptorUtil.module
@@ -85,16 +83,8 @@ internal fun LinkKlibsContext.linkKlibs(
     val moduleDescriptor = input.moduleDescriptor
     // Translate AST to high level IR.
 
-    val translator = Psi2IrTranslator(
-            config.configuration.languageVersionSettings,
-            Psi2IrConfiguration(ignoreErrors = false),
-    )
-    val generatorContext = translator.createGeneratorContext(
-            moduleDescriptor,
-            bindingContext,
-            config.configuration,
-            symbolTable
-    )
+    val typeTranslator = TypeTranslatorImpl(symbolTable, config.configuration.languageVersionSettings, moduleDescriptor)
+    val irBuiltIns = IrBuiltInsOverDescriptors(moduleDescriptor.builtIns, typeTranslator, symbolTable)
 
     val forwardDeclarationsModuleDescriptor = moduleDescriptor.allDependencyModules.firstOrNull { it.isForwardDeclarationModule }
 
@@ -109,7 +99,7 @@ internal fun LinkKlibsContext.linkKlibs(
 
     val symbols = BackendNativeSymbols(
             this,
-            generatorContext.irBuiltIns,
+            irBuiltIns,
             this.config.configuration
     )
     val deserializationConfiguration = CommonCompilerDeserializationConfiguration(config.configuration.languageVersionSettings)
@@ -142,7 +132,7 @@ internal fun LinkKlibsContext.linkKlibs(
         KonanIrLinker(
                 currentModule = moduleDescriptor,
                 configuration = config.configuration,
-                builtIns = generatorContext.irBuiltIns,
+                builtIns = irBuiltIns,
                 symbolTable = symbolTable,
                 friendModules = friendModulesMap,
                 forwardModuleDescriptor = forwardDeclarationsModuleDescriptor,
@@ -223,14 +213,14 @@ internal fun LinkKlibsContext.linkKlibs(
     }
 
     return if (libraryToCache == null) {
-        LinkKlibsOutput(modules, mainModule, generatorContext.irBuiltIns, symbols, symbolTable, irDeserializer)
+        LinkKlibsOutput(modules, mainModule, irBuiltIns, symbols, symbolTable, irDeserializer)
     } else {
         val libraryName = libraryToCache.klib.location.path
         val libraryModule = modules[libraryName] ?: error("No module for the library being cached: $libraryName")
         LinkKlibsOutput(
                 irModules = modules.filterKeys { it != libraryName },
                 irModule = libraryModule,
-                irBuiltIns = generatorContext.irBuiltIns,
+                irBuiltIns = irBuiltIns,
                 symbols = symbols,
                 symbolTable = symbolTable,
                 irLinker = irDeserializer
