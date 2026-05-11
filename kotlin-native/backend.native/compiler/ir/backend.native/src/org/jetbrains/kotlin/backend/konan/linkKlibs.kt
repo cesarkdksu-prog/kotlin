@@ -144,7 +144,6 @@ internal fun LinkKlibsContext.linkKlibs(
         KonanIrLinker(
                 currentModule = moduleDescriptor,
                 configuration = config.configuration,
-                builtIns = generatorContext.irBuiltIns,
                 symbolTable = symbolTable,
                 friendModules = friendModulesMap,
                 forwardModuleDescriptor = forwardDeclarationsModuleDescriptor,
@@ -193,13 +192,13 @@ internal fun LinkKlibsContext.linkKlibs(
                 irProviderForCEnumsAndCStructs.referenceAllEnumsAndStructsFrom(libraryToCacheModule)
 
             translator.addPostprocessingStep {
-                irProviderForCEnumsAndCStructs.generateBodies(linker.builtIns, symbols)
+                irProviderForCEnumsAndCStructs.generateBodies(generatorContext.irBuiltIns, symbols)
             }
         }
     }
     val mainModule = translator.generateModuleFragment(generatorContext, environment.getSourceFiles(), listOf(irDeserializer))
 
-    irDeserializer.postProcess(inOrAfterLinkageStep = true)
+    irDeserializer.postProcess(generatorContext.irBuiltIns, inOrAfterLinkageStep = true)
 
     // Enable lazy IR genration for newly-created symbols inside BE
     stubGenerator.unboundSymbolGeneration = true
@@ -221,10 +220,10 @@ internal fun LinkKlibsContext.linkKlibs(
     if (stdlibIsBeingCached) {
         val maxArity = 255 // See [BuiltInFictitiousFunctionClassFactory].
         (0..maxArity).forEach { arity ->
-            irDeserializer.builtIns.functionN(arity)
-            irDeserializer.builtIns.suspendFunctionN(arity)
-            irDeserializer.builtIns.kFunctionN(arity)
-            irDeserializer.builtIns.kSuspendFunctionN(arity)
+            generatorContext.irBuiltIns.functionN(arity)
+            generatorContext.irBuiltIns.suspendFunctionN(arity)
+            generatorContext.irBuiltIns.kFunctionN(arity)
+            generatorContext.irBuiltIns.kSuspendFunctionN(arity)
         }
     }
 

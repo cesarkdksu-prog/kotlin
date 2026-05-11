@@ -124,7 +124,6 @@ object JKlibIrCompilationPhase :
         val linker = JKlibIrLinker(
             module = mainModule,
             configuration = configuration,
-            irBuiltIns = irBuiltIns,
             symbolTable = symbolTable,
             stubGenerator = stubGenerator,
             descriptorMangler = mangler,
@@ -169,7 +168,7 @@ object JKlibIrCompilationPhase :
 
         linker.init(null)
         ExternalDependenciesGenerator(symbolTable, listOf(linker)).generateUnboundSymbolsAsDependencies()
-        linker.postProcess(inOrAfterLinkageStep = true)
+        linker.postProcess(irBuiltIns, inOrAfterLinkageStep = true)
 
         // TODO(KT-86160): remove this when we have a proper solution for this issue.
         symbolTable

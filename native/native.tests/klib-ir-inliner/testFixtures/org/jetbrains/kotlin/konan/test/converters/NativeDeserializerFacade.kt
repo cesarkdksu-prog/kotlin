@@ -113,7 +113,6 @@ class NativeDeserializerFacade(
         val irLinker = KonanIrLinker(
             currentModule = moduleDescriptor,
             configuration = configuration,
-            builtIns = irBuiltIns,
             symbolTable = symbolTable,
             friendModules = friendModules,
             forwardModuleDescriptor = forwardDeclarationsModuleDescriptor,
@@ -130,7 +129,7 @@ class NativeDeserializerFacade(
 
         irLinker.init(null)
         ExternalDependenciesGenerator(symbolTable, listOf(irLinker)).generateUnboundSymbolsAsDependencies()
-        irLinker.postProcess(inOrAfterLinkageStep = true)
+        irLinker.postProcess(irBuiltIns, inOrAfterLinkageStep = true)
 
         return IrModuleInfo(
             module = moduleDependencies.included!!,
