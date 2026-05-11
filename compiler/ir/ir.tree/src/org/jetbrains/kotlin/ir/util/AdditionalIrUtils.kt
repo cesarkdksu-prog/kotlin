@@ -376,3 +376,13 @@ fun IrClass.selectSAMOverriddenFunctionOrNull(): IrSimpleFunction? {
 
 fun IrClass.selectSAMOverriddenFunction(): IrSimpleFunction = selectSAMOverriddenFunctionOrNull()
     ?: error("${render()} should have a single abstract method to be a type of function reference")
+
+fun ClassId.toIdSignature(): IdSignature {
+    return IdSignature.CommonSignature(
+        packageFqName.asString(),
+        relativeClassName.asString(),
+        id = null,
+        mask = 0L,
+        description = null
+    )
+}
