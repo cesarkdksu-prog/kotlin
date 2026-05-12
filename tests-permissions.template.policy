@@ -15,6 +15,8 @@ grant {
 
     permission java.util.PropertyPermission "idea.*", "write";
     permission java.util.PropertyPermission "psi.*", "write";
+    // This is needed to enable `+ImplicitSignedToUnsignedIntegerConversion` via CLI in tests like `signedToUnsignedConversions.kt`
+    permission java.util.PropertyPermission "kotlinc.test.allow.testonly.language.features", "write";
     permission java.util.PropertyPermission "org.gradle.test.worker", "write";
     permission java.util.PropertyPermission "project.structure.add.tools.jar.to.new.jdk", "write";
     permission java.util.PropertyPermission "ide.hide.excluded.files", "write";
