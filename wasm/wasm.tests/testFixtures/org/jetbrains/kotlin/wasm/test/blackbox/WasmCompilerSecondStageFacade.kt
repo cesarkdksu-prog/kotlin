@@ -39,7 +39,7 @@ import java.io.PrintStream
  * An implementation of [CustomKlibCompilerSecondStageFacade] for WasmJs.
  * Suits any version backend version: either current, or old released. It's specified by `webCompilerSettings` param.
  */
-class CustomWasmJsCompilerSecondStageFacade private constructor(
+class WasmCompilerSecondStageFacade private constructor(
     val testServices: TestServices,
     private val customWebCompilerSettings: CustomWebCompilerSettings
 ) {
@@ -73,7 +73,7 @@ class CustomWasmJsCompilerSecondStageFacade private constructor(
             regularDependencies: Set<String>,
             friendDependencies: Set<String>,
         ): BinaryArtifacts.Wasm {
-            val facade = CustomWasmJsCompilerSecondStageFacade(testServices, customWebCompilerSettings)
+            val facade = WasmCompilerSecondStageFacade(testServices, customWebCompilerSettings)
             val (exitCode, output, executableFolder) = facade.runCli(
                 module,
                 customLanguageFeatures = module.directives[LanguageSettingsDirectives.LANGUAGE],
