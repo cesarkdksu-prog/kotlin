@@ -91,7 +91,7 @@ require(it.distinct().size == it.size) { "$ARG_NOTE_IDS was not distinct" }
 
 Variations on the same shape:
 
-- **`.count()` instead of `.size`** for `Map.values` and sequences — `androidx`’s three near-identical `Swipeable` files (`compose-material/.../Swipeable.kt:587`, `constraintlayout/.../CarouselSwipeable.kt:569`, `wear/.../Swipeable.kt:552`): `require(anchors.values.distinct().count() == anchors.size)`.
+- **`.count()` instead of `.size`** for `Map.values` — `androidx`’s three near-identical `Swipeable` files (`compose-material/.../Swipeable.kt:587`, `constraintlayout/.../CarouselSwipeable.kt:569`, `wear/.../Swipeable.kt:552`): `require(anchors.values.distinct().count() == anchors.size)`.
 - **The assertion-helper form**, which a comparison-operator regex misses entirely — `assertEquals(size, deduped.size)` / `assertThat(size, equalTo(deduped.size))`:
 
 ```kotlin
@@ -204,9 +204,9 @@ KT-85976 ships only `allDistinct()` / `allDistinctBy {}` and puts two variants o
 ## 4. Edge cases observed in the wild
 
 - **Empty / singleton.** Hand-rolled `deduped.size == size` forms already return `true` for empty and singleton inputs; `allDistinct()` returning `true` there (KT-85976) matches existing behavior — no migration surprise.
-- **Floating point.** `androidx`'s `FloatList.isDistinct()` builds a `mutableFloatSetOf()`, i.e. it already uses `equals`-equivalence semantics (`NaN == NaN`, `-0.0 != 0.0`). This is exactly the model KT-85976 and the [FP-semantics doc](../KT-10380-all-equal/allEqual-floating-point-semantics-%28and-implications-for-allDistinct%29.md#what-this-means-for-alldistinct--alldistinctby) prescribe for the primitive `allDistinct()` overloads — the field idiom and the proposed API agree.
+- **Floating point.** `androidx`'s `FloatList.isDistinct()` folds into a `mutableFloatSetOf()`, but `androidx`'s `FloatSet` compares elements with `==` on primitive `Float` — IEEE 754, where `NaN != NaN` and `0.0 == -0.0`. So it does *not* follow the `equals`-equivalence model (`NaN == NaN`, `-0.0 != 0.0`) that KT-85976 and the [FP-semantics doc](../KT-10380-all-equal/allEqual-floating-point-semantics-%28and-implications-for-allDistinct%29.md#what-this-means-for-alldistinct--alldistinctby) prescribe for the primitive `allDistinct()` overloads; it is the very naive `==`-based comparison that doc says those overloads must avoid. The corpus therefore offers no field confirmation of the proposed floating-point semantics — that choice rests on the context-doc rationale (consistency with `distinct()` / `toSet()` / `HashSet`).
 - **Primitive-element receivers.** Beyond `FloatList.isDistinct()`, `toSet().size == size` is used on primitive-element data; primitive arrays are less common than `List` but real. The `FloatList` example is a direct argument for the primitive-array overloads.
-- **Sequences.** `asSequence().distinct().count()` and `asSequence().distinctBy { it.type }.count()` appear (`intellij-community/.../AbstractCallChainHintsProvider.kt:67`, `…/KtCallChainHintsProvider.kt:60`) — the terminal `Sequence` overload is exercised.
+- **Sequences.** No genuine `Sequence` distinctness *check* surfaced. `asSequence().distinctBy { it.type }.count()` does appear (`intellij-community/.../AbstractCallChainHintsProvider.kt:67`, `…/KtCallChainHintsProvider.kt:60`), but each compares the distinct count to a fixed threshold (`uniqueTypeCount`, usually 2), not to the sequence's own length — so under §2's triage rule (which keys on the right-hand side of the comparison) it is not an `allDistinct` idiom. KT-85976 still specifies the `Sequence` overloads for API-family completeness; the corpus simply did not exercise that boolean shape directly.
 - **Nullable elements.** Selectors that produce `null` (`distinctBy { it == null }`, `distinctBy { if (…) null else it }`) appear; nulls are treated as ordinary elements, matching KT-85976 ("two `null` values count as duplicates").
 
 ## 5. Verdict
@@ -219,7 +219,7 @@ KT-85976 ships only `allDistinct()` / `allDistinctBy {}` and puts two variants o
 |---|---|
 | "Checking … no duplicates is a common operation" | ~90 hits, 20+ repos, production-weighted (~⅔) |
 | Needs a selector form (`allDistinctBy`) | ~10 by-selector size-comparison hits + the grouping family is mostly by-selector |
-| Worth offering on arrays / sequences / primitives | `FloatList.isDistinct()`; `asSequence().distinct*().count()`; `toSet().size == size` on primitive data |
+| Worth offering on arrays / sequences / primitives | `FloatList.isDistinct()` and `toSet().size == size` on primitive-element data; no direct boolean `Sequence` check in the corpus — those overloads ride on API-family completeness (§4) |
 | Short-circuiting is "strictly better" | Confirmed — the non-short-circuiting form dominates; the short-circuit form appears once |
 | No `allDistinctWith` | Confirmed — zero `distinctWith`; zero custom-equivalence-predicate idioms |
 | Referential `===` variant deferred | Confirmed — `identityHashCode` never used for collection-distinctness checks |
@@ -231,10 +231,10 @@ One honest caveat (§3.3): a sizeable share of grouping hits need the *identity*
 
 1. **The shared substrate confirms the family pairing.** `xs.distinct().size` / `xs.toSet().size` is read as `allEqual` when compared to `1` and as `allDistinct` when compared to `xs.size` (§2). The same expression, opposite questions — exactly KT-85976's framing ("`allEqual` ⇔ at most one distinct value; `allDistinct` ⇔ exactly `size` distinct values"). Named functions remove the at-a-glance ambiguity that the raw idiom carries, and shipping the pair together is the right call.
 2. **Both families converge on `()` + `By(selector)`, and the field agrees.** `allEqualWith` was dropped after its survey found 4 hits and an equivalence-relation misuse vector; `allDistinctWith` is excluded for an O(n²) / no-`distinctWith`-precedent reason. The reasons differ, but this survey shows the *outcome* is independently correct for distinctness too: **zero** custom-predicate distinctness idioms exist in 39 repositories. No custom-predicate overload is warranted in either family.
-3. **Shared floating-point semantics are validated by real code**, not just by analogy — see §4.
+3. **The shared floating-point model is a joint context-doc decision — and the field shows why it matters.** The corpus does not independently validate the `equals`-equivalence model. Its only floating-point distinctness helper, `FloatList.isDistinct()` (§4), uses a naive IEEE `==` comparison — exactly the trap the [FP-semantics doc](../KT-10380-all-equal/allEqual-floating-point-semantics-%28and-implications-for-allDistinct%29.md#what-this-means-for-alldistinct--alldistinctby) tells the primitive `allDistinct()` overloads to avoid. The `NaN == NaN` / `-0.0 != 0.0` choice for `allEqual*` and `allDistinct*` rests on consistency with `distinct()` / `toSet()` / `HashSet`, decided once there for both families.
 
 **Prior art** agrees with the chosen surface: Rust's [`itertools::all_unique`](https://docs.rs/itertools/latest/itertools/trait.Itertools.html#method.all_unique) is a short-circuiting boolean with no predicate variant; Python's [`more_itertools.all_unique(iterable, key=None)`](https://more-itertools.readthedocs.io/en/stable/api.html#more_itertools.all_unique) takes an optional `key=` selector (the `allDistinctBy` shape) and, again, no binary predicate. KT-85976's choice of the name `allDistinct` over `allUnique` is a Kotlin-stdlib-consistency call (`distinct` / `distinctBy` already exist); the surface itself — `()` plus `By(selector)` — is the cross-ecosystem norm.
 
 ### Bottom line
 
-Ship `allDistinct()` and `allDistinctBy {}` as proposed in KT-85976. The corpus shows strong, broad, production-weighted demand; confirms the selector form, the short-circuit value, and the floating-point model; and independently justifies excluding `allDistinctWith` and the referential-identity variant.
+Ship `allDistinct()` and `allDistinctBy {}` as proposed in KT-85976. The corpus shows strong, broad, production-weighted demand; confirms the selector form and the short-circuit value; and independently justifies excluding `allDistinctWith` and the referential-identity variant.
