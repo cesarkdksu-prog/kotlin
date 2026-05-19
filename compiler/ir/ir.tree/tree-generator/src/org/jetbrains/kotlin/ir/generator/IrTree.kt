@@ -747,6 +747,9 @@ object IrTree : AbstractTreeBuilder() {
 
         +referencedSymbol("classSymbol", classSymbol, mutable = false)
         +field("argumentMapping", StandardTypes.map.withArgs(type<Name>(), expression))
+        +referencedSymbol("symbol", type = constructorSymbol) {
+            optInAnnotation = deprecatedForRemovalCompilerApi.withArgument("deprecatedSince", "org.jetbrains.kotlin.CompilerVersionOfApiDeprecation._2_4_20")
+        }
     }
     val getSingletonValue: Element by element(Expression) {
         nameInVisitorMethod = "SingletonReference"
