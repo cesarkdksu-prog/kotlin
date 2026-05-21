@@ -7,6 +7,13 @@ package org.jetbrains.kotlin.backend.jvm.lower.sequence.fusion
 
 import org.jetbrains.kotlin.backend.jvm.JvmBackendContext
 import org.jetbrains.kotlin.ir.IrElement
+import org.jetbrains.kotlin.ir.builders.IrBuilderWithScope
+import org.jetbrains.kotlin.ir.builders.irBlock
+import org.jetbrains.kotlin.ir.builders.irCall
+import org.jetbrains.kotlin.ir.builders.irGet
+import org.jetbrains.kotlin.ir.builders.irInt
+import org.jetbrains.kotlin.ir.builders.irSet
+import org.jetbrains.kotlin.ir.builders.irTemporary
 import org.jetbrains.kotlin.ir.declarations.IrClass
 import org.jetbrains.kotlin.ir.declarations.IrValueDeclaration
 import org.jetbrains.kotlin.ir.declarations.IrVariable
@@ -32,9 +39,12 @@ import org.jetbrains.kotlin.ir.visitors.acceptChildrenVoid
 import org.jetbrains.kotlin.ir.visitors.acceptVoid
 
 private const val SEQUENCE_OF = "sequenceOf"
-private const val AS_SEQUENCE = "asSequence"
+internal const val AS_SEQUENCE = "asSequence"
 private const val GENERATE_SEQUENCE = "generateSequence"
 private const val MAP = "map"
+private const val MAP_INDEXED = "mapIndexed"
+private const val MAP_NOT_NULL = "mapNotNull"
+private const val MAP_NOT_NULL_INDEXED = "mapIndexedNotNull"
 private const val FILTER = "filter"
 private const val FILTER_NOT = "filterNot"
 private const val FILTER_NOT_NULL = "filterNotNull"
@@ -173,18 +183,57 @@ internal class SequenceDataGatherer(val context: JvmBackendContext) : IrVisitorV
         return true
     }
 
-    // checks if the applied function is safe to be lowered, then updates the sequence data if it is
-    private inline fun updateSequenceDataUsingFunctionReference(
-        call: IrCall,
-        applyFunction: (SequenceData, IrRichFunctionReference, Pair<Int, Int>) -> SequenceData
+    private fun matchWithMap(
+        expression: IrCall,
+        isIndexed: Boolean,
+        isNotNull: Boolean,
     ) {
-        val receiver = call.arguments.getOrNull(0) ?: return
-        val fnArg = call.arguments.getOrNull(1) ?: return
+        val receiver = expression.arguments.getOrNull(0) ?: return
+        val receiverData = receiver.sequenceDataOfExpression ?: return
+        val fnArg = expression.arguments.getOrNull(1) ?: return
         val fnRef = fnArg as? IrRichFunctionReference ?: return
         if (!isSafeToLower(fnRef)) return
+        val (newMapReplacement, sequenceDataWithDeclarations) = if (isIndexed) {
+            val indexVariableCell = object {
+                var value: IrVariable? = null
+            }
+            val indexVariableLambda =
+                { builder: IrBuilderWithScope ->
+                    builder.scope.createTemporaryVariable(
+                        builder.irInt(0),
+                        isMutable = true,
+                        nameHint = "mapIndexedVariable"
+                    )
+                }
+            val getOrCreateIndexVariable = { builder: IrBuilderWithScope ->
+                indexVariableCell.value ?: indexVariableLambda(builder).also {
+                    indexVariableCell.value = it
+                }
+            }
 
-        val receiverData = receiver.sequenceDataOfExpression ?: return
-        call.sequenceDataOfExpression = applyFunction(receiverData, fnRef, call.startOffset to call.endOffset)
+            val sequenceDataWithDeclarations = receiverData.addDeclarationExpectingBuilder(getOrCreateIndexVariable);
+            { (builder, parent): IrBuilderWithParent, value: IrExpression ->
+                val indexVariable = getOrCreateIndexVariable(builder)
+                val mapReplacement = sequenceDataWithDeclarations.createMapReplacement(fnRef, builder.irGet(indexVariable))
+                builder.irBlock {
+                    val mapResult = irTemporary(mapReplacement(builder to parent, value), nameHint = "mapIndexedResult")
+                    +irSet(indexVariable, irCall(context.irBuiltIns.intPlusSymbol).apply {
+                        dispatchReceiver = irGet(indexVariable)
+                        arguments[1] = irInt(1)
+                    })
+                    +irGet(mapResult)
+                }
+            } to sequenceDataWithDeclarations
+        } else receiverData.createMapReplacement(fnRef) to receiverData
+
+        val mappedSequenceData = sequenceDataWithDeclarations.applyMap(newMapReplacement, expression.startOffset to expression.endOffset)
+        val filteredSequenceData = if (isNotNull) {
+            val filterNotNullSegment = mappedSequenceData.createNewFilterNotNullSegment()
+            mappedSequenceData.applyFilter(expression.startOffset to expression.endOffset, filterNotNullSegment)
+        } else {
+            mappedSequenceData
+        }
+        expression.sequenceDataOfExpression = filteredSequenceData
     }
 
     private inline fun updateSequenceDataUsingExpression(
@@ -312,11 +361,10 @@ internal class SequenceDataGatherer(val context: JvmBackendContext) : IrVisitorV
     }
 
     private fun matchWithAsSequence(expression: IrCall) {
-        val innerMostReceiver = getInnerMostReceiver(expression) ?: return
         val receiver = expression.arguments.getOrNull(0) ?: return
-        if (innerMostReceiver is IrGetValue) {
-            if (!isSafeToLower(innerMostReceiver)) return
-            if (!innerMostReceiver.type.isSubtypeOfClass(context.irBuiltIns.iterableClass)) return
+        if (receiver is IrGetValue) {
+            if (!isSafeToLower(receiver)) return
+            if (!receiver.type.isSubtypeOfClass(context.irBuiltIns.iterableClass)) return
         }
         expression.sequenceDataOfExpression = SequenceData(
             SequenceData.defaultMapReplacement,
@@ -332,7 +380,10 @@ internal class SequenceDataGatherer(val context: JvmBackendContext) : IrVisitorV
         if (!isElementSequence(context, expression)) return
         val functionName = expression.symbol.owner.name.asString()
         when (functionName) {
-            MAP -> updateSequenceDataUsingFunctionReference(expression, SequenceData::applyMap)
+            MAP -> matchWithMap(expression, isIndexed = false, isNotNull = false)
+            MAP_INDEXED -> matchWithMap(expression, isIndexed = true, isNotNull = false)
+            MAP_NOT_NULL -> matchWithMap(expression, isIndexed = false, isNotNull = true)
+            MAP_NOT_NULL_INDEXED -> matchWithMap(expression, isIndexed = true, isNotNull = true)
             FILTER -> matchWithFilter(expression, FilterVersion.Filter)
             FILTER_NOT -> matchWithFilter(expression, FilterVersion.FilterNot)
             FILTER_NOT_NULL -> matchWithFilter(expression, FilterVersion.FilterNotNull)
@@ -343,3 +394,4 @@ internal class SequenceDataGatherer(val context: JvmBackendContext) : IrVisitorV
         }
     }
 }
+
