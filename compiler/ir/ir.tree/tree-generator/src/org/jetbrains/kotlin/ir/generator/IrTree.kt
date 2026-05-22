@@ -49,7 +49,6 @@ import org.jetbrains.kotlin.ir.generator.model.ListField.Mutability.MutableList
 import org.jetbrains.kotlin.ir.generator.model.ListField.Mutability.Var
 import org.jetbrains.kotlin.ir.generator.model.SimpleField
 import org.jetbrains.kotlin.ir.generator.model.symbol.Symbol
-import org.jetbrains.kotlin.name.ClassId
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.serialization.deserialization.descriptors.DeserializedContainerSource
@@ -748,7 +747,7 @@ object IrTree : AbstractTreeBuilder() {
         +referencedSymbol("classSymbol", classSymbol, mutable = false)
         +field("argumentMapping", StandardTypes.map.withArgs(type<Name>(), expression))
         +referencedSymbol("symbol", type = constructorSymbol) {
-            optInAnnotation = deprecatedForRemovalCompilerApi.withArgument("deprecatedSince", "org.jetbrains.kotlin.CompilerVersionOfApiDeprecation._2_4_20")
+            optInAnnotation = deprecatedCompilerApi.withArgument("deprecatedSince", "org.jetbrains.kotlin.CompilerVersionOfApiDeprecation._2_4_20")
         }
     }
     val getSingletonValue: Element by element(Expression) {

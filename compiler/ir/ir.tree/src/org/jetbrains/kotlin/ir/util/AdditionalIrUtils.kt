@@ -5,7 +5,7 @@
 
 package org.jetbrains.kotlin.ir.util
 
-import org.jetbrains.kotlin.DeprecatedForRemovalCompilerApi
+import org.jetbrains.kotlin.DeprecatedCompilerApi
 import org.jetbrains.kotlin.builtins.StandardNames
 import org.jetbrains.kotlin.descriptors.DescriptorVisibilities
 import org.jetbrains.kotlin.descriptors.Modality
@@ -129,7 +129,7 @@ fun <S : IrSymbol> IrOverridableDeclaration<S>.overrides(other: IrOverridableDec
     return false
 }
 
-@OptIn(DeprecatedForRemovalCompilerApi::class)
+@OptIn(DeprecatedCompilerApi::class)
 fun IrAnnotation.isAnnotationWithEqualFqName(fqName: FqName): Boolean =
     if (symbol.isBound) {
         classSymbol.owner.hasEqualFqName(fqName)

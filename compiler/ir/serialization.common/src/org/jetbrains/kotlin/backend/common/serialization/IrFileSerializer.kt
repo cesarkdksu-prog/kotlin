@@ -5,7 +5,7 @@
 
 package org.jetbrains.kotlin.backend.common.serialization
 
-import org.jetbrains.kotlin.DeprecatedForRemovalCompilerApi
+import org.jetbrains.kotlin.DeprecatedCompilerApi
 import org.jetbrains.kotlin.backend.common.serialization.encodings.*
 import org.jetbrains.kotlin.backend.common.serialization.proto.IrSimpleTypeNullability
 import org.jetbrains.kotlin.config.KlibAbiCompatibilityLevel
@@ -699,7 +699,7 @@ open class IrFileSerializer(
 
     private fun serializeAnnotation(annotation: IrAnnotation, parent: IrElement?): ProtoAnnotation =
         ProtoAnnotation.newBuilder().apply {
-            @OptIn(DeprecatedForRemovalCompilerApi::class)
+            @OptIn(DeprecatedCompilerApi::class)
             symbol = serializeIrSymbol(annotation.symbol)
             constructorTypeArgumentsCount = annotation.constructorTypeArgumentsCount
             if (settings.abiCompatibilityLevel.isAtLeast(KlibAbiCompatibilityLevel.ABI_LEVEL_2_4)) {

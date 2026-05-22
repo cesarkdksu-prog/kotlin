@@ -14,7 +14,7 @@ import org.jetbrains.kotlin.ir.generator.IrTree
 import org.jetbrains.kotlin.ir.generator.IrTree.functionReference
 import org.jetbrains.kotlin.ir.generator.IrTree.localDelegatedPropertyReference
 import org.jetbrains.kotlin.ir.generator.IrTree.propertyReference
-import org.jetbrains.kotlin.ir.generator.deprecatedForRemovalCompilerApi
+import org.jetbrains.kotlin.ir.generator.deprecatedCompilerApi
 import org.jetbrains.kotlin.ir.generator.model.Element
 import org.jetbrains.kotlin.ir.generator.model.Field
 import org.jetbrains.kotlin.ir.generator.model.ListField
@@ -33,7 +33,7 @@ internal class IrTreeSymbolsVisitorPrinter(
     override val implementationKind: ImplementationKind
         get() = ImplementationKind.AbstractClass
 
-    override val optIns: List<PrintableAnnotation> = listOf(deprecatedForRemovalCompilerApi)
+    override val optIns: List<PrintableAnnotation> = listOf(deprecatedCompilerApi)
 
     override fun ImportCollectingPrinter.printAdditionalMethods() {
         addImport(ArbitraryImportable("$BASE_PACKAGE.types", "classifierOrNull"))

@@ -10,7 +10,7 @@
 
 package org.jetbrains.kotlin.ir.expressions.impl
 
-import org.jetbrains.kotlin.DeprecatedForRemovalCompilerApi
+import org.jetbrains.kotlin.DeprecatedCompilerApi
 import org.jetbrains.kotlin.descriptors.SourceElement
 import org.jetbrains.kotlin.ir.IrElement
 import org.jetbrains.kotlin.ir.expressions.IrAnnotation
@@ -23,7 +23,7 @@ import org.jetbrains.kotlin.ir.util.IrElementConstructorIndicator
 import org.jetbrains.kotlin.ir.util.parentAsClass
 import org.jetbrains.kotlin.name.Name
 
-@OptIn(DeprecatedForRemovalCompilerApi::class)
+@OptIn(DeprecatedCompilerApi::class)
 class IrAnnotationImpl internal constructor(
     @Suppress("UNUSED_PARAMETER") constructorIndicator: IrElementConstructorIndicator?,
     override var startOffset: Int,
@@ -33,7 +33,7 @@ class IrAnnotationImpl internal constructor(
     override var source: SourceElement,
     override var constructorTypeArgumentsCount: Int,
     override var argumentMapping: Map<Name, IrExpression>,
-    @property:DeprecatedForRemovalCompilerApi(deprecatedSince = org.jetbrains.kotlin.CompilerVersionOfApiDeprecation._2_4_20)
+    @property:DeprecatedCompilerApi(deprecatedSince = org.jetbrains.kotlin.CompilerVersionOfApiDeprecation._2_4_20)
     override var symbol: IrConstructorSymbol,
 ) : IrAnnotation() {
     override var attributeOwnerId: IrElement = this

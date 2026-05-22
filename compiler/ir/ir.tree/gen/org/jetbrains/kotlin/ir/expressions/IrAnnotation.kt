@@ -8,7 +8,7 @@
 
 package org.jetbrains.kotlin.ir.expressions
 
-import org.jetbrains.kotlin.DeprecatedForRemovalCompilerApi
+import org.jetbrains.kotlin.DeprecatedCompilerApi
 import org.jetbrains.kotlin.ir.symbols.IrClassSymbol
 import org.jetbrains.kotlin.ir.symbols.IrConstructorSymbol
 import org.jetbrains.kotlin.ir.visitors.IrVisitor
@@ -23,7 +23,7 @@ abstract class IrAnnotation : IrConstructorCall(), AnnotationMarker {
 
     abstract var argumentMapping: Map<Name, IrExpression>
 
-    @DeprecatedForRemovalCompilerApi(deprecatedSince = org.jetbrains.kotlin.CompilerVersionOfApiDeprecation._2_4_20)
+    @DeprecatedCompilerApi(deprecatedSince = org.jetbrains.kotlin.CompilerVersionOfApiDeprecation._2_4_20)
     abstract override var symbol: IrConstructorSymbol
 
     override fun <R, D> accept(visitor: IrVisitor<R, D>, data: D): R =

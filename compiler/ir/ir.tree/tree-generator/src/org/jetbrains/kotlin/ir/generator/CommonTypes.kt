@@ -71,4 +71,4 @@ val irSymbolWithSignatureType = type(symbolsImpl, "IrSymbolWithSignature", TypeK
 
 val obsoleteDescriptorBasedApiAnnotation = type(BASE_PACKAGE, "ObsoleteDescriptorBasedAPI", TypeKind.Class).toAnnotation()
 val unsafeDuringIrConstructionApiAnnotation = type(symbols, "UnsafeDuringIrConstructionAPI", TypeKind.Class).toAnnotation()
-val deprecatedForRemovalCompilerApi = type(kotlin, "DeprecatedForRemovalCompilerApi", TypeKind.Class).toAnnotation()
+val deprecatedCompilerApi = type(kotlin, "DeprecatedCompilerApi", TypeKind.Class).toAnnotation()
