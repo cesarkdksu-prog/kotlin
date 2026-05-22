@@ -972,9 +972,10 @@ class KaptStubConverter(val kaptContext: KaptContextForStubGeneration, val gener
             // We already checked it in convertClass()
             val declaration = kaptContext.origins[containingClass]?.descriptor as ClassDescriptor
             val superClass = declaration.getNonErrorSuperClassNotAny()
-            val superClassConstructor = superClass.constructors.firstOrNull {
-                it.visibility.isVisible(null, it, declaration, useSpecialRulesForPrivateSealedConstructors = true)
-            }
+            val superClassConstructor =
+                superClass.constructors.find {
+                    it.visibility == DescriptorVisibilities.PUBLIC || it.visibility == DescriptorVisibilities.PROTECTED
+                } ?: superClass.constructors.first()
 
             val superClassConstructorCall = if (superClassConstructor != null) {
                 val args = mapJList(superClassConstructor.valueParameters) { param ->
