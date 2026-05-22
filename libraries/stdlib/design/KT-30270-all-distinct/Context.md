@@ -8,7 +8,7 @@ Nothing is implemented yet — only design and use-case research exist; the sect
 
 **Full API specification** — [KT-85976 — Add `allDistinct` and `allDistinctBy` extensions to the standard library](https://youtrack.jetbrains.com/issue/KT-85976). Marked a duplicate of KT-30270, but it carries the complete spec: 2 functions × 15 receiver families = 30 signatures; naming rationale; the decision to ship **no** `allDistinctWith` (an O(n²) comparator-based variant); short-circuit implementation notes; floating-point behavior (`NaN == NaN`, `-0.0 != 0.0`, matching `distinct()` / `toSet()`); and out-of-scope items.
 
-**Use-case research** — `Use-case-research.md` in this same folder: a 39-repo field survey. It found roughly 90 genuine hand-rolled uniqueness checks, about 40 of them in the exact `allDistinct()` / `allDistinctBy {}` shape.
+**Use-case research** — `allDistinct-use-case-research.md` in this same folder: a 39-repo field survey. It found roughly 90 genuine hand-rolled uniqueness checks, about 40 of them in the exact `allDistinct()` / `allDistinctBy {}` shape.
 
 ## Design precedent: the `allEqual` family
 

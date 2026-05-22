@@ -3,7 +3,7 @@ set -euo pipefail
 
 # ============================================================
 # Automated review loop for the KT-30270 allDistinct use-case
-# research document (Use-case-research.md).
+# research document (allDistinct-use-case-research.md).
 # Codex reviews the document -> Claude validates & applies fixes.
 # Usage: ./review-loop.sh [--force-regen] <from> <to(included)>
 # ============================================================
@@ -13,10 +13,10 @@ set -euo pipefail
 # cd's to the repo root below.
 DESIGN_DIR="libraries/stdlib/design/KT-30270-all-distinct"
 SIBLING_DIR="libraries/stdlib/design/KT-10380-all-equal"
-REVIEW_TARGET="${DESIGN_DIR}/Use-case-research.md"
+REVIEW_TARGET="${DESIGN_DIR}/allDistinct-use-case-research.md"
 REVIEW_DIR="${DESIGN_DIR}/review"
 
-# Local checkout of the repositories surveyed by Use-case-research.md (one
+# Local checkout of the repositories surveyed by allDistinct-use-case-research.md (one
 # directory per repository), used to verify the document's file:line
 # citations against the real code. Absolute path, outside the Kotlin repo.
 CORPUS_DIR="/Users/dmitry.nekrasov/dev/repos/big-repos/kotlin-research-repos"
@@ -67,7 +67,7 @@ cd "$SCRIPT_DIR/../../../.."
 
 # Discover read-only context/reference docs: every *.md in this design folder
 # except the review target, plus every *.md in the sibling KT-10380 folder.
-# These are the documents Use-case-research.md cross-references. The review/
+# These are the documents allDistinct-use-case-research.md cross-references. The review/
 # subdir is not matched by the non-recursive *.md glob.
 shopt -s nullglob
 CONTEXT_DOCS=()
