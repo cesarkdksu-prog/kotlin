@@ -64,6 +64,12 @@ interface AnInterfaceWithCompanion {
     }
 }
 
+// KT-84332
+@JsExport
+interface InterfaceWithNestedClass {
+    class Nested(val value: Int)
+}
+
 // Should be uncommented when KT-82128 is done
 //@JsExport
 //interface InterfaceWithNamedCompanion {

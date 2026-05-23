@@ -141,6 +141,23 @@ export declare namespace AnInterfaceWithCompanion {
         }
     }
 }
+export declare interface InterfaceWithNestedClass {
+    readonly __doNotUseOrImplementIt: {
+        readonly "foo.InterfaceWithNestedClass": unique symbol;
+    };
+}
+export declare namespace InterfaceWithNestedClass {
+    class Nested {
+        constructor(value: number);
+        get value(): number;
+    }
+    namespace Nested {
+        /** @deprecated $metadata$ is used for internal purposes, please don't use it in your code, because it can be removed at any moment */
+        namespace $metadata$ {
+            const constructor: abstract new () => Nested;
+        }
+    }
+}
 export declare interface InterfaceWithCompanionWithStaticFun {
     readonly __doNotUseOrImplementIt: {
         readonly "foo.InterfaceWithCompanionWithStaticFun": unique symbol;
