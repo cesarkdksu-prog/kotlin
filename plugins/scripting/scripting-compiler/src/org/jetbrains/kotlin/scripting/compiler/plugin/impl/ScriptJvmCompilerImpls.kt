@@ -152,8 +152,11 @@ private fun compileImpl(
 
     val mainKtSource = KtFileScriptSource(mainKtFile)
     val [sourceFiles, sourceDependencies] =
-        collectRefinedSourcesAndUpdateEnvironment(context, mainKtSource, messageCollector) {
-            context.scriptConfigurationsProvider?.getScriptCompilationConfiguration(project,it, initialConfiguration)
+        collectRefinedSourcesAndUpdateEnvironment(context, mainKtSource, messageCollector) { source ->
+            context.scriptConfigurationsProvider?.let {
+                it.project = project
+                it.getScriptCompilationConfiguration(source, initialConfiguration)
+            }
         }
 
     if (messageCollector.hasErrors() || sourceDependencies.any { it.sourceDependencies is ResultWithDiagnostics.Failure }) {
@@ -167,9 +170,11 @@ private fun compileImpl(
         diagnosticsCollector = DiagnosticsCollectorImpl()
     }
     val getScriptConfiguration = { sourceCode: SourceCode ->
-        val refinedConfiguration =
-            context.scriptConfigurationsProvider?.getScriptCompilationConfiguration(project, sourceCode, context.baseScriptCompilationConfiguration)
-                ?.valueOrNull()?.configuration ?: context.baseScriptCompilationConfiguration
+        val refinedConfiguration = context.scriptConfigurationsProvider?.let {
+            it.project = project
+            it.getScriptCompilationConfiguration(sourceCode, context.baseScriptCompilationConfiguration)
+                ?.valueOrNull()?.configuration
+        } ?: context.baseScriptCompilationConfiguration
         refinedConfiguration.with {
             _languageVersion(compilerConfiguration.languageVersionSettings.languageVersion.versionString)
             // Adjust definitions so all compiler dependencies are saved in the resulting compilation configuration, so evaluation
@@ -392,7 +397,10 @@ private fun doCompileWithK2(
             val rawFirDeps = rawFir.associateWith { firFile ->
                 ((firFile.sourceFile as? KtPsiSourceFile)?.psiFile as? KtFile)?.let { ktFile ->
                     @Suppress("DEPRECATION") val scriptCompilationConfiguration =
-                        scriptDefinitionProviderService.configurationProvider?.getScriptConfiguration(projectEnvironment.project, ktFile)?.configuration
+                        scriptDefinitionProviderService.configurationProvider?.let {
+                            it.project = projectEnvironment.project
+                            it.getScriptConfiguration(ktFile)?.configuration
+                        }
                     scriptCompilationConfiguration?.get(ScriptCompilationConfiguration.resolvedImportScripts)?.mapNotNull { depSource ->
                         (depSource as? VirtualFileScriptSource)?.virtualFile?.let { depVFile ->
                             rawFir.find { ((it.sourceFile as? KtPsiSourceFile)?.psiFile as? KtFile)?.virtualFile == depVFile }

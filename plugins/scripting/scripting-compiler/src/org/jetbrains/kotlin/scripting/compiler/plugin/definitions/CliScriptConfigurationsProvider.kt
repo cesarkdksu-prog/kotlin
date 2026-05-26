@@ -20,8 +20,9 @@ import kotlin.script.experimental.api.ScriptCompilationConfiguration
 import kotlin.script.experimental.api.SourceCode
 
 class CliScriptConfigurationsProvider(
+    project: Project?,
     getScriptDefinitionProvider: () -> ScriptDefinitionProvider
-) : ScriptConfigurationsProvider() {
+) : ScriptConfigurationsProvider(project) {
     private val cacheLock = ReentrantReadWriteLock()
 
     private val cache = hashMapOf<String, ScriptCompilationConfigurationResult?>()
@@ -32,30 +33,29 @@ class CliScriptConfigurationsProvider(
     }
 
     @Deprecated("Use getScriptConfigurationResult(KtFileScriptSource(ktFile)) instead")
-    override fun getScriptConfigurationResult(project: Project, file: KtFile): ScriptCompilationConfigurationResult? = cacheLock.read {
-        calculateRefinedConfiguration(project, KtFileScriptSource(file), null)
+    override fun getScriptConfigurationResult(file: KtFile): ScriptCompilationConfigurationResult? = cacheLock.read {
+        calculateRefinedConfiguration(KtFileScriptSource(file), null)
     }
 
     @Deprecated("Use getScriptConfigurationResult(KtFileScriptSource(ktFile), providedConfiguration) instead")
     override fun getScriptConfigurationResult(
-        project: Project,
         file: KtFile,
         providedConfiguration: ScriptCompilationConfiguration?
     ): ScriptCompilationConfigurationResult? = cacheLock.read {
-        calculateRefinedConfiguration(project, KtFileScriptSource(file), providedConfiguration)
+        calculateRefinedConfiguration(KtFileScriptSource(file), providedConfiguration)
     }
 
     override fun getScriptCompilationConfiguration(
-        project: Project,
         scriptSource: SourceCode,
         providedConfiguration: ScriptCompilationConfiguration?,
     ): ScriptCompilationConfigurationResult? = cacheLock.read {
-        calculateRefinedConfiguration(project, scriptSource, providedConfiguration)
+        calculateRefinedConfiguration(scriptSource, providedConfiguration)
     }
 
     @OptIn(K1SpecificScriptingServiceAccessor::class)
     private fun calculateRefinedConfiguration(
-        project: Project, source: SourceCode, providedConfiguration: ScriptCompilationConfiguration?
+        source: SourceCode,
+        providedConfiguration: ScriptCompilationConfiguration?
     ): ScriptCompilationConfigurationResult? {
         val path = source.locationId ?: return null
         val cached = cache[path]

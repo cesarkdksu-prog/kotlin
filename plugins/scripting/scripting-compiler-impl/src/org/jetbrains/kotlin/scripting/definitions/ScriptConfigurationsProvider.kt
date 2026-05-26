@@ -24,35 +24,44 @@ import kotlin.script.experimental.api.valueOrNull
 annotation class K1SpecificScriptingServiceAccessor
 
 // TODO: deprecate/optin in favor of K2 infrastructure (ScriptRefinedCompilationConfigurationCache for this one)
-open class ScriptConfigurationsProvider {
+open class ScriptConfigurationsProvider(
+    project: Project?
+) {
+    init {
+        @OptIn(K1SpecificScriptingServiceAccessor::class)
+        project?.let { this.project = it }
+    }
+
+    @property:K1SpecificScriptingServiceAccessor
+    lateinit var project: Project
 
     /**
      * Currently the main method that should be used to get the configuration, others should be deprecated
      */
     open fun getScriptCompilationConfiguration(
-        project: Project,
         scriptSource: SourceCode,
         providedConfiguration: ScriptCompilationConfiguration? = null,
     ): ScriptCompilationConfigurationResult? =
         (scriptSource as? KtFileScriptSource)?.ktFile?.let {
             // transitioning to the new API based on the generic source file representation
-            getScriptConfigurationResult(project, it)
+            getScriptConfigurationResult(it)
         }
 
-    @Deprecated("Use getScriptCompilationConfiguration(project, KtFileScriptSource(ktFile)) instead")
-    open fun getScriptConfigurationResult(project: Project, file: KtFile): ScriptCompilationConfigurationResult? = null
+    @Deprecated("Use getScriptCompilationConfiguration(KtFileScriptSource(ktFile)) instead")
+    open fun getScriptConfigurationResult(file: KtFile): ScriptCompilationConfigurationResult? = null
 
     // TODO: consider fixing implementations and removing default implementation
-    @Deprecated("Use getScriptCompilationConfiguration(project, KtFileScriptSource(ktFile), providedConfiguration) instead")
+    @Deprecated("Use getScriptCompilationConfiguration(KtFileScriptSource(ktFile), providedConfiguration) instead")
     open fun getScriptConfigurationResult(
-        project: Project, file: KtFile, providedConfiguration: ScriptCompilationConfiguration?,
+        file: KtFile,
+        providedConfiguration: ScriptCompilationConfiguration?,
     ): ScriptCompilationConfigurationResult? {
-        return getScriptConfigurationResult(project, file)
+        return getScriptConfigurationResult(file)
     }
 
-    @Deprecated("Use getScriptCompilationConfiguration(project, KtFileScriptSource(ktFile)) instead")
-    fun getScriptConfiguration(project: Project, file: KtFile): ScriptCompilationConfigurationWrapper? {
-        return getScriptConfigurationResult(project, file)?.valueOrNull()
+    @Deprecated("Use getScriptCompilationConfiguration(KtFileScriptSource(ktFile)) instead")
+    open fun getScriptConfiguration(file: KtFile): ScriptCompilationConfigurationWrapper? {
+        return getScriptConfigurationResult(file)?.valueOrNull()
     }
 
     companion object : ExtensionPointDescriptor<ScriptConfigurationsProvider>(

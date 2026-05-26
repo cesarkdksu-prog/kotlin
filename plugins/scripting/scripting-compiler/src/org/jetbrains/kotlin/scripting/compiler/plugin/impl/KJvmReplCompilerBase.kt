@@ -106,8 +106,11 @@ open class KJvmReplCompilerBase<AnalyzerT : ReplCodeAnalyzerBase>(
 
                 val project = context.environment.project
                 val [sourceFiles, sourceDependencies] =
-                    collectRefinedSourcesAndUpdateEnvironment(context, KtFileScriptSource(snippetKtFile), messageCollector) {
-                        context.scriptConfigurationsProvider?.getScriptCompilationConfiguration(project, it, initialConfiguration)
+                    collectRefinedSourcesAndUpdateEnvironment(context, KtFileScriptSource(snippetKtFile), messageCollector) { source ->
+                        context.scriptConfigurationsProvider?.let {
+                            it.project = project
+                            it.getScriptCompilationConfiguration(source, initialConfiguration)
+                        }
                     }
 
                 val firstFailure = sourceDependencies.firstOrNull { it.sourceDependencies is ResultWithDiagnostics.Failure }
@@ -129,11 +132,12 @@ open class KJvmReplCompilerBase<AnalyzerT : ReplCodeAnalyzerBase>(
                 // executing it on every snippet needs to be evaluated first
                 if (state.history.isEmpty()) {
                     val updatedConfiguration = context.environment.configuration.getCompilerExtensions(ScriptConfigurationsProvider)
-                        .firstOrNull()
-                        ?.getScriptCompilationConfiguration(
-                            project, KtFileScriptSource(snippetKtFile), context.baseScriptCompilationConfiguration
-                        )?.valueOrNull()?.configuration
-                        ?: context.baseScriptCompilationConfiguration
+                        .firstOrNull()?.let {
+                            it.project = project
+                            it.getScriptCompilationConfiguration(
+                                KtFileScriptSource(snippetKtFile), context.baseScriptCompilationConfiguration
+                            )?.valueOrNull()?.configuration
+                        } ?: context.baseScriptCompilationConfiguration
                     registerPackageFragmentProvidersIfNeeded(
                         updatedConfiguration,
                         context.environment
@@ -201,9 +205,11 @@ open class KJvmReplCompilerBase<AnalyzerT : ReplCodeAnalyzerBase>(
                     { it.getKtFile(definition, project).declarations.firstIsInstance<KtScript>().fqName },
                     sourceDependencies,
                     { source ->
-                        configurationsProvider?.getScriptCompilationConfiguration(project, source, context.baseScriptCompilationConfiguration)
-                            ?.valueOrNull()?.configuration
-                            ?: context.baseScriptCompilationConfiguration
+                        configurationsProvider?.let {
+                            it.project = project
+                            it.getScriptCompilationConfiguration(source, context.baseScriptCompilationConfiguration)
+                                ?.valueOrNull()?.configuration
+                        } ?: context.baseScriptCompilationConfiguration
                     },
                     extractResultFields(irBackendInput.irModuleFragment)
                 ).onSuccess { compiledScript ->

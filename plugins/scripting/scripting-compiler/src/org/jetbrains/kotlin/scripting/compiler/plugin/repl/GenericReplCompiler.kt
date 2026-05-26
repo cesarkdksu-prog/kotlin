@@ -87,7 +87,10 @@ open class GenericReplCompiler(
             val environment = checker.environment
             val wrapper = environment.configuration.getCompilerExtensions(
                 ScriptConfigurationsProvider
-            ).firstOrNull()?.getScriptCompilationConfiguration(environment.project, KtFileScriptSource(psiFile))?.valueOrNull()
+            ).firstOrNull()?.let {
+                it.project = environment.project
+                it.getScriptCompilationConfiguration(KtFileScriptSource(psiFile))?.valueOrNull()
+            }
             val newDependencies = wrapper?.configuration?.toDependencies(wrapper.dependenciesClassPath)
             var classpathAddendum: List<File>? = null
             if (compilerState.lastDependencies != newDependencies) {

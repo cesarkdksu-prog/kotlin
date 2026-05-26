@@ -35,6 +35,9 @@ internal class CustomScriptDefinitionEnvironmentConfigurator(testServices: TestS
     @OptIn(K1SpecificScriptingServiceAccessor::class)
     override fun legacyRegisterCompilerExtensions(project: Project, module: TestModule, configuration: CompilerConfiguration) {
         val baseHostConfiguration = ScriptingHostConfiguration(defaultJvmScriptingHostConfiguration) {}
+        // This test still uses old method of access to ScriptDefinitionProvider,
+        // mainly because LLFirSessionFactory uses file.findScriptDefinition() without access to CompilerConfiguration.
+        // That's why I had to introduce & use custom updateScriptingConfiguration here.
         val scriptDefinitionProvider = ScriptDefinitionProvider.getInstance(project)
         val configurationExtension = ScriptingCompilerConfigurationExtension(baseHostConfiguration, scriptDefinitionProvider)
         scriptDefinitionProvider.updateScriptingConfiguration(

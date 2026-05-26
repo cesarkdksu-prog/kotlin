@@ -196,8 +196,10 @@ abstract class CodegenTestCase : KotlinBaseTest<KotlinBaseTest.TestFile>() {
             if (externalImportsProvider != null) {
                 environment.getSourceFiles().forEach(
                     Consumer { file: KtFile ->
+                        @OptIn(K1SpecificScriptingServiceAccessor::class)
+                        externalImportsProvider.project = environment.project
                         val refinedConfiguration = externalImportsProvider.getScriptCompilationConfiguration(
-                            environment.project, KtFileScriptSource(file)
+                            KtFileScriptSource(file)
                         )?.valueOrNull()
                         if (refinedConfiguration != null) {
                             files.addAll(refinedConfiguration.dependenciesClassPath)
