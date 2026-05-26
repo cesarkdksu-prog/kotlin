@@ -100,7 +100,6 @@ internal class KonanForwardDeclarationModuleDeserializer(
 
         val irPackage = getOrCreateContainingPackage(kind.packageFqName)
         irPackage.addChild(clazz)
-        clazz.parent = irPackage
 
         return clazz
     }
