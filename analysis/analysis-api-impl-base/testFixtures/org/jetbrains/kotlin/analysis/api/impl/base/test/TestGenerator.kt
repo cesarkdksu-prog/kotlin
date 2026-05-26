@@ -735,12 +735,8 @@ private fun AnalysisApiTestGroup.generateAnalysisApiComponentsTests() {
                     model(it, "combinedDeclaredMemberScope")
                 }
 
-                test<AbstractDeclarationsByNameFilterMemberScopeTest> {
-                    model(it, "declarationsByNameFilter")
-                }
-
-                test<AbstractDeclarationsByNamesMemberScopeTest> {
-                    model(it, "declarationsByNames")
+                test<AbstractNameFilteredMemberScopeTest> {
+                    model(it, "nameFilteredMemberScope")
                 }
             }
         }
