@@ -38,7 +38,7 @@ internal interface XcodebuildArgsDumpWorkParameters : WorkParameters {
 /**
  * Runs xcodebuild with custom CC/LD wrappers to record the compiler and linker arguments for the synthetic SwiftPM
  * project. The wrappers do not produce the final K/N def file directly; they capture enough information for
- * [XcodebuildDefFileWorkAction] to derive cinterop compiler/linker options later.
+ * [ConvertSyntheticSwiftPMImportProjectIntoDefFile.writeDefAndLinkerOutputs] to derive cinterop compiler/linker options later.
  */
 internal abstract class XcodebuildArgsDumpWorkAction @Inject constructor(
     private val execOps: ExecOperations,
