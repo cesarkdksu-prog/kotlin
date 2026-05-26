@@ -145,8 +145,11 @@ abstract class KotlinIrLinker(
         return candidateModules.firstOrNull { idSignature in it }
     }
 
-    private fun getModulesDefiningPackage(packageFqName: FqName): List<IrModuleDeserializer> =
-        moduleDeserializersByPackageName[packageFqName].orEmpty() + moduleDeserializersWithUnknownPackageNames
+    private fun getModulesDefiningPackage(packageFqName: FqName): List<IrModuleDeserializer> {
+        val indexedModules = moduleDeserializersByPackageName[packageFqName].orEmpty()
+        return if (moduleDeserializersWithUnknownPackageNames.isEmpty()) indexedModules
+        else indexedModules + moduleDeserializersWithUnknownPackageNames
+    }
 
     protected abstract fun createModuleDeserializer(
         moduleDescriptor: ModuleDescriptor,
