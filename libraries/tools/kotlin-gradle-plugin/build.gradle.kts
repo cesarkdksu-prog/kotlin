@@ -679,6 +679,23 @@ val acceptLicensesTask = with(androidSdkProvisioner) {
     registerAcceptLicensesTask()
 }
 
+// Maven Local redirection for functional tests.
+//
+// Functional tests resolve dependencies via mavenLocal() in the embedded Gradle test projects,
+// and the :install tasks (publishToMavenLocal) write to that same Maven Local repository.
+// To keep the build hermetic, we redirect Maven Local to build/functionalTestDependencies
+// rather than ~/.m2 on developer machines. On CI, maven.repo.local is already set externally
+// and is left as is.
+//
+// The Maven Publish plugin's publishToMavenLocal reads maven.repo.local via System.getProperty()
+// at task execution time and offers no Provider-based override, so we mutate the JVM system
+// property of the Gradle daemon eagerly at configuration time.
+val mavenRepoLocal: String = System.getProperty("maven.repo.local") ?: run {
+    val depsDir = layout.buildDirectory.dir("functionalTestDependencies").get().asFile.absolutePath
+    System.setProperty("maven.repo.local", depsDir)
+    depsDir
+}
+
 tasks.withType<Test>().configureEach {
     if (!name.startsWith("functional")) return@configureEach
 
@@ -709,18 +726,9 @@ tasks.withType<Test>().configureEach {
         "konanProperties"
     )
 
-    //region custom Maven Local directory
-    // The Maven Local dir that Gradle uses can be customised via system property `maven.repo.local`.
-    // The functional tests require artifacts are published to Maven Local.
-    // To make sure the tests uses the same `maven.repo.local` as is configured
-    // in the buildscript, forward the value of `maven.repo.local` into the test process.
-    val mavenRepoLocal = providers.systemProperty("maven.repo.local").orNull
-    if (mavenRepoLocal != null) {
-        // Only set `maven.repo.local` if it's present in the buildscript,
-        // to avoid `maven.repo.local` being `null`.
-        systemProperty("maven.repo.local", mavenRepoLocal)
-    }
-    //endregion
+    // Forward Maven Local location to the test JVM so mavenLocal() in test projects resolves
+    // to the same directory used by the :install tasks (see mavenRepoLocal above).
+    systemProperty("maven.repo.local", mavenRepoLocal)
 }
 
 dependencies {
