@@ -57,9 +57,9 @@ fun TestConfigurationBuilder.setupJvmPipelineSteps(parser: FirParser) {
     configureFirParser(parser)
 
     facadeStep(::FirCliJvmFacade)
-    firHandlersStep { useHandlers(::NoFirCompilationErrorsHandler) }
+    firHandlersStep { commonFirHandlersForCodegenTest() }
     facadeStep(::Fir2IrCliJvmFacade)
-    irHandlersStep { useHandlers(::NoIrCompilationErrorsHandler) }
+    irHandlersStep { commonIrHandlersForCodegenTest() }
     facadeStep(::BackendCliJvmFacade)
     jvmArtifactsHandlersStep(init = {})
 }
