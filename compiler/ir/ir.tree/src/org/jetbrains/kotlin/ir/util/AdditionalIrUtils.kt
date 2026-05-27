@@ -377,6 +377,11 @@ fun IrClass.selectSAMOverriddenFunctionOrNull(): IrSimpleFunction? {
 fun IrClass.selectSAMOverriddenFunction(): IrSimpleFunction = selectSAMOverriddenFunctionOrNull()
     ?: error("${render()} should have a single abstract method to be a type of function reference")
 
+/**
+ * Creates an `IdSignature` representation for the current `ClassId`.
+ *
+ * Be aware that this is a straightforward transformation. It does not account for special cases, like C-interop classes.
+ */
 fun ClassId.toIdSignature(): IdSignature {
     return IdSignature.CommonSignature(
         packageFqName.asString(),
