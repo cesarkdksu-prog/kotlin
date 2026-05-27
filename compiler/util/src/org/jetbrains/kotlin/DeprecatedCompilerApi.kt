@@ -30,10 +30,11 @@ enum class CompilerVersionOfApiDeprecation {
  * and infrastructure are configured.
  */
 @Target(
-    AnnotationTarget.CLASS, AnnotationTarget.ANNOTATION_CLASS, AnnotationTarget.TYPE, AnnotationTarget.TYPEALIAS,
-    AnnotationTarget.TYPE_PARAMETER, AnnotationTarget.VALUE_PARAMETER, AnnotationTarget.FUNCTION, AnnotationTarget.CONSTRUCTOR,
+    AnnotationTarget.CLASS, AnnotationTarget.ANNOTATION_CLASS, AnnotationTarget.TYPEALIAS,
+    AnnotationTarget.VALUE_PARAMETER, AnnotationTarget.FUNCTION, AnnotationTarget.CONSTRUCTOR,
     AnnotationTarget.PROPERTY, AnnotationTarget.PROPERTY_GETTER, AnnotationTarget.PROPERTY_SETTER, AnnotationTarget.FIELD,
 )
+@RequiresOptIn(message = "This compiler API is deprecated", level = RequiresOptIn.Level.WARNING)
 annotation class DeprecatedCompilerApi(
     val deprecatedSince: CompilerVersionOfApiDeprecation,
     val message: String = "",
