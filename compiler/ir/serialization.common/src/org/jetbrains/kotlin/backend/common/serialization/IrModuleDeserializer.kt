@@ -80,7 +80,7 @@ abstract class IrModuleDeserializer(
      * Null value means that the set of packages is unknown (or not feasible to be provided).
      * In that case the module may be probed for every sought signature, just in case.
      */
-    abstract val definedPackageNames: Set<FqName>?
+    abstract fun getDefinedPackageNames(): Set<FqName>?
 
     abstract operator fun contains(idSig: IdSignature): Boolean
     abstract fun tryDeserializeIrSymbol(idSig: IdSignature, symbolKind: BinarySymbolData.SymbolKind): IrSymbol?
@@ -171,7 +171,7 @@ class IrModuleDeserializerWithBuiltIns(
             .map { it.getPackageFragment().packageFqName }
             .toSet()
 
-    override val definedPackageNames get() = delegate.definedPackageNames?.plus(builtinPackageNames)
+    override fun getDefinedPackageNames() = delegate.getDefinedPackageNames()?.plus(builtinPackageNames)
 
     override operator fun contains(idSig: IdSignature): Boolean {
         val topLevel = idSig.topLevelSignature()
@@ -266,7 +266,7 @@ open class CurrentModuleDeserializer(
 
     override fun contains(idSig: IdSignature): Boolean = false // TODO:
 
-    override val definedPackageNames: Set<FqName> get() = emptySet()
+    override fun getDefinedPackageNames(): Set<FqName> = emptySet()
 
     override fun tryDeserializeIrSymbol(idSig: IdSignature, symbolKind: BinarySymbolData.SymbolKind): Nothing =
         error("Unreachable execution: there could not be back-links (sig: $idSig)")

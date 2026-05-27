@@ -142,7 +142,7 @@ class JvmIrLinker(
         // TODO: implement proper check whether `idSig` belongs to this module
         override fun contains(idSig: IdSignature): Boolean = true
 
-        override val definedPackageNames: Set<FqName>? get() = null
+        override fun getDefinedPackageNames(): Set<FqName>? = null
 
         private val descriptorFinder = DescriptorByIdSignatureFinderImpl(
             moduleDescriptor, manglerDesc,

@@ -46,7 +46,7 @@ abstract class BasicIrModuleDeserializer(
     protected val fileDeserializationStates: List<FileDeserializationState>
 
     private val _definedPackageNames = mutableSetOf<FqName>()
-    override val definedPackageNames: Set<FqName>? get() = _definedPackageNames
+    override fun getDefinedPackageNames(): Set<FqName>? = _definedPackageNames
 
     protected val moduleReversedFileIndex = hashMapOf<IdSignature, FileDeserializationState>()
 

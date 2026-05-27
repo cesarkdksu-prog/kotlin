@@ -54,8 +54,7 @@ internal class KonanInteropModuleDeserializer(
     private val definedPackageFqName: FqName = klib.manifestProperties.getProperty(KLIB_PROPERTY_PACKAGE)?.let(::FqName)
             ?: error("Interop klib ${klib.location} does not contain an expected manifest property: $KLIB_PROPERTY_PACKAGE")
 
-    override val definedPackageNames: Set<FqName>
-        get() = setOf(definedPackageFqName)
+    override fun getDefinedPackageNames(): Set<FqName> = setOf(definedPackageFqName)
 
     private fun IdSignature.isInteropSignature() = IdSignature.Flags.IS_NATIVE_INTEROP_LIBRARY.test()
 

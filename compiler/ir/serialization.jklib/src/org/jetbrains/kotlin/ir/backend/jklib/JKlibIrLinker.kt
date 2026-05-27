@@ -116,7 +116,7 @@ class JKlibIrLinker(
 
         override fun contains(idSig: IdSignature): Boolean = resolveDescriptor(idSig) != null
 
-        override val definedPackageNames: Set<FqName>? get() = null
+        override fun getDefinedPackageNames(): Set<FqName>? = null
 
         private val descriptorFinder = DescriptorByIdSignatureFinderImpl(
             moduleDescriptor,
@@ -187,7 +187,7 @@ class JKlibIrLinker(
         override fun contains(idSig: IdSignature): Boolean =
             super.contains(idSig) || descriptorByIdSignatureFinder.findDescriptorBySignature(idSig) != null
 
-        override val definedPackageNames: Set<FqName>? get() = null
+        override fun getDefinedPackageNames(): Set<FqName>? = null
 
         override fun tryDeserializeIrSymbol(
             idSig: IdSignature,

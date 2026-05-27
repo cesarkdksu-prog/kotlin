@@ -299,7 +299,7 @@ abstract class KotlinIrLinker(
         val deserializer = maybeWrapWithBuiltIn(moduleDescriptor, moduleDeserializer)
         deserializersForModules[moduleName] = deserializer
 
-        val definedPackageNames = deserializer.definedPackageNames
+        val definedPackageNames = deserializer.getDefinedPackageNames()
         if (definedPackageNames == null) {
             moduleDeserializersWithUnknownPackageNames += deserializer
         } else {
