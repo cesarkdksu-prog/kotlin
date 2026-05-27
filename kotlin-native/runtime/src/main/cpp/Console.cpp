@@ -95,7 +95,7 @@ void Kotlin_io_Console_println0ToStdErr() {
 }
 
 OBJ_GETTER0(Kotlin_io_Console_readLine) {
-    char data[4096];
+    char data[4096] = {0};
     int32_t result;
     {
         kotlin::ThreadStateGuard guard(kotlin::ThreadState::kNative);
@@ -103,6 +103,11 @@ OBJ_GETTER0(Kotlin_io_Console_readLine) {
     }
     if (result < 0) {
         RETURN_OBJ(nullptr);
+    }
+    if (static_cast<uint32_t>(result) < sizeof(data)) {
+        data[result] = '\0';
+    } else {
+        data[sizeof(data) - 1] = '\0';
     }
     RETURN_RESULT_OF(CreateStringFromCString, data);
 }
