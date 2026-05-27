@@ -9,10 +9,8 @@ package org.jetbrains.kotlin.nativeDistribution
 
 import org.gradle.api.Task
 import org.gradle.api.provider.Provider
-import org.gradle.api.tasks.FileNormalizer
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.kotlin.dsl.extra
-import org.gradle.kotlin.dsl.withNormalizer
 
 internal const val PROVIDED_NATIVE_BOOTSTRAP_DISTRIBUTION_KEY = "providedNativeBootstrapDistribution"
 
