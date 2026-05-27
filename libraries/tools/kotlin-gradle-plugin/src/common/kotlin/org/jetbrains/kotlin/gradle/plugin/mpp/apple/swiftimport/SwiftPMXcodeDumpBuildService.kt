@@ -18,6 +18,8 @@ import java.util.concurrent.CountDownLatch
 
 internal interface SwiftPMXcodeDumpBuildServiceParameters : BuildServiceParameters {
     val sharedXcodeDumpRoot: DirectoryProperty
+    val sharedSyntheticPackageRoot: DirectoryProperty
+    val sharedCheckoutDirectoryRoot: DirectoryProperty
 }
 
 internal abstract class SwiftPMXcodeDumpBuildService : BuildService<SwiftPMXcodeDumpBuildServiceParameters> {
@@ -33,10 +35,11 @@ internal abstract class SwiftPMXcodeDumpBuildService : BuildService<SwiftPMXcode
 
     /** In-memory buckets for the current Gradle invocation, keyed by the xcodebuild execution fingerprint. */
     private val dumpBucketsByExecutionHash = mutableMapOf<XcodeDumpBucketMapKey, XcodeDumpBucket>()
-    private val fetchBucketsByExecutionHash = mutableMapOf<SwiftResolvedBucketMapKey, SwiftResolveBucket>()
+    private val fetchBucketsByPackageHash = mutableMapOf<String, SwiftResolveBucket>()
+    private val generatePackageBucketByPackageHash = mutableMapOf<String, GeneratePackageBucket>()
+
 
     class XcodeDumpBucket(
-        val id: String,
         val ownerDumpDir: File,
         val ownerDerivedDataDir: File,
         val completion: CountDownLatch = CountDownLatch(1),
@@ -45,15 +48,23 @@ internal abstract class SwiftPMXcodeDumpBuildService : BuildService<SwiftPMXcode
     )
 
     class SwiftResolveBucket(
-        val id: String,
         val ownerPackageResolvedFile: File,
         val ownerWorkspaceStateFile : File,
-        val ownerSwiftPMDependenciesCheckout: Directory,
-        val ownerSyntheticImportProjectRoot: Directory,
+        val ownerSwiftPMDependenciesCheckout: File,
+        val ownerSyntheticImportProjectRoot: File,
         val completion: CountDownLatch = CountDownLatch(1),
         var failure: Throwable? = null,
         var completed: Boolean = false,
     )
+
+    class GeneratePackageBucket(
+        val ownerSyntheticPackageRoot: File,
+        val completion: CountDownLatch = CountDownLatch(1),
+        var failure: Throwable? = null,
+        var completed: Boolean = false,
+    )
+
+
 
     /**
      * Result of trying to acquire a bucket.
@@ -77,44 +88,69 @@ internal abstract class SwiftPMXcodeDumpBuildService : BuildService<SwiftPMXcode
         data class Existing(override val bucket: SwiftResolveBucket) : SwiftFetchClaim()
     }
 
+    sealed class GeneratePackageClaim {
+        abstract val bucket: GeneratePackageBucket
+
+        data class Owner(override val bucket: GeneratePackageBucket) : GeneratePackageClaim()
+        data class Existing(override val bucket: GeneratePackageBucket) : GeneratePackageClaim()
+    }
+
+    fun claimOrJoinPackageGeneration(
+        packageHash: String,
+    ): GeneratePackageClaim {
+        synchronized(stateLock) {
+            val existingByPackageHash = generatePackageBucketByPackageHash[packageHash]
+            if (existingByPackageHash != null) return GeneratePackageClaim.Existing(existingByPackageHash)
+
+            val reusableBucket = findReusablePackageGenerationInSharedRoot(
+                packageHash
+            )
+
+            if (reusableBucket != null) {
+                generatePackageBucketByPackageHash[packageHash] = reusableBucket
+                return GeneratePackageClaim.Existing(reusableBucket)
+            }
+
+            val newBucket = GeneratePackageBucket(
+                ownerSyntheticPackageRoot = sharedPackageGenerationRoot(packageHash)
+            )
+
+            generatePackageBucketByPackageHash[packageHash] = newBucket
+            return GeneratePackageClaim.Owner(newBucket)
+        }
+    }
+
     fun claimOrJoinSwiftResolve(
-        xcodebuildExecutionHash: String,
-        packageResolvedFile: File,
-        workspaceStateFile : File,
-        swiftPMDependenciesCheckout: Directory,
-        syntheticImportProjectRoot: Directory,
+        packageHash: String,
     ): SwiftFetchClaim {
         synchronized(stateLock) {
-            val executionKey = SwiftResolvedBucketMapKey(xcodebuildExecutionHash)
-            val existingByExecutionHash = fetchBucketsByExecutionHash[executionKey]
+            val existingByExecutionHash = fetchBucketsByPackageHash[packageHash]
             if (existingByExecutionHash != null) return SwiftFetchClaim.Existing(existingByExecutionHash)
 
-            val bucketId = xcodebuildExecutionHash
-            val newBucket = SwiftResolveBucket(
-                id = bucketId,
-                ownerPackageResolvedFile = packageResolvedFile,
-                ownerWorkspaceStateFile = workspaceStateFile,
-                ownerSwiftPMDependenciesCheckout = swiftPMDependenciesCheckout,
-                ownerSyntheticImportProjectRoot = syntheticImportProjectRoot,
+
+            val reusableBucket = findReusableFetchBucketInSharedRoot(
+                packageHash
             )
-            fetchBucketsByExecutionHash[executionKey] = newBucket
+            if (reusableBucket != null) {
+                fetchBucketsByPackageHash[packageHash] = reusableBucket
+                return SwiftFetchClaim.Existing(reusableBucket)
+            }
+
+            val packageRoot = sharedPackageGenerationRoot(packageHash)
+            val checkoutDir = sharedCheckoutDir(packageHash)
+            val newBucket = SwiftResolveBucket(
+                ownerPackageResolvedFile = sharedPackageResolved(packageRoot),
+                ownerWorkspaceStateFile = sharedCheckoutWorkspaceStateJsonFile(checkoutDir),
+                ownerSwiftPMDependenciesCheckout = checkoutDir,
+                ownerSyntheticImportProjectRoot = packageRoot,
+            )
+
+
+
+            fetchBucketsByPackageHash[packageHash] = newBucket
             return SwiftFetchClaim.Owner(newBucket)
         }
     }
-
-    fun findExistingSwiftResolve(
-        xcodebuildExecutionHash: String,
-    ): SwiftFetchClaim.Existing? {
-        synchronized(stateLock) {
-            val executionKey = SwiftResolvedBucketMapKey(xcodebuildExecutionHash)
-            val existingByExecutionHash = fetchBucketsByExecutionHash[executionKey]
-                ?: return null
-
-            return SwiftFetchClaim.Existing(existingByExecutionHash)
-        }
-    }
-
-
 
     fun claimOrJoinXcodeDump(
         xcodebuildExecutionHash: String,
@@ -125,7 +161,7 @@ internal abstract class SwiftPMXcodeDumpBuildService : BuildService<SwiftPMXcode
             val existingByExecutionHash = dumpBucketsByExecutionHash[executionKey]
             if (existingByExecutionHash != null) return XcodeDumpClaim.Existing(existingByExecutionHash)
 
-            val reusableBucket = findReusableBucketInSharedRoot(
+            val reusableBucket = findReusableDumpBucketInSharedRoot(
                 xcodebuildExecutionHash = xcodebuildExecutionHash,
                 xcodebuildSdk = xcodebuildSdk,
                 sdkDerivedDataDirName = "dd_$xcodebuildSdk",
@@ -139,9 +175,8 @@ internal abstract class SwiftPMXcodeDumpBuildService : BuildService<SwiftPMXcode
             // bucket. The owner still builds its own synthetic package and uses its own SwiftPM checkout; only the dump
             // and DerivedData output locations are shared.
             val bucketId = xcodebuildExecutionHash
-            val bucketRoot = sharedBucketRoot(bucketId)
+            val bucketRoot = sharedDumpBucketRoot(bucketId)
             val newBucket = XcodeDumpBucket(
-                id = bucketId,
                 ownerDumpDir = sharedDumpDir(bucketRoot, xcodebuildSdk),
                 ownerDerivedDataDir = sharedDerivedDataDir(bucketRoot),
             )
@@ -150,7 +185,7 @@ internal abstract class SwiftPMXcodeDumpBuildService : BuildService<SwiftPMXcode
         }
     }
 
-    private fun sharedBucketRoot(bucketId: String): File =
+    private fun sharedDumpBucketRoot(bucketId: String): File =
         parameters.sharedXcodeDumpRoot.get().asFile.resolve(bucketId)
 
     private fun sharedDumpDir(bucketRoot: File, xcodebuildSdk: String): File =
@@ -159,12 +194,46 @@ internal abstract class SwiftPMXcodeDumpBuildService : BuildService<SwiftPMXcode
     private fun sharedDerivedDataDir(bucketRoot: File): File =
         bucketRoot.resolve("swiftImportDd")
 
+    private fun sharedPackageGenerationRoot(packageHash: String): File =
+        parameters.sharedSyntheticPackageRoot.get().asFile.resolve(packageHash)
+
+    private fun sharedCheckoutDir(packageHash: String): File =
+        parameters.sharedCheckoutDirectoryRoot.get().asFile.resolve(packageHash)
+
+    private fun sharedCheckoutWorkspaceStateJsonFile(checkoutDir: File): File =
+        checkoutDir.resolve("workspace-state.json")
+
+    private fun sharedPackageResolved(packageDir: File): File =
+        packageDir.resolve("Package.resolved")
+
+    fun awaitPackageGeneration(bucket : GeneratePackageBucket){
+        bucket.completion.await()
+        bucket.failure?.let {
+            throw GradleException("Shared SwiftPM package generation failed for bucket '${bucket}'", it)
+
+        }
+    }
+
+    fun markPackageGenerationCompleted(bucket : GeneratePackageBucket) {
+        synchronized(stateLock){
+            bucket.completed = true
+            bucket.completion.countDown()
+        }
+    }
+
+    fun markPackageGenerationFailed(bucket: GeneratePackageBucket, failure: Throwable) {
+        synchronized(stateLock) {
+            bucket.failure = failure
+            bucket.completion.countDown()
+        }
+    }
+
     fun awaitXcodeDump(bucket: XcodeDumpBucket) {
         // Joined tasks wait here instead of depending on an owner task. At execution time the Gradle task graph is already
         // fixed, so a latch inside the build service is the safe coordination primitive.
         bucket.completion.await()
         bucket.failure?.let {
-            throw GradleException("Shared SwiftPM xcodebuild dump failed for bucket '${bucket.id}'", it)
+            throw GradleException("Shared SwiftPM xcodebuild dump failed for bucket '${bucket}'", it)
         }
     }
 
@@ -203,21 +272,69 @@ internal abstract class SwiftPMXcodeDumpBuildService : BuildService<SwiftPMXcode
         // fixed, so a latch inside the build service is the safe coordination primitive.
         bucket.completion.await()
         bucket.failure?.let {
-            throw GradleException("Shared SwiftPM xcodebuild dump failed for bucket '${bucket.id}'", it)
+            throw GradleException("Shared SwiftPM xcodebuild dump failed for bucket '${bucket}'", it)
         }
     }
 
-    fun getSwiftResolveBucket(xcodebuildExecutionHash: String): SwiftResolveBucket? =
+    fun findSwiftResolveBucket(packageHash: String): SwiftResolveBucket? =
         synchronized(stateLock) {
-            fetchBucketsByExecutionHash[SwiftResolvedBucketMapKey(xcodebuildExecutionHash)]
+            fetchBucketsByPackageHash[packageHash]
+                ?: findReusableFetchBucketInSharedRoot(packageHash)?.also {
+                    fetchBucketsByPackageHash[packageHash] = it
+                }
         }
 
-    private fun findReusableBucketInSharedRoot(
+    fun findPackageGenerationBucket(packageHash: String): GeneratePackageBucket? =
+        synchronized(stateLock) {
+            generatePackageBucketByPackageHash[packageHash]
+                ?: findReusablePackageGenerationInSharedRoot(packageHash)?.also {
+                    generatePackageBucketByPackageHash[packageHash] = it
+                }
+        }
+
+    //TODO add findReusablePackageGenerationInSharedRoot
+    private fun findReusablePackageGenerationInSharedRoot(
+        packageHash: String,
+    ): GeneratePackageBucket? {
+        val syntheticPackageRoot = sharedPackageGenerationRoot(packageHash)
+        val expectedPackageManifest = syntheticPackageRoot.resolve("Package.swift")
+
+        if (!expectedPackageManifest.exists()) return null
+
+        return GeneratePackageBucket(
+            ownerSyntheticPackageRoot = syntheticPackageRoot,
+            completion = CountDownLatch(0),
+            completed = true,
+        )
+
+    }
+
+    private fun findReusableFetchBucketInSharedRoot(
+        packageHash: String,
+    ): SwiftResolveBucket? {
+        val syntheticPackageRoot = sharedPackageGenerationRoot(packageHash)
+        val checkoutDir = sharedCheckoutDir(packageHash)
+        val packageResolved = sharedPackageResolved(syntheticPackageRoot)
+        val workspaceState = sharedCheckoutWorkspaceStateJsonFile(checkoutDir)
+
+        if (!workspaceState.exists()) return null
+
+        return SwiftResolveBucket(
+            packageResolved,
+            workspaceState,
+            checkoutDir,
+            syntheticPackageRoot,
+            completion = CountDownLatch(0),
+            completed = true,
+        )
+    }
+
+    private fun findReusableDumpBucketInSharedRoot(
         xcodebuildExecutionHash: String,
         xcodebuildSdk: String,
         sdkDerivedDataDirName: String,
     ): XcodeDumpBucket? {
-        val bucketRoot = sharedBucketRoot(xcodebuildExecutionHash)
+        val bucketRoot = sharedDumpBucketRoot(xcodebuildExecutionHash)
         val ownerDumpDir = sharedDumpDir(bucketRoot, xcodebuildSdk)
         val ownerDerivedDataDir = sharedDerivedDataDir(bucketRoot)
 
@@ -228,7 +345,6 @@ internal abstract class SwiftPMXcodeDumpBuildService : BuildService<SwiftPMXcode
         if (!ownerDerivedDataDir.resolve(sdkDerivedDataDirName).exists()) return null
 
         return XcodeDumpBucket(
-            id = xcodebuildExecutionHash,
             ownerDumpDir = ownerDumpDir,
             ownerDerivedDataDir = ownerDerivedDataDir,
             // Root-build buckets discovered from disk are already complete. Joined tasks can pass through awaitXcodeDump
@@ -248,6 +364,8 @@ internal abstract class SwiftPMXcodeDumpBuildService : BuildService<SwiftPMXcode
         fun registerIfAbsent(
             project: Project,
             xcodeDumpsDir: Provider<Directory>,
+            checkoutDir: Provider<Directory>,
+            generatePackageDir: Provider<Directory>,
         ): Provider<SwiftPMXcodeDumpBuildService> =
             project.gradle.sharedServices.registerIfAbsent(
                 SERVICE_NAME,
@@ -255,6 +373,12 @@ internal abstract class SwiftPMXcodeDumpBuildService : BuildService<SwiftPMXcode
             ) { buildServiceSpec ->
                 buildServiceSpec.parameters.sharedXcodeDumpRoot.set(
                     xcodeDumpsDir
+                )
+                buildServiceSpec.parameters.sharedSyntheticPackageRoot.set(
+                    generatePackageDir
+                )
+                buildServiceSpec.parameters.sharedCheckoutDirectoryRoot.set(
+                    checkoutDir
                 )
             }
     }
@@ -265,10 +389,6 @@ private data class XcodeDumpBucketMapKey(
     val xcodebuildSdk: String,
 )
 
-//TODO this can be simplified
-private data class SwiftResolvedBucketMapKey(
-    val xcodebuildExecutionHash: String,
-)
 
 internal val dumpTaskFingerprintJson = Json {
     encodeDefaults = true

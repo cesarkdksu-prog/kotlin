@@ -6,6 +6,7 @@
 package org.jetbrains.kotlin.gradle.plugin.mpp.apple.swiftimport
 
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.SetProperty
@@ -25,9 +26,9 @@ internal interface XcodebuildArgsDumpWorkParameters : WorkParameters {
     val xcodebuildSdk: Property<String>
     val architectures: SetProperty<AppleArchitecture>
     /** Synthetic SwiftPM project that xcodebuild builds only to expose compiler/linker invocations. */
-    val syntheticImportProjectRoot: DirectoryProperty
+    val syntheticImportProjectRoot: RegularFileProperty
     /** SwiftPM checkout directory used by xcodebuild package resolution. */
-    val swiftPMDependenciesCheckout: DirectoryProperty
+    val swiftPMDependenciesCheckout: RegularFileProperty
     /** DerivedData root selected by the owning dump task/bucket. */
     val syntheticImportDd: DirectoryProperty
     /** Directory where wrapper scripts and captured clang/ld argument files are written. */
@@ -84,7 +85,7 @@ internal abstract class XcodebuildArgsDumpWorkAction @Inject constructor(
     ) {
         val sdk = parameters.xcodebuildSdk.get()
         val targetArchitectures = architectures.map { it.xcodebuildArch }
-        val projectRoot = parameters.syntheticImportProjectRoot.getFile()
+        val projectRoot = parameters.syntheticImportProjectRoot.get()
 
         /**
          * DerivedData must be SDK-specific because Gradle can run iphoneos and iphonesimulator dump tasks in parallel.

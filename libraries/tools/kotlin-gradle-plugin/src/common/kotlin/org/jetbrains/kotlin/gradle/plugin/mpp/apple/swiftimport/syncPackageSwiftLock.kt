@@ -7,12 +7,17 @@ package org.jetbrains.kotlin.gradle.plugin.mpp.apple.swiftimport
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
+import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.FileSystemOperations
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Provider
 import org.gradle.api.services.BuildService
 import org.gradle.api.services.BuildServiceParameters
 import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.Internal
+import org.gradle.api.provider.Property
+import org.gradle.api.tasks.Input
+
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.PathSensitive
@@ -32,8 +37,21 @@ internal abstract class SyncPackageResolvedTask : DefaultTask() {
     @get:PathSensitive(PathSensitivity.RELATIVE)
     abstract val sourceFile: RegularFileProperty
 
+    @get:Optional
     @get:OutputFile
     abstract val destinationFile: RegularFileProperty
+
+    @get:Internal
+    abstract val syntheticPackagesRoot: DirectoryProperty
+
+    @get:Optional
+    @get:InputFiles
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val packageHashFile: RegularFileProperty
+
+    @get:Input
+    abstract val usePackageHashFile: Property<Boolean>
+
 
     @get:Inject
     abstract val fs: FileSystemOperations
@@ -43,7 +61,14 @@ internal abstract class SyncPackageResolvedTask : DefaultTask() {
         if (!sourceFile.isPresent) return
 
         val src = sourceFile.get().asFile
-        val dest = destinationFile.get().asFile
+
+        val dest = if (usePackageHashFile.get()) {
+            syntheticPackagesRoot.get().asFile
+                .resolve(packageHashFile.get().asFile.readText().trim())
+                .resolve("Package.resolved")
+        } else {
+            destinationFile.get().asFile
+        }
 
         if (!src.exists()) {
             if (dest.exists()) {

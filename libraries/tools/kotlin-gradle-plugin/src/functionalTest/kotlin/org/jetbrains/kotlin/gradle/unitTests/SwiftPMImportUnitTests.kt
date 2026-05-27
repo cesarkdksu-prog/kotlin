@@ -1012,8 +1012,8 @@ class SwiftPMImportUnitTests {
             "Right dump task should write its local xcode dump location marker"
         )
         assertEquals(
-            leftFingerprintTask.packageResolvedSynchronization.get(),
-            rightFingerprintTask.packageResolvedSynchronization.get(),
+            leftFingerprintTask.packageResolvedSynchronizationFingerprint.get(),
+            rightFingerprintTask.packageResolvedSynchronizationFingerprint.get(),
             "Matching consumers should use the same Package.resolved synchronization fingerprint input"
         )
         assertTrue(

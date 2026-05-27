@@ -6,6 +6,7 @@
 package org.jetbrains.kotlin.gradle.plugin.mpp.apple.swiftimport
 
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.process.ExecOperations
@@ -14,8 +15,8 @@ import org.gradle.workers.WorkParameters
 import javax.inject.Inject
 
 internal interface SwiftResolveWorkParameters : WorkParameters {
-    val syntheticImportProjectRoot: DirectoryProperty
-    val swiftPMDependenciesCheckout: DirectoryProperty
+    val syntheticImportProjectRoot: RegularFileProperty
+    val swiftPMDependenciesCheckout: RegularFileProperty
     val additionalSwiftPackageResolveArgs: ListProperty<String>
     val gitIgnoreCheckoutDir: Property<Boolean>
 }

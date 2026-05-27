@@ -7,13 +7,14 @@ package org.jetbrains.kotlin.gradle.plugin.mpp.apple.swiftimport
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.ConfigurableFileCollection
-import org.gradle.api.file.Directory
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.FileSystemOperations
+import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.IgnoreEmptyDirectories
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.OutputFile
@@ -81,9 +82,9 @@ internal abstract class FetchSyntheticImportProjectPackages : DefaultTask() {
     abstract val additionalSwiftPackageResolveArgs: ListProperty<String>
 
     @get:Optional
-    @get:InputFiles
+    @get:InputFile
     @get:PathSensitive(PathSensitivity.NONE)
-    abstract val xcodebuildExecutionHashFiles: ConfigurableFileCollection
+    abstract val syntheticPackageHashFile: RegularFileProperty
 
     @get:Internal
     val coordinationDisabled: Property<Boolean> = project.objects.property(Boolean::class.java).convention(false)
@@ -99,65 +100,62 @@ internal abstract class FetchSyntheticImportProjectPackages : DefaultTask() {
 
     @TaskAction
     fun generateSwiftPMSyntheticImportProjectAndFetchPackages() {
-        val hashFiles = xcodebuildExecutionHashFiles.files.sortedBy { it.absolutePath }
 
-        if (coordinationDisabled.get() || hashFiles.isEmpty()) {
+        if (coordinationDisabled.get() || !syntheticPackageHashFile.isPresent) {
             submitSwiftResolveWorkAction(
-                ownerSyntheticImportProjectRoot = syntheticImportProjectRoot.get(),
-                ownerSwiftPMDependenciesCheckout = swiftPMDependenciesCheckout.get(),
+                ownerSyntheticImportProjectRoot = syntheticImportProjectRoot.get().asFile,
+                ownerSwiftPMDependenciesCheckout = swiftPMDependenciesCheckout.get().asFile,
             )
             return
         }
 
-        for (hashFile in hashFiles) {
-            val hash = hashFile.readText().trim()
+        val syntheticPackageHash = syntheticPackageHashFile.get().asFile.readText().trim()
 
-            val existingClaim = coordinationService.get().findExistingSwiftResolve(hash)
-            if (existingClaim != null) {
-                coordinationService.get().awaitSwiftResolved(existingClaim.bucket)
-                copyPasteFromOwner(
-                    existingClaim.bucket.ownerPackageResolvedFile,
-                    syntheticLockFile.get().asFile,
-                )
-                copyPasteFromOwner(
-                    existingClaim.bucket.ownerWorkspaceStateFile,
-                    workspaceStateJson.get().asFile
-                )
-                return
-            }
-        }
+        val generationBucket = coordinationService.get().findPackageGenerationBucket(syntheticPackageHash)
+            ?: error("Package bucket is missing for package hash $syntheticPackageHash")
 
-        val ownerHash = hashFiles.first().readText().trim()
-        when (
-            val claim = coordinationService.get().claimOrJoinSwiftResolve(
-                xcodebuildExecutionHash = ownerHash,
-                packageResolvedFile = syntheticLockFile.get().asFile,
-                workspaceStateFile = workspaceStateJson.get().asFile,
-                swiftPMDependenciesCheckout = swiftPMDependenciesCheckout.get(),
-                syntheticImportProjectRoot = syntheticImportProjectRoot.get(),
-            )
-        ) {
+        coordinationService.get().awaitPackageGeneration(generationBucket)
+
+        val ownerHash = syntheticPackageHashFile.asFile.get().readText().trim()
+        val claim = coordinationService.get().claimOrJoinSwiftResolve(
+            packageHash = ownerHash,
+        )
+        when (claim) {
             is SwiftPMXcodeDumpBuildService.SwiftFetchClaim.Existing -> {
                 coordinationService.get().awaitSwiftResolved(claim.bucket)
-                copyPasteFromOwner(
-                    claim.bucket.ownerPackageResolvedFile,
-                    syntheticLockFile.get().asFile,
-                )
-                copyPasteFromOwner(
-                    claim.bucket.ownerWorkspaceStateFile,
-                    workspaceStateJson.get().asFile
-                )
             }
 
-            is SwiftPMXcodeDumpBuildService.SwiftFetchClaim.Owner -> runOwnerSwiftResolve(claim.bucket)
+            is SwiftPMXcodeDumpBuildService.SwiftFetchClaim.Owner -> {
+                runOwnerSwiftResolve(claim.bucket)
+            }
         }
+        finalizeFetchTask(claim)
+
+    }
+
+    private fun finalizeFetchTask(
+        claim: SwiftPMXcodeDumpBuildService.SwiftFetchClaim,
+    ) {
+        copyPasteFromOwner(
+            claim.bucket.ownerPackageResolvedFile,
+            syntheticLockFile.get().asFile,
+        )
+        copyPasteFromOwner(
+            claim.bucket.ownerWorkspaceStateFile,
+            workspaceStateJson.get().asFile
+        )
     }
 
     private fun copyPasteFromOwner(
         source: File,
         destination: File,
     ) {
-        require(source.isFile) { "Expected shared SwiftPM resolve output is missing: $source" }
+        if (!source.exists()) {
+            if (destination.exists()) {
+                destination.delete()
+            }
+            return
+        }
         copySwiftLockFile(fs, source, destination)
     }
 
@@ -183,8 +181,8 @@ internal abstract class FetchSyntheticImportProjectPackages : DefaultTask() {
     }
 
     fun submitSwiftResolveWorkAction(
-        ownerSyntheticImportProjectRoot: Directory,
-        ownerSwiftPMDependenciesCheckout: Directory,
+        ownerSyntheticImportProjectRoot: File,
+        ownerSwiftPMDependenciesCheckout: File,
     ) {
         workerExecutor.noIsolation().submit(SwiftResolveWorkAction::class.java) { params ->
             params.syntheticImportProjectRoot.set(ownerSyntheticImportProjectRoot)

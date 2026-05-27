@@ -8,8 +8,6 @@ package org.jetbrains.kotlin.gradle.plugin.mpp.apple.swiftimport
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.encodeToString
 import org.gradle.api.DefaultTask
-import org.gradle.api.file.ConfigurableFileCollection
-import org.gradle.api.file.RegularFile
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
@@ -24,6 +22,43 @@ import org.jetbrains.kotlin.gradle.plugin.mpp.apple.AppleArchitecture
 import java.io.File
 import java.security.MessageDigest
 import javax.inject.Inject
+
+
+internal abstract class PrepareGenerateSyntheticPackageFingerprint : DefaultTask() {
+    @get:Input
+    abstract val transitiveDependencies: Property<TransitiveSwiftPMDependencies>
+
+    @get:Input
+    abstract val directMetadata: Property<SwiftPMImportMetadata>
+
+    @get:Input
+    abstract val konanTargets: SetProperty<String>
+
+    @get:OutputFile
+    val generateSyntheticPackageHashOutputFile: RegularFileProperty =
+        project.objects.fileProperty().convention(
+            project.layout.buildDirectory.file(
+                "kotlin/syntheticPackageHash"
+            )
+        )
+
+    @TaskAction
+    fun generateFingerprint() {
+        val directMetadata = directMetadata.get().copy(
+            konanTargets = konanTargets.get()
+        )
+
+        val swiftPMDependencyGraphFingerprintInput = normalizedSwiftPMDependencyGraphFingerprintInput(
+            directMetadata = directMetadata,
+            transitiveSwiftPMDependencies = transitiveDependencies.get(),
+        )
+        dumpFingerprint(swiftPMDependencyGraphFingerprintInput, generateSyntheticPackageHashOutputFile.get().asFile)
+    }
+
+    companion object {
+        const val TASK_NAME = "prepareGenerateSyntheticPackageFingerprint"
+    }
+}
 
 /**
  * Prepares the execution-time sharing keys for [DumpXcodeBuildArgs].
@@ -50,30 +85,11 @@ internal abstract class PrepareXcodeBuildArgsDumpFingerprint : DefaultTask() {
 
     /** Normalized Package.resolved synchronization mode. This is part of the diagnostic identifier/dependencies key. */
     @get:Input
-    abstract val packageResolvedSynchronization: Property<String>
+    abstract val packageResolvedSynchronizationFingerprint: Property<String>
 
-    /** Direct SwiftPM dependencies declared in the current project. */
-    @get:Input
-    abstract val directSwiftPMDependencies: SetProperty<SwiftPMDependency>
-
-    /**
-     * Stable Gradle input for SwiftPM dependencies coming from project dependencies.
-     *
-     * The raw [TransitiveSwiftPMDependencies] object has a generated equals implementation that can trigger Gradle's
-     * "different serialized form but equal" deprecation under `--warning-mode=fail`. Expose the normalized string that
-     * is actually used by the dump fingerprint instead.
-     */
-    @get:Input
-    abstract val normalizedTransitiveSwiftPMDependenciesInput: Property<String>
-
-    /**
-     * Synthetic-project settings that can change xcodebuild output without changing SwiftPM dependencies.
-     *
-     * For example, deployment targets are written into generated Package.swift rather than passed as explicit
-     * xcodebuild args, but they can still change target triples in captured clang/linker invocations.
-     */
-    @get:Input
-    abstract val buildSettingsFingerprint: Property<String>
+    @get:InputFile
+    @get:PathSensitive(PathSensitivity.NONE)
+    abstract val syntheticPackageFingerprint: RegularFileProperty
 
     @get:InputFile
     @get:PathSensitive(PathSensitivity.RELATIVE)
@@ -104,10 +120,8 @@ internal abstract class PrepareXcodeBuildArgsDumpFingerprint : DefaultTask() {
         workerExecutor.noIsolation().submit(PrepareXcodebuildArgsDumpFingerprintWorkAction::class.java) {
             it.architectures.set(architectures)
             it.additionalXcodeArgs.set(additionalXcodeArgs)
-            it.packageResolvedSynchronization.set(packageResolvedSynchronization)
-            it.directSwiftPMDependencies.set(directSwiftPMDependencies)
-            it.normalizedTransitiveSwiftPMDependenciesInput.set(normalizedTransitiveSwiftPMDependenciesInput)
-            it.buildSettingsFingerprint.set(buildSettingsFingerprint)
+            it.packageResolvedSynchronizationFingerprint.set(packageResolvedSynchronizationFingerprint)
+            it.syntheticPackageFingerprint.set(syntheticPackageFingerprint)
             it.localPackageSources.set(localPackageSources)
             it.xcodebuildExecutionHashFile.set(xcodebuildExecutionHashFile)
         }
@@ -121,10 +135,8 @@ internal abstract class PrepareXcodeBuildArgsDumpFingerprint : DefaultTask() {
 private interface PrepareXcodebuildArgsDumpFingerprintParameters : WorkParameters {
     val architectures: SetProperty<AppleArchitecture>
     val additionalXcodeArgs: ListProperty<String>
-    val packageResolvedSynchronization: Property<String>
-    val directSwiftPMDependencies: SetProperty<SwiftPMDependency>
-    val normalizedTransitiveSwiftPMDependenciesInput: Property<String>
-    val buildSettingsFingerprint: Property<String>
+    val packageResolvedSynchronizationFingerprint: Property<String>
+    val syntheticPackageFingerprint: RegularFileProperty
     val localPackageSources: ListProperty<File>
     val xcodebuildExecutionHashFile: RegularFileProperty
 }
@@ -132,34 +144,16 @@ private interface PrepareXcodebuildArgsDumpFingerprintParameters : WorkParameter
 private abstract class PrepareXcodebuildArgsDumpFingerprintWorkAction : WorkAction<PrepareXcodebuildArgsDumpFingerprintParameters> {
     override fun execute() {
 
-        val localPackageSources = parameters.localPackageSources.get()
-        // Bundle synthetic-project settings and local source content into one string so generated project contents,
-        // target triples, module maps, or local-package headers all affect the dump sharing key.
-        val buildSettingsAndLocalPackagesFingerprint = dumpTaskFingerprintJson.encodeToString(
-            DumpTaskBuildSettingsAndLocalPackagesFingerprint(
-                buildSettingsFingerprint = parameters.buildSettingsFingerprint.get(),
-                localPackageSourcesFingerprint = localPackageSourcesFingerprint(localPackageSources),
-            )
-        )
-        // The execution key also includes the lock synchronization identifier: two lock scopes can pin different
-        // resolved package versions even when their declared dependency ranges are identical.
         val xcodebuildExecutionFingerprint = normalizedXcodebuildExecutionFingerprint(
-            packageResolvedSynchronization = parameters.packageResolvedSynchronization.get(),
+            packageResolvedSynchronization = parameters.packageResolvedSynchronizationFingerprint.get(),
             architectures = parameters.architectures.get(),
             additionalXcodeArgs = parameters.additionalXcodeArgs.get(),
-            directSwiftPmDependencies = parameters.directSwiftPMDependencies.get(),
-            normalizedTransitiveSwiftPMDependenciesInput = parameters.normalizedTransitiveSwiftPMDependenciesInput.get(),
-            buildSettingsFingerprint = buildSettingsAndLocalPackagesFingerprint,
+            syntheticPackageFingerprint = parameters.syntheticPackageFingerprint.get().asFile.readText().trim(),
+            localPackagesFingerprint = localPackageSourcesFingerprint(parameters.localPackageSources.get()),
         )
 
         // The dump task reads this hash during its own execution and performs the build-service claim/join step.
-        dumpFingerprint(xcodebuildExecutionFingerprint)
-    }
-
-    private fun dumpFingerprint(xcodebuildExecutionFingerprint: String) {
-        val outputFile = parameters.xcodebuildExecutionHashFile.get().asFile
-        outputFile.parentFile.mkdirs()
-        outputFile.writeText(xcodebuildExecutionFingerprint)
+        dumpFingerprint(xcodebuildExecutionFingerprint, parameters.xcodebuildExecutionHashFile.get().asFile)
     }
 }
 
@@ -167,22 +161,20 @@ internal fun normalizedXcodebuildExecutionFingerprint(
     packageResolvedSynchronization: String,
     architectures: Set<AppleArchitecture>,
     additionalXcodeArgs: List<String>,
-    directSwiftPmDependencies: Set<SwiftPMDependency>,
-    normalizedTransitiveSwiftPMDependenciesInput: String,
-    buildSettingsFingerprint: String,
+    syntheticPackageFingerprint: String,
+    localPackagesFingerprint: String,
 ): String {
     val payload = dumpTaskFingerprintJson.encodeToString(
         XcodebuildExecutionDumpTaskFingerprint(
             packageResolvedSynchronization = packageResolvedSynchronization,
             architectures = architectures.map { it.name }.sorted(),
-            buildSettingsFingerprint = buildSettingsFingerprint,
-            directSwiftPmDependencies = directSwiftPmDependencies.map { it.toDumpTaskFingerprint() }.sortedBy { it.stableSortKey },
-            normalizedTransitiveSwiftPmDependenciesInput = normalizedTransitiveSwiftPMDependenciesInput,
+            localPackagesFingerprint = localPackagesFingerprint,
+            syntheticPackageFingerprint = syntheticPackageFingerprint,
             additionalXcodeArgs = normalizeXcodebuildArgs(additionalXcodeArgs),
         )
     )
 
-    return MessageDigest.getInstance("SHA-256").digest(payload.toByteArray()).joinToString("") { byte -> "%02x".format(byte) }
+    return sha256(payload)
 }
 
 
@@ -214,74 +206,105 @@ internal fun localPackageSourcesFingerprint(
     return digest.digest().joinToString("") { byte -> "%02x".format(byte) }
 }
 
+private fun dumpFingerprint(fingerprint: String, outputFile: File) {
+    outputFile.parentFile.mkdirs()
+    outputFile.writeText(fingerprint)
+}
+
 internal fun normalizeXcodebuildArgs(args: List<String>): List<String> {
     // Tests can configure these args through providers in different orders. Sorting avoids splitting buckets only
     // because semantically identical optional xcodebuild arguments were declared in a different order.
     return args.sorted()
 }
 
-internal fun TransitiveSwiftPMDependencies.toNormalizedDumpTaskFingerprintInput(): String =
-    dumpTaskFingerprintJson.encodeToString(normalizedTransitiveSwiftPMMetadata())
-
-private fun TransitiveSwiftPMDependencies.normalizedTransitiveSwiftPMMetadata(): List<NormalizedTransitiveSwiftPMMetadata> =
-    metadataByDependencyIdentifier.values.map { metadata ->
-        NormalizedTransitiveSwiftPMMetadata(
-            // The stable sort key is only for deterministic ordering of transitive metadata. The serialized object
-            // below still contains the structured values used by the actual fingerprint payload.
-            stableSortKey = buildString {
-                append(metadata.konanTargets.sorted().joinToString(","))
-                append('|')
-                append(metadata.iosDeploymentVersion.orEmpty())
-                append('|')
-                append(metadata.macosDeploymentVersion.orEmpty())
-                append('|')
-                append(metadata.watchosDeploymentVersion.orEmpty())
-                append('|')
-                append(metadata.tvosDeploymentVersion.orEmpty())
-                append('|')
-                append(metadata.dependencies.map { it.toDumpTaskFingerprint() }.sortedBy { it.stableSortKey }
-                           .joinToString(";") { it.stableSortKey })
-            },
-            konanTargets = metadata.konanTargets.sorted(),
-            iosDeploymentTarget = metadata.iosDeploymentVersion,
-            macosDeploymentTarget = metadata.macosDeploymentVersion,
-            watchosDeploymentTarget = metadata.watchosDeploymentVersion,
-            tvosDeploymentTarget = metadata.tvosDeploymentVersion,
-            dependencies = metadata.dependencies.map { it.toDumpTaskFingerprint() }.sortedBy { it.stableSortKey },
-        )
-    }.sortedBy { it.stableSortKey }
-
-
 @Serializable
 private data class XcodebuildExecutionDumpTaskFingerprint(
     val packageResolvedSynchronization: String,
     val architectures: List<String>,
-    val buildSettingsFingerprint: String,
-    val directSwiftPmDependencies: List<NormalizedSwiftPMDependency>,
-    val normalizedTransitiveSwiftPmDependenciesInput: String,
+    val localPackagesFingerprint: String,
+    val syntheticPackageFingerprint: String,
     val additionalXcodeArgs: List<String>,
 )
 
-internal fun SwiftPMImportExtension.dumpTaskBuildSettingsFingerprint(): String = dumpTaskFingerprintJson.encodeToString(
-    // These values affect the generated synthetic Package.swift platforms block. They are intentionally fingerprinted
-    // even though they are not direct xcodebuild command-line arguments.
-    DumpTaskBuildSettingsFingerprint(
-        iosDeploymentTarget = iosMinimumDeploymentTarget.orNull.orEmpty(),
-        macosDeploymentTarget = macosMinimumDeploymentTarget.orNull.orEmpty(),
-        watchosDeploymentTarget = watchosMinimumDeploymentTarget.orNull.orEmpty(),
-        tvosDeploymentTarget = tvosMinimumDeploymentTarget.orNull.orEmpty(),
+internal fun normalizedSwiftPMDependencyGraphFingerprintInput(
+    directMetadata: SwiftPMImportMetadata,
+    transitiveSwiftPMDependencies: TransitiveSwiftPMDependencies,
+): String {
+    val contributionHashes = buildList {
+        if (directMetadata.dependencies.isNotEmpty()) {
+            add(
+                swiftPMContributionHash(
+                    metadata = directMetadata,
+                )
+            )
+        }
+        transitiveSwiftPMDependencies.metadataByDependencyIdentifier.values.forEach { metadata ->
+            if (metadata.dependencies.isNotEmpty()) {
+                add(
+                    swiftPMContributionHash(
+                        metadata = metadata,
+                    )
+                )
+            }
+        }
+    }.distinct().sorted()
+    return swiftPMDependencyGraphFingerprintHash(contributionHashes)
+}
+
+internal fun swiftPMContributionHash(
+    metadata: SwiftPMImportMetadata,
+): String {
+    val payload = dumpTaskFingerprintJson.encodeToString(
+        SwiftPMImportMetadataFingerprint(
+            konanTargets = metadata.konanTargets.sorted(),
+            iosDeploymentVersion = metadata.iosDeploymentVersion,
+            macosDeploymentVersion = metadata.macosDeploymentVersion,
+            watchosDeploymentVersion = metadata.watchosDeploymentVersion,
+            tvosDeploymentVersion = metadata.tvosDeploymentVersion,
+            isModulesDiscoveryEnabled = false,
+            normalizedDependencies = metadata.dependencies
+                .map { it.normalizedSwiftPMDependency() }
+                .sortedBy { it.stableSortKey },
+        ),
     )
+
+    return sha256(payload)
+}
+
+private fun sha256(value: String): String =
+    MessageDigest.getInstance("SHA-256")
+        .digest(value.toByteArray())
+        .joinToString("") { "%02x".format(it) }
+
+
+private fun swiftPMDependencyGraphFingerprintHash(
+    contributionHashes: List<String>,
+): String {
+    return sha256(
+        dumpTaskFingerprintJson.encodeToString(
+            SwiftPMDependencyGraphFingerprint(contributionHashes)
+        )
+    )
+}
+@Serializable
+private data class SwiftPMDependencyGraphFingerprint(
+    val contributionHashes: List<String>,
 )
+
 
 @Serializable
-private data class DumpTaskBuildSettingsFingerprint(
-    val iosDeploymentTarget: String,
-    val macosDeploymentTarget: String,
-    val watchosDeploymentTarget: String,
-    val tvosDeploymentTarget: String,
+private data class SwiftPMImportMetadataFingerprint(
+    val konanTargets: List<String>,
+    val iosDeploymentVersion: String?,
+    val macosDeploymentVersion: String?,
+    val watchosDeploymentVersion: String?,
+    val tvosDeploymentVersion: String?,
+    val isModulesDiscoveryEnabled: Boolean,
+    val normalizedDependencies: List<NormalizedSwiftPMDependency>,
 )
 
-internal fun PackageResolvedSynchronization.toDumpTaskFingerprint(): String = when (this) {
+
+internal fun PackageResolvedSynchronization.normalizedText(): String = when (this) {
     is PackageResolvedSynchronization.Identifier -> "identifier:$identifier"
     PackageResolvedSynchronization.None -> "none"
 }
@@ -303,61 +326,45 @@ private data class NormalizedSwiftPMProduct(
     val platformConstraints: List<String>,
 )
 
-@Serializable
-private data class NormalizedTransitiveSwiftPMMetadata(
-    val stableSortKey: String,
-    val konanTargets: List<String>,
-    val iosDeploymentTarget: String?,
-    val macosDeploymentTarget: String?,
-    val watchosDeploymentTarget: String?,
-    val tvosDeploymentTarget: String?,
-    val dependencies: List<NormalizedSwiftPMDependency>,
-)
 
-private fun SwiftPMDependency.toDumpTaskFingerprint(): NormalizedSwiftPMDependency = when (this) {
+private fun SwiftPMDependency.normalizedSwiftPMDependency(): NormalizedSwiftPMDependency = when (this) {
     is SwiftPMDependency.Local -> NormalizedSwiftPMDependency(
         stableSortKey = "local|${absolutePath.path}|$packageName",
         kind = "local",
         packageName = packageName,
         traits = traits.sorted(),
-        products = products.map { it.toDumpTaskFingerprint() }.sortedBy { it.name },
+        products = products.map { it.normalizedSwiftPMProduct() }.sortedBy { it.name },
         location = absolutePath.path,
     )
     is SwiftPMDependency.Remote -> {
-        val normalizedRepository = repository.toDumpTaskFingerprint()
-        val normalizedVersion = version.toDumpTaskFingerprint()
+        val normalizedRepository = repository.normalizedText()
+        val normalizedVersion = version.normalizedText()
         NormalizedSwiftPMDependency(
             stableSortKey = "remote|$normalizedRepository|$normalizedVersion|$packageName",
             kind = "remote",
             packageName = packageName,
             traits = traits.sorted(),
-            products = products.map { it.toDumpTaskFingerprint() }.sortedBy { it.name },
+            products = products.map { it.normalizedSwiftPMProduct() }.sortedBy { it.name },
             location = normalizedRepository,
             version = normalizedVersion,
         )
     }
 }
 
-private fun SwiftPMDependency.Product.toDumpTaskFingerprint(): NormalizedSwiftPMProduct = NormalizedSwiftPMProduct(
+private fun SwiftPMDependency.Product.normalizedSwiftPMProduct(): NormalizedSwiftPMProduct = NormalizedSwiftPMProduct(
     name = name,
     platformConstraints = platformConstraints.orEmpty().map { it.name }.sorted(),
 )
 
-private fun SwiftPMDependency.Remote.Repository.toDumpTaskFingerprint(): String = when (this) {
+private fun SwiftPMDependency.Remote.Repository.normalizedText(): String = when (this) {
     is SwiftPMDependency.Remote.Repository.Id -> "id:$value"
     is SwiftPMDependency.Remote.Repository.Url -> "url:$value"
 }
 
-private fun SwiftPMDependency.Remote.Version.toDumpTaskFingerprint(): String = when (this) {
+private fun SwiftPMDependency.Remote.Version.normalizedText(): String = when (this) {
     is SwiftPMDependency.Remote.Version.Exact -> "exact:$value"
     is SwiftPMDependency.Remote.Version.From -> "from:$value"
     is SwiftPMDependency.Remote.Version.Range -> "range:$from..$through"
     is SwiftPMDependency.Remote.Version.Branch -> "branch:$value"
     is SwiftPMDependency.Remote.Version.Revision -> "revision:$value"
 }
-
-@Serializable
-private data class DumpTaskBuildSettingsAndLocalPackagesFingerprint(
-    val buildSettingsFingerprint: String,
-    val localPackageSourcesFingerprint: String,
-)
