@@ -85,6 +85,10 @@ fun main(args: Array<String>) {
                 model("lazyResolveScopes", pattern = TestGeneratorUtil.KT)
             }
 
+            testClass<AbstractSourceThisLabelResolveTest> {
+                model("thisLabelResolve", pattern = TestGeneratorUtil.KT)
+            }
+
             testClass<AbstractErrorResistanceTest> {
                 model("errorResistance")
             }

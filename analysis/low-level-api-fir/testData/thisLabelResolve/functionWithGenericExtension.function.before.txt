@@ -1,0 +1,1 @@
+public? final? [ResolvedTo(RAW_FIR)] fun [ResolvedTo(RAW_FIR)] A<Any>.simpleFunction(): R|kotlin/Unit| { LAZY_BLOCK }

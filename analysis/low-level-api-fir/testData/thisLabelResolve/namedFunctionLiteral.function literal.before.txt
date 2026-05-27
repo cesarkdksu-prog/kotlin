@@ -1,0 +1,3 @@
+[ResolvedTo(BODY_RESOLVE)] namedLambda@fun [ResolvedTo(BODY_RESOLVE)] R|kotlin/Int|.<anonymous>(): R|kotlin/Unit| <inline=Inline, kind=EXACTLY_ONCE>  {
+    ^@namedLambda Unit
+}

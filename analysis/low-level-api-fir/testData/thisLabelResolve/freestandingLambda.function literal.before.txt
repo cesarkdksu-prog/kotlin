@@ -1,0 +1,3 @@
+[ResolvedTo(BODY_RESOLVE)] fun <anonymous>(): R|kotlin/Int| <inline=NoInline>  {
+    ^ Int(1)
+}

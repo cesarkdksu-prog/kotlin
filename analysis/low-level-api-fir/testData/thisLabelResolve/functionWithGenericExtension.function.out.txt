@@ -1,0 +1,2 @@
+this@label: simpleFunction
+this@label: A

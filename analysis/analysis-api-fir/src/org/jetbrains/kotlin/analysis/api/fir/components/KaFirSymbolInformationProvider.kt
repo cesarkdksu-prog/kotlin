@@ -21,6 +21,7 @@ import org.jetbrains.kotlin.analysis.api.impl.base.annotations.KaBaseEmptyAnnota
 import org.jetbrains.kotlin.analysis.api.impl.base.components.KaBaseSymbolInformationProvider
 import org.jetbrains.kotlin.analysis.api.lifetime.withValidityAssertion
 import org.jetbrains.kotlin.analysis.api.symbols.*
+import org.jetbrains.kotlin.analysis.api.useSiteSession
 import org.jetbrains.kotlin.descriptors.ClassKind
 import org.jetbrains.kotlin.descriptors.annotations.AnnotationUseSiteTarget
 import org.jetbrains.kotlin.descriptors.annotations.KotlinTarget
@@ -29,10 +30,27 @@ import org.jetbrains.kotlin.fir.declarations.*
 import org.jetbrains.kotlin.fir.declarations.utils.klibFileAnnotations
 import org.jetbrains.kotlin.fir.resolve.calls.FirSimpleSyntheticPropertySymbol
 import org.jetbrains.kotlin.fir.resolve.calls.noJavaOrigin
+import org.jetbrains.kotlin.fir.resolve.transformers.ensureResolvedTypeDeclaration
 import org.jetbrains.kotlin.fir.symbols.impl.FirBackingFieldSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirPropertyAccessorSymbol
 import org.jetbrains.kotlin.fir.symbols.impl.FirPropertySymbol
+import org.jetbrains.kotlin.fir.types.ConeCapturedType
+import org.jetbrains.kotlin.fir.types.ConeDefinitelyNotNullType
+import org.jetbrains.kotlin.fir.types.ConeFlexibleType
+import org.jetbrains.kotlin.fir.types.ConeIntegerConstantOperatorType
+import org.jetbrains.kotlin.fir.types.ConeIntegerLiteralConstantType
+import org.jetbrains.kotlin.fir.types.ConeIntersectionType
+import org.jetbrains.kotlin.fir.types.ConeKotlinType
+import org.jetbrains.kotlin.fir.types.ConeLookupTagBasedType
+import org.jetbrains.kotlin.fir.types.ConeStubTypeForTypeVariableInSubtyping
+import org.jetbrains.kotlin.fir.types.ConeTypeVariableType
+import org.jetbrains.kotlin.fir.types.classId
+import org.jetbrains.kotlin.fir.types.coneType
+import org.jetbrains.kotlin.fir.types.impl.ConeClassLikeTypeImpl
 import org.jetbrains.kotlin.name.FqName
+import org.jetbrains.kotlin.name.Name
+import org.jetbrains.kotlin.psi
+import org.jetbrains.kotlin.psi.KtTypeReference
 import org.jetbrains.kotlin.resolve.ReturnValueStatus
 import org.jetbrains.kotlin.resolve.deprecation.DeprecationInfo
 import org.jetbrains.kotlin.resolve.deprecation.DeprecationLevelValue
@@ -215,5 +233,23 @@ internal class KaFirSymbolInformationProvider(
              * for libraries, making this branch (as well as the entire [containingFileAnnotations] endpoint) obsolete.
              */
             return KaKlibDecompiledFileAnnotationList.create(firSymbol.klibFileAnnotations, analysisSession.firSymbolBuilder)
+        }
+
+    override val KaFunctionSymbol.thisLabels: List<Name>?
+        get() = withValidityAssertion {
+            when (val fir = firSymbol.fir) {
+                is FirNamedFunction -> {
+                    val receiverSymbol = fir.receiverParameter?.symbol ?: return null
+                    val ty = receiverSymbol.fir.typeRef
+                    listOfNotNull(
+                        fir.name,
+                        (ty.source.psi as? KtTypeReference)?.nameForReceiverLabel()?.let(Name::identifier)
+                    )
+                }
+                is FirAnonymousFunction -> {
+                    fir.label?.name?.let { listOf(Name.identifier(it)) }
+                }
+                else -> null
+            }
         }
 }

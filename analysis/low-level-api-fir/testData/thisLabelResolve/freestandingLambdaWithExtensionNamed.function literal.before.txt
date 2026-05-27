@@ -1,0 +1,3 @@
+[ResolvedTo(BODY_RESOLVE)] lam@fun [ResolvedTo(BODY_RESOLVE)] R|kotlin/Int|.<anonymous>(): R|kotlin/Int| <inline=NoInline>  {
+    ^ Int(1)
+}

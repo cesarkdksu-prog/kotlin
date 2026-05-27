@@ -19,6 +19,7 @@ import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.descriptors.annotations.AnnotationUseSiteTarget
 import org.jetbrains.kotlin.descriptors.annotations.KotlinTarget
 import org.jetbrains.kotlin.name.FqName
+import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.resolve.AnnotationChecker
 import org.jetbrains.kotlin.resolve.DescriptorUtils
 import org.jetbrains.kotlin.resolve.deprecation.DeprecationInfo
@@ -166,5 +167,8 @@ internal class KaFe10SymbolInformationProvider(
         get() = withValidityAssertion { KaReturnValueStatus.Unspecified }
 
     override val KaDeclarationSymbol.containingFileAnnotations: KaAnnotationList
+        get() = withValidityAssertion { throw NotImplementedError("Property is not implemented for FE 1.0") }
+
+    override val KaFunctionSymbol.thisLabels: List<Name>?
         get() = withValidityAssertion { throw NotImplementedError("Property is not implemented for FE 1.0") }
 }

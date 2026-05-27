@@ -1,0 +1,3 @@
+[ResolvedTo(BODY_RESOLVE)] with@fun [ResolvedTo(BODY_RESOLVE)] R|kotlin/Int|.<anonymous>(): R|kotlin/Unit| <inline=Inline, kind=EXACTLY_ONCE>  {
+    ^@with Unit
+}

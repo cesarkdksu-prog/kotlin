@@ -11,6 +11,7 @@ import org.jetbrains.kotlin.analysis.api.symbols.*
 import org.jetbrains.kotlin.descriptors.annotations.AnnotationUseSiteTarget
 import org.jetbrains.kotlin.descriptors.annotations.KotlinTarget
 import org.jetbrains.kotlin.name.FqName
+import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.resolve.deprecation.DeprecationInfo
 
 @KaExperimentalApi
@@ -113,6 +114,10 @@ public interface KaSymbolInformationProvider : KaSessionComponent {
     @KaNonPublicApi
     @KaK1Unsupported
     public val KaDeclarationSymbol.containingFileAnnotations: KaAnnotationList?
+
+    @KaExperimentalApi
+    @KaK1Unsupported
+    public val KaFunctionSymbol.thisLabels: List<Name>?
 }
 
 /**
