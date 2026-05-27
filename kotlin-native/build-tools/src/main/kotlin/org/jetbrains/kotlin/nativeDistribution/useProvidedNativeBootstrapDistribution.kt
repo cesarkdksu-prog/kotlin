@@ -9,8 +9,10 @@ package org.jetbrains.kotlin.nativeDistribution
 
 import org.gradle.api.Task
 import org.gradle.api.provider.Provider
+import org.gradle.api.tasks.FileNormalizer
 import org.gradle.api.tasks.PathSensitivity
 import org.gradle.kotlin.dsl.extra
+import org.gradle.kotlin.dsl.withNormalizer
 
 internal const val PROVIDED_NATIVE_BOOTSTRAP_DISTRIBUTION_KEY = "providedNativeBootstrapDistribution"
 
@@ -21,6 +23,6 @@ internal const val PROVIDED_NATIVE_BOOTSTRAP_DISTRIBUTION_KEY = "providedNativeB
  */
 fun Task.useProvidedNativeBootstrapDistribution(configure: (Provider<NativeDistribution>) -> Unit) {
     @Suppress("UNCHECKED_CAST") val distribution = project.extra.get(PROVIDED_NATIVE_BOOTSTRAP_DISTRIBUTION_KEY) as Provider<NativeDistribution>
-    inputs.dir(distribution.map { it.root }).withPathSensitivity(PathSensitivity.RELATIVE)
+    inputs.file(distribution.map { it.compilerFingerprint }).withPathSensitivity(PathSensitivity.NONE)
     configure(distribution)
 }
