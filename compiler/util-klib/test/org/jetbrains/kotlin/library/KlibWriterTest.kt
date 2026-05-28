@@ -13,6 +13,7 @@ import org.jetbrains.kotlin.library.writer.includeMetadata
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 import java.io.File
+import java.util.Properties
 
 /**
  * This is the test for the redesigned (new) KLIB writer API (as the opposite of the test for the legacy one: [LegacyKlibWriterTest]).
@@ -195,6 +196,26 @@ class KlibWriterTest : AbstractKlibWriterTest<NewKlibWriterParameters>(::NewKlib
                 platformAndTargets(BuiltInsPlatform.WASM, listOf("foo", "bar"))
             }
         }.writeTo(createNewKlibDir().path)
+    }
+
+    @Test
+    fun `Write KLIB_PROPERTY_NEW_COMPANION_INITIALIZATION property`() {
+        fun writeKlib(platform: BuiltInsPlatform, properties: Properties.() -> Unit) {
+            KlibWriter {
+                manifest {
+                    moduleName("sample")
+                    versions(MOCK_VERSIONS)
+                    platformAndTargets(platform)
+                    customProperties { properties() }
+                }
+            }.writeTo(createNewKlibDir().path)
+        }
+
+        for (platform in BuiltInsPlatform.entries) {
+            writeKlib(platform) { setProperty(KLIB_PROPERTY_NEW_COMPANION_INITIALIZATION, "true") }
+            writeKlib(platform) { setProperty(KLIB_PROPERTY_NEW_COMPANION_INITIALIZATION, "false") }
+            writeKlib(platform) { setProperty(KLIB_PROPERTY_NEW_COMPANION_INITIALIZATION, "RANDOM") }
+        }
     }
 
     override fun writeKlib(parameters: NewKlibWriterParameters): File {
