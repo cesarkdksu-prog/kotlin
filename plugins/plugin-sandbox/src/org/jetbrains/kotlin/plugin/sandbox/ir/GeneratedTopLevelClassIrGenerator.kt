@@ -159,6 +159,69 @@ class GeneratedTopLevelClassIrGenerator(val context: IrPluginContext) : IrVisito
         withNestedFamily.declarations += withNestedFamilyCompanion
         file.declarations += withNestedFamily
         context.metadataDeclarationRegistrar.registerClassAsMetadataVisible(withNestedFamily)
+
+        // (9) inner-no-generics inside outer-no-generics (source-declared).
+        val sopl = file.declarations.filterIsInstance<IrClass>()
+            .firstOrNull { it.name.identifier == "SourceOuterPlain" }
+        if (sopl != null) {
+            val innerPlainInPlain = buildGeneratedClass(
+                sopl, "InnerPlain", isGeneric = false, superClass = null,
+                includeXAndFoo = true, modality = Modality.FINAL, isInner = true,
+            )
+            sopl.declarations += innerPlainInPlain
+            context.metadataDeclarationRegistrar.registerClassAsMetadataVisible(innerPlainInPlain)
+        }
+
+        // (10) inner-no-generics inside outer-generic (source-declared).
+        val sogen = file.declarations.filterIsInstance<IrClass>()
+            .firstOrNull { it.name.identifier == "SourceOuterGeneric" }
+        if (sogen != null) {
+            val innerPlainInGeneric = buildGeneratedClass(
+                sogen, "InnerPlain", isGeneric = false, superClass = null,
+                includeXAndFoo = true, modality = Modality.FINAL, isInner = true,
+            )
+            sogen.declarations += innerPlainInGeneric
+            context.metadataDeclarationRegistrar.registerClassAsMetadataVisible(innerPlainInGeneric)
+        }
+
+        // (11) inner-generic inside outer-no-generics (source-declared).
+        val sopl2 = file.declarations.filterIsInstance<IrClass>()
+            .firstOrNull { it.name.identifier == "SourceOuterPlain2" }
+        if (sopl2 != null) {
+            val innerGenericInPlain = buildGeneratedClass(
+                sopl2, "InnerGeneric", isGeneric = true, superClass = null,
+                includeXAndFoo = true, modality = Modality.FINAL, isInner = true,
+            )
+            sopl2.declarations += innerGenericInPlain
+            context.metadataDeclarationRegistrar.registerClassAsMetadataVisible(innerGenericInPlain)
+        }
+
+        // (12) both inner and outer generic (source-declared outer).
+        val sopg = file.declarations.filterIsInstance<IrClass>()
+            .firstOrNull { it.name.identifier == "SourceOuterGenericPaired" }
+        if (sopg != null) {
+            val innerGenericInGeneric = buildGeneratedClass(
+                sopg, "InnerGeneric", isGeneric = true, superClass = null,
+                includeXAndFoo = true, modality = Modality.FINAL, isInner = true,
+            )
+            sopg.declarations += innerGenericInGeneric
+            context.metadataDeclarationRegistrar.registerClassAsMetadataVisible(innerGenericInGeneric)
+        }
+
+        // (13) outer is also plugin-generated, with its own inner. Register only the outer;
+        // the registrar builds the inner FIR transitively through buildFirClassRecursively's
+        // IrClass branch.
+        val withInnerFamily = buildGeneratedClass(
+            file, "WithInnerFamily", isGeneric = true, superClass = null,
+            includeXAndFoo = false, modality = Modality.OPEN,
+        )
+        val innerInGenerated = buildGeneratedClass(
+            withInnerFamily, "Inner", isGeneric = true, superClass = null,
+            includeXAndFoo = true, modality = Modality.FINAL, isInner = true,
+        )
+        withInnerFamily.declarations += innerInGenerated
+        file.declarations += withInnerFamily
+        context.metadataDeclarationRegistrar.registerClassAsMetadataVisible(withInnerFamily)
     }
 
     private fun buildFromCompanionFunction(klass: IrClass): IrSimpleFunction {
@@ -197,10 +260,12 @@ class GeneratedTopLevelClassIrGenerator(val context: IrPluginContext) : IrVisito
         modality: Modality,
         classKind: ClassKind = ClassKind.CLASS,
         isCompanion: Boolean = false,
+        isInner: Boolean = false,
     ): IrClass {
         val classModality = modality
         val classKindValue = classKind
         val classIsCompanion = isCompanion
+        val classIsInner = isInner
         val klass = context.irFactory.buildClass {
             startOffset = SYNTHETIC_OFFSET
             endOffset = SYNTHETIC_OFFSET
@@ -209,15 +274,30 @@ class GeneratedTopLevelClassIrGenerator(val context: IrPluginContext) : IrVisito
             this.modality = classModality
             visibility = DescriptorVisibilities.PUBLIC
             this.isCompanion = classIsCompanion
+            this.isInner = classIsInner
         }.apply {
             parent = parentDeclaration
         }
 
+        if (isInner) {
+            // IR convention: an inner class's typeParameters starts with a fresh copy of the
+            // outer's typeParameters (captured), followed by own. Names and bounds match.
+            val outer = parentDeclaration as IrClass
+            for (outerTp in outer.typeParameters) {
+                klass.addTypeParameter {
+                    startOffset = SYNTHETIC_OFFSET
+                    endOffset = SYNTHETIC_OFFSET
+                    name = outerTp.name
+                    superTypes += outerTp.superTypes
+                }
+            }
+        }
         if (isGeneric) {
             klass.addTypeParameter {
                 startOffset = SYNTHETIC_OFFSET
                 endOffset = SYNTHETIC_OFFSET
-                name = Name.identifier("T")
+                // Use a distinct name from the outer's "T" to avoid shadowing in the both-generic case.
+                name = Name.identifier(if (isInner) "S" else "T")
                 superTypes += context.irBuiltIns.anyNType
             }
         }
@@ -227,7 +307,7 @@ class GeneratedTopLevelClassIrGenerator(val context: IrPluginContext) : IrVisito
             type = klass.symbol.typeWith(klass.typeParameters.map { it.defaultType })
         }
 
-        klass.declarations += buildPrimaryConstructor(klass, superClass)
+        klass.declarations += buildPrimaryConstructor(klass, superClass, isInner)
         if (includeXAndFoo) {
             klass.declarations += buildXProperty(klass)
             klass.declarations += buildFooFunction(klass)
@@ -236,7 +316,7 @@ class GeneratedTopLevelClassIrGenerator(val context: IrPluginContext) : IrVisito
         return klass
     }
 
-    private fun buildPrimaryConstructor(klass: IrClass, superClass: IrClass?): IrConstructor {
+    private fun buildPrimaryConstructor(klass: IrClass, superClass: IrClass?, isInner: Boolean): IrConstructor {
         val actualSuperClass = superClass ?: context.irBuiltIns.anyClass.owner
         val superConstructor = actualSuperClass.constructors
             .singleOrNull { c -> c.parameters.none { it.kind == IrParameterKind.Regular } }
@@ -249,6 +329,18 @@ class GeneratedTopLevelClassIrGenerator(val context: IrPluginContext) : IrVisito
             isPrimary = true
         }.apply {
             parent = klass
+            if (isInner) {
+                // Inner-class constructor receives the outer instance as a dispatch receiver.
+                // The receiver type is the outer's own thisReceiver type (Outer<outerOwnTPs...>);
+                // the inner's captured TPs are wired through the FIR side, not the IR receiver.
+                val outer = klass.parent as IrClass
+                parameters += buildReceiverParameter {
+                    startOffset = SYNTHETIC_OFFSET
+                    endOffset = SYNTHETIC_OFFSET
+                    kind = IrParameterKind.DispatchReceiver
+                    type = outer.defaultType
+                }.also { it.parent = this }
+            }
             body = context.irFactory.createBlockBody(
                 startOffset, endOffset,
                 listOf(

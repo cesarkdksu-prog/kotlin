@@ -126,6 +126,180 @@ FILE fqName:<root> fileName:/src.kt
       VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
       overridden:
         public open fun toString (): kotlin.String declared in kotlin.Any
+  CLASS CLASS name:SourceOuterGeneric modality:FINAL visibility:public superTypes:[kotlin.Any]
+    thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:<root>.SourceOuterGeneric<T of <root>.SourceOuterGeneric>
+    TYPE_PARAMETER name:T index:0 variance: superTypes:[kotlin.Any?] reified:false
+    CLASS CLASS name:InnerPlain modality:FINAL visibility:public [inner] superTypes:[kotlin.Any]
+      thisReceiver: VALUE_PARAMETER kind:DispatchReceiver name:<this> type:<root>.SourceOuterGeneric.InnerPlain<T of <root>.SourceOuterGeneric.InnerPlain>
+      TYPE_PARAMETER name:T index:0 variance: superTypes:[kotlin.Any?] reified:false
+      PROPERTY name:x visibility:public modality:FINAL [val]
+        FIELD PROPERTY_BACKING_FIELD name:x type:kotlin.Int visibility:private [final]
+          EXPRESSION_BODY
+            CONST Int type=kotlin.Int value=42
+        FUN DEFAULT_PROPERTY_ACCESSOR name:<get-x> visibility:public modality:FINAL returnType:kotlin.Int
+          VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.SourceOuterGeneric.InnerPlain<T of <root>.SourceOuterGeneric.InnerPlain>
+          correspondingProperty: PROPERTY name:x visibility:public modality:FINAL [val]
+          BLOCK_BODY
+            RETURN type=kotlin.Nothing from='public final fun <get-x> (): kotlin.Int declared in <root>.SourceOuterGeneric.InnerPlain'
+              GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:x type:kotlin.Int visibility:private [final]' type=kotlin.Int origin=null
+                receiver: GET_VAR '<this>: <root>.SourceOuterGeneric.InnerPlain<T of <root>.SourceOuterGeneric.InnerPlain> declared in <root>.SourceOuterGeneric.InnerPlain.<get-x>' type=<root>.SourceOuterGeneric.InnerPlain<T of <root>.SourceOuterGeneric.InnerPlain> origin=null
+      CONSTRUCTOR visibility:public returnType:<root>.SourceOuterGeneric.InnerPlain<T of <root>.SourceOuterGeneric.InnerPlain> [primary]
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.SourceOuterGeneric<T of <root>.SourceOuterGeneric>
+        BLOCK_BODY
+          DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in kotlin.Any'
+          INSTANCE_INITIALIZER_CALL classDescriptor='CLASS CLASS name:InnerPlain modality:FINAL visibility:public [inner] superTypes:[kotlin.Any]' type=kotlin.Unit
+      FUN name:foo visibility:public modality:OPEN returnType:kotlin.String
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.SourceOuterGeneric.InnerPlain<T of <root>.SourceOuterGeneric.InnerPlain>
+        BLOCK_BODY
+          RETURN type=kotlin.Nothing from='public open fun foo (): kotlin.String declared in <root>.SourceOuterGeneric.InnerPlain'
+            CONST String type=kotlin.String value="ok"
+    CONSTRUCTOR visibility:public returnType:<root>.SourceOuterGeneric<T of <root>.SourceOuterGeneric> [primary]
+      BLOCK_BODY
+        DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in kotlin.Any'
+        INSTANCE_INITIALIZER_CALL classDescriptor='CLASS CLASS name:SourceOuterGeneric modality:FINAL visibility:public superTypes:[kotlin.Any]' type=kotlin.Unit
+    FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN returnType:kotlin.Boolean [fake_override,operator]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      VALUE_PARAMETER kind:Regular name:other index:1 type:kotlin.Any?
+      overridden:
+        public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in kotlin.Any
+    FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN returnType:kotlin.Int [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun hashCode (): kotlin.Int declared in kotlin.Any
+    FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN returnType:kotlin.String [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun toString (): kotlin.String declared in kotlin.Any
+  CLASS CLASS name:SourceOuterGenericPaired modality:FINAL visibility:public superTypes:[kotlin.Any]
+    thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:<root>.SourceOuterGenericPaired<T of <root>.SourceOuterGenericPaired>
+    TYPE_PARAMETER name:T index:0 variance: superTypes:[kotlin.Any?] reified:false
+    CLASS CLASS name:InnerGeneric modality:FINAL visibility:public [inner] superTypes:[kotlin.Any]
+      thisReceiver: VALUE_PARAMETER kind:DispatchReceiver name:<this> type:<root>.SourceOuterGenericPaired.InnerGeneric<T of <root>.SourceOuterGenericPaired.InnerGeneric, S of <root>.SourceOuterGenericPaired.InnerGeneric>
+      TYPE_PARAMETER name:T index:0 variance: superTypes:[kotlin.Any?] reified:false
+      TYPE_PARAMETER name:S index:1 variance: superTypes:[kotlin.Any?] reified:false
+      PROPERTY name:x visibility:public modality:FINAL [val]
+        FIELD PROPERTY_BACKING_FIELD name:x type:kotlin.Int visibility:private [final]
+          EXPRESSION_BODY
+            CONST Int type=kotlin.Int value=42
+        FUN DEFAULT_PROPERTY_ACCESSOR name:<get-x> visibility:public modality:FINAL returnType:kotlin.Int
+          VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.SourceOuterGenericPaired.InnerGeneric<T of <root>.SourceOuterGenericPaired.InnerGeneric, S of <root>.SourceOuterGenericPaired.InnerGeneric>
+          correspondingProperty: PROPERTY name:x visibility:public modality:FINAL [val]
+          BLOCK_BODY
+            RETURN type=kotlin.Nothing from='public final fun <get-x> (): kotlin.Int declared in <root>.SourceOuterGenericPaired.InnerGeneric'
+              GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:x type:kotlin.Int visibility:private [final]' type=kotlin.Int origin=null
+                receiver: GET_VAR '<this>: <root>.SourceOuterGenericPaired.InnerGeneric<T of <root>.SourceOuterGenericPaired.InnerGeneric, S of <root>.SourceOuterGenericPaired.InnerGeneric> declared in <root>.SourceOuterGenericPaired.InnerGeneric.<get-x>' type=<root>.SourceOuterGenericPaired.InnerGeneric<T of <root>.SourceOuterGenericPaired.InnerGeneric, S of <root>.SourceOuterGenericPaired.InnerGeneric> origin=null
+      CONSTRUCTOR visibility:public returnType:<root>.SourceOuterGenericPaired.InnerGeneric<T of <root>.SourceOuterGenericPaired.InnerGeneric, S of <root>.SourceOuterGenericPaired.InnerGeneric> [primary]
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.SourceOuterGenericPaired<T of <root>.SourceOuterGenericPaired>
+        BLOCK_BODY
+          DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in kotlin.Any'
+          INSTANCE_INITIALIZER_CALL classDescriptor='CLASS CLASS name:InnerGeneric modality:FINAL visibility:public [inner] superTypes:[kotlin.Any]' type=kotlin.Unit
+      FUN name:foo visibility:public modality:OPEN returnType:kotlin.String
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.SourceOuterGenericPaired.InnerGeneric<T of <root>.SourceOuterGenericPaired.InnerGeneric, S of <root>.SourceOuterGenericPaired.InnerGeneric>
+        BLOCK_BODY
+          RETURN type=kotlin.Nothing from='public open fun foo (): kotlin.String declared in <root>.SourceOuterGenericPaired.InnerGeneric'
+            CONST String type=kotlin.String value="ok"
+    CONSTRUCTOR visibility:public returnType:<root>.SourceOuterGenericPaired<T of <root>.SourceOuterGenericPaired> [primary]
+      BLOCK_BODY
+        DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in kotlin.Any'
+        INSTANCE_INITIALIZER_CALL classDescriptor='CLASS CLASS name:SourceOuterGenericPaired modality:FINAL visibility:public superTypes:[kotlin.Any]' type=kotlin.Unit
+    FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN returnType:kotlin.Boolean [fake_override,operator]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      VALUE_PARAMETER kind:Regular name:other index:1 type:kotlin.Any?
+      overridden:
+        public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in kotlin.Any
+    FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN returnType:kotlin.Int [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun hashCode (): kotlin.Int declared in kotlin.Any
+    FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN returnType:kotlin.String [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun toString (): kotlin.String declared in kotlin.Any
+  CLASS CLASS name:SourceOuterPlain modality:FINAL visibility:public superTypes:[kotlin.Any]
+    thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:<root>.SourceOuterPlain
+    CLASS CLASS name:InnerPlain modality:FINAL visibility:public [inner] superTypes:[kotlin.Any]
+      thisReceiver: VALUE_PARAMETER kind:DispatchReceiver name:<this> type:<root>.SourceOuterPlain.InnerPlain
+      PROPERTY name:x visibility:public modality:FINAL [val]
+        FIELD PROPERTY_BACKING_FIELD name:x type:kotlin.Int visibility:private [final]
+          EXPRESSION_BODY
+            CONST Int type=kotlin.Int value=42
+        FUN DEFAULT_PROPERTY_ACCESSOR name:<get-x> visibility:public modality:FINAL returnType:kotlin.Int
+          VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.SourceOuterPlain.InnerPlain
+          correspondingProperty: PROPERTY name:x visibility:public modality:FINAL [val]
+          BLOCK_BODY
+            RETURN type=kotlin.Nothing from='public final fun <get-x> (): kotlin.Int declared in <root>.SourceOuterPlain.InnerPlain'
+              GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:x type:kotlin.Int visibility:private [final]' type=kotlin.Int origin=null
+                receiver: GET_VAR '<this>: <root>.SourceOuterPlain.InnerPlain declared in <root>.SourceOuterPlain.InnerPlain.<get-x>' type=<root>.SourceOuterPlain.InnerPlain origin=null
+      CONSTRUCTOR visibility:public returnType:<root>.SourceOuterPlain.InnerPlain [primary]
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.SourceOuterPlain
+        BLOCK_BODY
+          DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in kotlin.Any'
+          INSTANCE_INITIALIZER_CALL classDescriptor='CLASS CLASS name:InnerPlain modality:FINAL visibility:public [inner] superTypes:[kotlin.Any]' type=kotlin.Unit
+      FUN name:foo visibility:public modality:OPEN returnType:kotlin.String
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.SourceOuterPlain.InnerPlain
+        BLOCK_BODY
+          RETURN type=kotlin.Nothing from='public open fun foo (): kotlin.String declared in <root>.SourceOuterPlain.InnerPlain'
+            CONST String type=kotlin.String value="ok"
+    CONSTRUCTOR visibility:public returnType:<root>.SourceOuterPlain [primary]
+      BLOCK_BODY
+        DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in kotlin.Any'
+        INSTANCE_INITIALIZER_CALL classDescriptor='CLASS CLASS name:SourceOuterPlain modality:FINAL visibility:public superTypes:[kotlin.Any]' type=kotlin.Unit
+    FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN returnType:kotlin.Boolean [fake_override,operator]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      VALUE_PARAMETER kind:Regular name:other index:1 type:kotlin.Any?
+      overridden:
+        public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in kotlin.Any
+    FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN returnType:kotlin.Int [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun hashCode (): kotlin.Int declared in kotlin.Any
+    FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN returnType:kotlin.String [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun toString (): kotlin.String declared in kotlin.Any
+  CLASS CLASS name:SourceOuterPlain2 modality:FINAL visibility:public superTypes:[kotlin.Any]
+    thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:<root>.SourceOuterPlain2
+    CLASS CLASS name:InnerGeneric modality:FINAL visibility:public [inner] superTypes:[kotlin.Any]
+      thisReceiver: VALUE_PARAMETER kind:DispatchReceiver name:<this> type:<root>.SourceOuterPlain2.InnerGeneric<S of <root>.SourceOuterPlain2.InnerGeneric>
+      TYPE_PARAMETER name:S index:0 variance: superTypes:[kotlin.Any?] reified:false
+      PROPERTY name:x visibility:public modality:FINAL [val]
+        FIELD PROPERTY_BACKING_FIELD name:x type:kotlin.Int visibility:private [final]
+          EXPRESSION_BODY
+            CONST Int type=kotlin.Int value=42
+        FUN DEFAULT_PROPERTY_ACCESSOR name:<get-x> visibility:public modality:FINAL returnType:kotlin.Int
+          VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.SourceOuterPlain2.InnerGeneric<S of <root>.SourceOuterPlain2.InnerGeneric>
+          correspondingProperty: PROPERTY name:x visibility:public modality:FINAL [val]
+          BLOCK_BODY
+            RETURN type=kotlin.Nothing from='public final fun <get-x> (): kotlin.Int declared in <root>.SourceOuterPlain2.InnerGeneric'
+              GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:x type:kotlin.Int visibility:private [final]' type=kotlin.Int origin=null
+                receiver: GET_VAR '<this>: <root>.SourceOuterPlain2.InnerGeneric<S of <root>.SourceOuterPlain2.InnerGeneric> declared in <root>.SourceOuterPlain2.InnerGeneric.<get-x>' type=<root>.SourceOuterPlain2.InnerGeneric<S of <root>.SourceOuterPlain2.InnerGeneric> origin=null
+      CONSTRUCTOR visibility:public returnType:<root>.SourceOuterPlain2.InnerGeneric<S of <root>.SourceOuterPlain2.InnerGeneric> [primary]
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.SourceOuterPlain2
+        BLOCK_BODY
+          DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in kotlin.Any'
+          INSTANCE_INITIALIZER_CALL classDescriptor='CLASS CLASS name:InnerGeneric modality:FINAL visibility:public [inner] superTypes:[kotlin.Any]' type=kotlin.Unit
+      FUN name:foo visibility:public modality:OPEN returnType:kotlin.String
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.SourceOuterPlain2.InnerGeneric<S of <root>.SourceOuterPlain2.InnerGeneric>
+        BLOCK_BODY
+          RETURN type=kotlin.Nothing from='public open fun foo (): kotlin.String declared in <root>.SourceOuterPlain2.InnerGeneric'
+            CONST String type=kotlin.String value="ok"
+    CONSTRUCTOR visibility:public returnType:<root>.SourceOuterPlain2 [primary]
+      BLOCK_BODY
+        DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in kotlin.Any'
+        INSTANCE_INITIALIZER_CALL classDescriptor='CLASS CLASS name:SourceOuterPlain2 modality:FINAL visibility:public superTypes:[kotlin.Any]' type=kotlin.Unit
+    FUN FAKE_OVERRIDE name:equals visibility:public modality:OPEN returnType:kotlin.Boolean [fake_override,operator]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      VALUE_PARAMETER kind:Regular name:other index:1 type:kotlin.Any?
+      overridden:
+        public open fun equals (other: kotlin.Any?): kotlin.Boolean declared in kotlin.Any
+    FUN FAKE_OVERRIDE name:hashCode visibility:public modality:OPEN returnType:kotlin.Int [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun hashCode (): kotlin.Int declared in kotlin.Any
+    FUN FAKE_OVERRIDE name:toString visibility:public modality:OPEN returnType:kotlin.String [fake_override]
+      VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:kotlin.Any
+      overridden:
+        public open fun toString (): kotlin.String declared in kotlin.Any
   CLASS CLASS name:SourceWithCompanion modality:FINAL visibility:public superTypes:[kotlin.Any]
     thisReceiver: VALUE_PARAMETER INSTANCE_RECEIVER kind:DispatchReceiver name:<this> type:<root>.SourceWithCompanion
     CLASS OBJECT name:Companion modality:FINAL visibility:public [companion] superTypes:[kotlin.Any]
@@ -243,6 +417,38 @@ FILE fqName:<root> fileName:/src.kt
       BLOCK_BODY
         RETURN type=kotlin.Nothing from='public open fun foo (): kotlin.String declared in <root>.WithGeneric'
           CONST String type=kotlin.String value="ok"
+  CLASS CLASS name:WithInnerFamily modality:OPEN visibility:public superTypes:[kotlin.Any]
+    thisReceiver: VALUE_PARAMETER kind:DispatchReceiver name:<this> type:<root>.WithInnerFamily<T of <root>.WithInnerFamily>
+    TYPE_PARAMETER name:T index:0 variance: superTypes:[kotlin.Any?] reified:false
+    CLASS CLASS name:Inner modality:FINAL visibility:public [inner] superTypes:[kotlin.Any]
+      thisReceiver: VALUE_PARAMETER kind:DispatchReceiver name:<this> type:<root>.WithInnerFamily.Inner<T of <root>.WithInnerFamily.Inner, S of <root>.WithInnerFamily.Inner>
+      TYPE_PARAMETER name:T index:0 variance: superTypes:[kotlin.Any?] reified:false
+      TYPE_PARAMETER name:S index:1 variance: superTypes:[kotlin.Any?] reified:false
+      PROPERTY name:x visibility:public modality:FINAL [val]
+        FIELD PROPERTY_BACKING_FIELD name:x type:kotlin.Int visibility:private [final]
+          EXPRESSION_BODY
+            CONST Int type=kotlin.Int value=42
+        FUN DEFAULT_PROPERTY_ACCESSOR name:<get-x> visibility:public modality:FINAL returnType:kotlin.Int
+          VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.WithInnerFamily.Inner<T of <root>.WithInnerFamily.Inner, S of <root>.WithInnerFamily.Inner>
+          correspondingProperty: PROPERTY name:x visibility:public modality:FINAL [val]
+          BLOCK_BODY
+            RETURN type=kotlin.Nothing from='public final fun <get-x> (): kotlin.Int declared in <root>.WithInnerFamily.Inner'
+              GET_FIELD 'FIELD PROPERTY_BACKING_FIELD name:x type:kotlin.Int visibility:private [final]' type=kotlin.Int origin=null
+                receiver: GET_VAR '<this>: <root>.WithInnerFamily.Inner<T of <root>.WithInnerFamily.Inner, S of <root>.WithInnerFamily.Inner> declared in <root>.WithInnerFamily.Inner.<get-x>' type=<root>.WithInnerFamily.Inner<T of <root>.WithInnerFamily.Inner, S of <root>.WithInnerFamily.Inner> origin=null
+      CONSTRUCTOR visibility:public returnType:<root>.WithInnerFamily.Inner<T of <root>.WithInnerFamily.Inner, S of <root>.WithInnerFamily.Inner> [primary]
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.WithInnerFamily<T of <root>.WithInnerFamily>
+        BLOCK_BODY
+          DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in kotlin.Any'
+          INSTANCE_INITIALIZER_CALL classDescriptor='CLASS CLASS name:Inner modality:FINAL visibility:public [inner] superTypes:[kotlin.Any]' type=kotlin.Unit
+      FUN name:foo visibility:public modality:OPEN returnType:kotlin.String
+        VALUE_PARAMETER kind:DispatchReceiver name:<this> index:0 type:<root>.WithInnerFamily.Inner<T of <root>.WithInnerFamily.Inner, S of <root>.WithInnerFamily.Inner>
+        BLOCK_BODY
+          RETURN type=kotlin.Nothing from='public open fun foo (): kotlin.String declared in <root>.WithInnerFamily.Inner'
+            CONST String type=kotlin.String value="ok"
+    CONSTRUCTOR visibility:public returnType:<root>.WithInnerFamily<T of <root>.WithInnerFamily> [primary]
+      BLOCK_BODY
+        DELEGATING_CONSTRUCTOR_CALL 'public constructor <init> () declared in kotlin.Any'
+        INSTANCE_INITIALIZER_CALL classDescriptor='CLASS CLASS name:WithInnerFamily modality:OPEN visibility:public superTypes:[kotlin.Any]' type=kotlin.Unit
   CLASS CLASS name:WithNestedFamily modality:OPEN visibility:public superTypes:[kotlin.Any]
     thisReceiver: VALUE_PARAMETER kind:DispatchReceiver name:<this> type:<root>.WithNestedFamily
     CLASS CLASS name:Inner modality:FINAL visibility:public superTypes:[kotlin.Any]
@@ -504,5 +710,148 @@ FILE fqName:<root> fileName:/main.kt
               ARG arg1: CONST String type=kotlin.String value="from-companion"
           then: RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in <root>'
             CONST String type=kotlin.String value="FAIL companion fn"
+      VAR name:innerA type:<root>.SourceOuterPlain.InnerPlain [val]
+        CONSTRUCTOR_CALL 'public constructor <init> () declared in <root>.SourceOuterPlain.InnerPlain' type=<root>.SourceOuterPlain.InnerPlain origin=null
+          ARG <this>: CONSTRUCTOR_CALL 'public constructor <init> () declared in <root>.SourceOuterPlain' type=<root>.SourceOuterPlain origin=null
+      WHEN type=kotlin.Unit origin=IF
+        BRANCH
+          if: CALL 'public final fun not (): kotlin.Boolean declared in kotlin.Boolean' type=kotlin.Boolean origin=EXCLEQ
+            ARG <this>: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EXCLEQ
+              ARG arg0: CALL 'public final fun <get-x> (): kotlin.Int declared in <root>.SourceOuterPlain.InnerPlain' type=kotlin.Int origin=GET_PROPERTY
+                ARG <this>: GET_VAR 'val innerA: <root>.SourceOuterPlain.InnerPlain declared in <root>.box' type=<root>.SourceOuterPlain.InnerPlain origin=null
+              ARG arg1: CONST Int type=kotlin.Int value=42
+          then: RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in <root>'
+            STRING_CONCATENATION type=kotlin.String
+              CONST String type=kotlin.String value="FAIL innerA.x: "
+              CALL 'public final fun <get-x> (): kotlin.Int declared in <root>.SourceOuterPlain.InnerPlain' type=kotlin.Int origin=GET_PROPERTY
+                ARG <this>: GET_VAR 'val innerA: <root>.SourceOuterPlain.InnerPlain declared in <root>.box' type=<root>.SourceOuterPlain.InnerPlain origin=null
+      WHEN type=kotlin.Unit origin=IF
+        BRANCH
+          if: CALL 'public final fun not (): kotlin.Boolean declared in kotlin.Boolean' type=kotlin.Boolean origin=EXCLEQ
+            ARG <this>: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EXCLEQ
+              ARG arg0: CALL 'public open fun foo (): kotlin.String declared in <root>.SourceOuterPlain.InnerPlain' type=kotlin.String origin=null
+                ARG <this>: GET_VAR 'val innerA: <root>.SourceOuterPlain.InnerPlain declared in <root>.box' type=<root>.SourceOuterPlain.InnerPlain origin=null
+              ARG arg1: CONST String type=kotlin.String value="ok"
+          then: RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in <root>'
+            STRING_CONCATENATION type=kotlin.String
+              CONST String type=kotlin.String value="FAIL innerA.foo: "
+              CALL 'public open fun foo (): kotlin.String declared in <root>.SourceOuterPlain.InnerPlain' type=kotlin.String origin=null
+                ARG <this>: GET_VAR 'val innerA: <root>.SourceOuterPlain.InnerPlain declared in <root>.box' type=<root>.SourceOuterPlain.InnerPlain origin=null
+      VAR name:innerB type:<root>.SourceOuterGeneric.InnerPlain<kotlin.String> [val]
+        CONSTRUCTOR_CALL 'public constructor <init> () declared in <root>.SourceOuterGeneric.InnerPlain' type=<root>.SourceOuterGeneric.InnerPlain<kotlin.String> origin=null
+          ARG <this>: CONSTRUCTOR_CALL 'public constructor <init> () declared in <root>.SourceOuterGeneric' type=<root>.SourceOuterGeneric<kotlin.String> origin=null
+            TYPE_ARG (of class) T: kotlin.String
+      WHEN type=kotlin.Unit origin=IF
+        BRANCH
+          if: CALL 'public final fun not (): kotlin.Boolean declared in kotlin.Boolean' type=kotlin.Boolean origin=EXCLEQ
+            ARG <this>: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EXCLEQ
+              ARG arg0: CALL 'public final fun <get-x> (): kotlin.Int declared in <root>.SourceOuterGeneric.InnerPlain' type=kotlin.Int origin=GET_PROPERTY
+                ARG <this>: GET_VAR 'val innerB: <root>.SourceOuterGeneric.InnerPlain<kotlin.String> declared in <root>.box' type=<root>.SourceOuterGeneric.InnerPlain<kotlin.String> origin=null
+              ARG arg1: CONST Int type=kotlin.Int value=42
+          then: RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in <root>'
+            STRING_CONCATENATION type=kotlin.String
+              CONST String type=kotlin.String value="FAIL innerB.x: "
+              CALL 'public final fun <get-x> (): kotlin.Int declared in <root>.SourceOuterGeneric.InnerPlain' type=kotlin.Int origin=GET_PROPERTY
+                ARG <this>: GET_VAR 'val innerB: <root>.SourceOuterGeneric.InnerPlain<kotlin.String> declared in <root>.box' type=<root>.SourceOuterGeneric.InnerPlain<kotlin.String> origin=null
+      WHEN type=kotlin.Unit origin=IF
+        BRANCH
+          if: CALL 'public final fun not (): kotlin.Boolean declared in kotlin.Boolean' type=kotlin.Boolean origin=EXCLEQ
+            ARG <this>: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EXCLEQ
+              ARG arg0: CALL 'public open fun foo (): kotlin.String declared in <root>.SourceOuterGeneric.InnerPlain' type=kotlin.String origin=null
+                ARG <this>: GET_VAR 'val innerB: <root>.SourceOuterGeneric.InnerPlain<kotlin.String> declared in <root>.box' type=<root>.SourceOuterGeneric.InnerPlain<kotlin.String> origin=null
+              ARG arg1: CONST String type=kotlin.String value="ok"
+          then: RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in <root>'
+            STRING_CONCATENATION type=kotlin.String
+              CONST String type=kotlin.String value="FAIL innerB.foo: "
+              CALL 'public open fun foo (): kotlin.String declared in <root>.SourceOuterGeneric.InnerPlain' type=kotlin.String origin=null
+                ARG <this>: GET_VAR 'val innerB: <root>.SourceOuterGeneric.InnerPlain<kotlin.String> declared in <root>.box' type=<root>.SourceOuterGeneric.InnerPlain<kotlin.String> origin=null
+      VAR name:innerC type:<root>.SourceOuterPlain2.InnerGeneric<kotlin.String> [val]
+        CONSTRUCTOR_CALL 'public constructor <init> () declared in <root>.SourceOuterPlain2.InnerGeneric' type=<root>.SourceOuterPlain2.InnerGeneric<kotlin.String> origin=null
+          TYPE_ARG (of class) S: kotlin.String
+          ARG <this>: CONSTRUCTOR_CALL 'public constructor <init> () declared in <root>.SourceOuterPlain2' type=<root>.SourceOuterPlain2 origin=null
+      WHEN type=kotlin.Unit origin=IF
+        BRANCH
+          if: CALL 'public final fun not (): kotlin.Boolean declared in kotlin.Boolean' type=kotlin.Boolean origin=EXCLEQ
+            ARG <this>: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EXCLEQ
+              ARG arg0: CALL 'public final fun <get-x> (): kotlin.Int declared in <root>.SourceOuterPlain2.InnerGeneric' type=kotlin.Int origin=GET_PROPERTY
+                ARG <this>: GET_VAR 'val innerC: <root>.SourceOuterPlain2.InnerGeneric<kotlin.String> declared in <root>.box' type=<root>.SourceOuterPlain2.InnerGeneric<kotlin.String> origin=null
+              ARG arg1: CONST Int type=kotlin.Int value=42
+          then: RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in <root>'
+            STRING_CONCATENATION type=kotlin.String
+              CONST String type=kotlin.String value="FAIL innerC.x: "
+              CALL 'public final fun <get-x> (): kotlin.Int declared in <root>.SourceOuterPlain2.InnerGeneric' type=kotlin.Int origin=GET_PROPERTY
+                ARG <this>: GET_VAR 'val innerC: <root>.SourceOuterPlain2.InnerGeneric<kotlin.String> declared in <root>.box' type=<root>.SourceOuterPlain2.InnerGeneric<kotlin.String> origin=null
+      WHEN type=kotlin.Unit origin=IF
+        BRANCH
+          if: CALL 'public final fun not (): kotlin.Boolean declared in kotlin.Boolean' type=kotlin.Boolean origin=EXCLEQ
+            ARG <this>: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EXCLEQ
+              ARG arg0: CALL 'public open fun foo (): kotlin.String declared in <root>.SourceOuterPlain2.InnerGeneric' type=kotlin.String origin=null
+                ARG <this>: GET_VAR 'val innerC: <root>.SourceOuterPlain2.InnerGeneric<kotlin.String> declared in <root>.box' type=<root>.SourceOuterPlain2.InnerGeneric<kotlin.String> origin=null
+              ARG arg1: CONST String type=kotlin.String value="ok"
+          then: RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in <root>'
+            STRING_CONCATENATION type=kotlin.String
+              CONST String type=kotlin.String value="FAIL innerC.foo: "
+              CALL 'public open fun foo (): kotlin.String declared in <root>.SourceOuterPlain2.InnerGeneric' type=kotlin.String origin=null
+                ARG <this>: GET_VAR 'val innerC: <root>.SourceOuterPlain2.InnerGeneric<kotlin.String> declared in <root>.box' type=<root>.SourceOuterPlain2.InnerGeneric<kotlin.String> origin=null
+      VAR name:innerD type:<root>.SourceOuterGenericPaired.InnerGeneric<kotlin.String, kotlin.Int> [val]
+        CONSTRUCTOR_CALL 'public constructor <init> () declared in <root>.SourceOuterGenericPaired.InnerGeneric' type=<root>.SourceOuterGenericPaired.InnerGeneric<kotlin.String, kotlin.Int> origin=null
+          TYPE_ARG (of class) S: kotlin.String
+          ARG <this>: CONSTRUCTOR_CALL 'public constructor <init> () declared in <root>.SourceOuterGenericPaired' type=<root>.SourceOuterGenericPaired<kotlin.Int> origin=null
+            TYPE_ARG (of class) T: kotlin.Int
+      WHEN type=kotlin.Unit origin=IF
+        BRANCH
+          if: CALL 'public final fun not (): kotlin.Boolean declared in kotlin.Boolean' type=kotlin.Boolean origin=EXCLEQ
+            ARG <this>: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EXCLEQ
+              ARG arg0: CALL 'public final fun <get-x> (): kotlin.Int declared in <root>.SourceOuterGenericPaired.InnerGeneric' type=kotlin.Int origin=GET_PROPERTY
+                ARG <this>: GET_VAR 'val innerD: <root>.SourceOuterGenericPaired.InnerGeneric<kotlin.String, kotlin.Int> declared in <root>.box' type=<root>.SourceOuterGenericPaired.InnerGeneric<kotlin.String, kotlin.Int> origin=null
+              ARG arg1: CONST Int type=kotlin.Int value=42
+          then: RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in <root>'
+            STRING_CONCATENATION type=kotlin.String
+              CONST String type=kotlin.String value="FAIL innerD.x: "
+              CALL 'public final fun <get-x> (): kotlin.Int declared in <root>.SourceOuterGenericPaired.InnerGeneric' type=kotlin.Int origin=GET_PROPERTY
+                ARG <this>: GET_VAR 'val innerD: <root>.SourceOuterGenericPaired.InnerGeneric<kotlin.String, kotlin.Int> declared in <root>.box' type=<root>.SourceOuterGenericPaired.InnerGeneric<kotlin.String, kotlin.Int> origin=null
+      WHEN type=kotlin.Unit origin=IF
+        BRANCH
+          if: CALL 'public final fun not (): kotlin.Boolean declared in kotlin.Boolean' type=kotlin.Boolean origin=EXCLEQ
+            ARG <this>: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EXCLEQ
+              ARG arg0: CALL 'public open fun foo (): kotlin.String declared in <root>.SourceOuterGenericPaired.InnerGeneric' type=kotlin.String origin=null
+                ARG <this>: GET_VAR 'val innerD: <root>.SourceOuterGenericPaired.InnerGeneric<kotlin.String, kotlin.Int> declared in <root>.box' type=<root>.SourceOuterGenericPaired.InnerGeneric<kotlin.String, kotlin.Int> origin=null
+              ARG arg1: CONST String type=kotlin.String value="ok"
+          then: RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in <root>'
+            STRING_CONCATENATION type=kotlin.String
+              CONST String type=kotlin.String value="FAIL innerD.foo: "
+              CALL 'public open fun foo (): kotlin.String declared in <root>.SourceOuterGenericPaired.InnerGeneric' type=kotlin.String origin=null
+                ARG <this>: GET_VAR 'val innerD: <root>.SourceOuterGenericPaired.InnerGeneric<kotlin.String, kotlin.Int> declared in <root>.box' type=<root>.SourceOuterGenericPaired.InnerGeneric<kotlin.String, kotlin.Int> origin=null
+      VAR name:withInner type:<root>.WithInnerFamily<kotlin.Int> [val]
+        CONSTRUCTOR_CALL 'public constructor <init> () declared in <root>.WithInnerFamily' type=<root>.WithInnerFamily<kotlin.Int> origin=null
+          TYPE_ARG (of class) T: kotlin.Int
+      VAR name:innerE type:<root>.WithInnerFamily.Inner<kotlin.String, kotlin.Int> [val]
+        CONSTRUCTOR_CALL 'public constructor <init> () declared in <root>.WithInnerFamily.Inner' type=<root>.WithInnerFamily.Inner<kotlin.String, kotlin.Int> origin=null
+          TYPE_ARG (of class) S: kotlin.String
+          ARG <this>: GET_VAR 'val withInner: <root>.WithInnerFamily<kotlin.Int> declared in <root>.box' type=<root>.WithInnerFamily<kotlin.Int> origin=null
+      WHEN type=kotlin.Unit origin=IF
+        BRANCH
+          if: CALL 'public final fun not (): kotlin.Boolean declared in kotlin.Boolean' type=kotlin.Boolean origin=EXCLEQ
+            ARG <this>: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EXCLEQ
+              ARG arg0: CALL 'public final fun <get-x> (): kotlin.Int declared in <root>.WithInnerFamily.Inner' type=kotlin.Int origin=GET_PROPERTY
+                ARG <this>: GET_VAR 'val innerE: <root>.WithInnerFamily.Inner<kotlin.String, kotlin.Int> declared in <root>.box' type=<root>.WithInnerFamily.Inner<kotlin.String, kotlin.Int> origin=null
+              ARG arg1: CONST Int type=kotlin.Int value=42
+          then: RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in <root>'
+            STRING_CONCATENATION type=kotlin.String
+              CONST String type=kotlin.String value="FAIL innerE.x: "
+              CALL 'public final fun <get-x> (): kotlin.Int declared in <root>.WithInnerFamily.Inner' type=kotlin.Int origin=GET_PROPERTY
+                ARG <this>: GET_VAR 'val innerE: <root>.WithInnerFamily.Inner<kotlin.String, kotlin.Int> declared in <root>.box' type=<root>.WithInnerFamily.Inner<kotlin.String, kotlin.Int> origin=null
+      WHEN type=kotlin.Unit origin=IF
+        BRANCH
+          if: CALL 'public final fun not (): kotlin.Boolean declared in kotlin.Boolean' type=kotlin.Boolean origin=EXCLEQ
+            ARG <this>: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=EXCLEQ
+              ARG arg0: CALL 'public open fun foo (): kotlin.String declared in <root>.WithInnerFamily.Inner' type=kotlin.String origin=null
+                ARG <this>: GET_VAR 'val innerE: <root>.WithInnerFamily.Inner<kotlin.String, kotlin.Int> declared in <root>.box' type=<root>.WithInnerFamily.Inner<kotlin.String, kotlin.Int> origin=null
+              ARG arg1: CONST String type=kotlin.String value="ok"
+          then: RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in <root>'
+            STRING_CONCATENATION type=kotlin.String
+              CONST String type=kotlin.String value="FAIL innerE.foo: "
+              CALL 'public open fun foo (): kotlin.String declared in <root>.WithInnerFamily.Inner' type=kotlin.String origin=null
+                ARG <this>: GET_VAR 'val innerE: <root>.WithInnerFamily.Inner<kotlin.String, kotlin.Int> declared in <root>.box' type=<root>.WithInnerFamily.Inner<kotlin.String, kotlin.Int> origin=null
       RETURN type=kotlin.Nothing from='public final fun box (): kotlin.String declared in <root>'
         CONST String type=kotlin.String value="OK"

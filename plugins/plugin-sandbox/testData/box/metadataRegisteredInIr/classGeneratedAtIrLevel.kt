@@ -15,6 +15,12 @@ class SourceWithNested
 // Test (7): source-declared outer that gets a plugin-generated companion object added inside it.
 class SourceWithCompanion
 
+// Tests (9)-(12): source-declared outer classes that get plugin-generated inner classes added.
+class SourceOuterPlain
+class SourceOuterPlain2
+class SourceOuterGeneric<T>
+class SourceOuterGenericPaired<T>
+
 @GenerateClassFamily
 class Marker
 
@@ -64,6 +70,32 @@ fun box(): String {
     val inner = WithNestedFamily.Inner()
     if (inner.x != 42) return "FAIL inner.x: ${inner.x}"
     if (WithNestedFamily.fromCompanion() != "from-companion") return "FAIL companion fn"
+
+    // (9) Inner class with no generics inside an outer with no generics.
+    val innerA = SourceOuterPlain().InnerPlain()
+    if (innerA.x != 42) return "FAIL innerA.x: ${innerA.x}"
+    if (innerA.foo() != "ok") return "FAIL innerA.foo: ${innerA.foo()}"
+
+    // (10) Inner class with no generics inside an outer with generics.
+    val innerB = SourceOuterGeneric<String>().InnerPlain()
+    if (innerB.x != 42) return "FAIL innerB.x: ${innerB.x}"
+    if (innerB.foo() != "ok") return "FAIL innerB.foo: ${innerB.foo()}"
+
+    // (11) Inner class with generics inside an outer with no generics.
+    val innerC = SourceOuterPlain2().InnerGeneric<String>()
+    if (innerC.x != 42) return "FAIL innerC.x: ${innerC.x}"
+    if (innerC.foo() != "ok") return "FAIL innerC.foo: ${innerC.foo()}"
+
+    // (12) Both inner and outer generic.
+    val innerD = SourceOuterGenericPaired<Int>().InnerGeneric<String>()
+    if (innerD.x != 42) return "FAIL innerD.x: ${innerD.x}"
+    if (innerD.foo() != "ok") return "FAIL innerD.foo: ${innerD.foo()}"
+
+    // (13) Inner class inside a plugin-generated outer (both generic).
+    val withInner = WithInnerFamily<Int>()
+    val innerE = withInner.Inner<String>()
+    if (innerE.x != 42) return "FAIL innerE.x: ${innerE.x}"
+    if (innerE.foo() != "ok") return "FAIL innerE.foo: ${innerE.foo()}"
 
     return "OK"
 }

@@ -41,6 +41,7 @@ import org.jetbrains.kotlin.ir.types.*
 import org.jetbrains.kotlin.ir.util.*
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.types.ConstantValueKind
+import org.jetbrains.kotlin.utils.addToStdlib.runIf
 
 // opt-in is safe, this code runs after fir2ir is over and all symbols are bound
 @OptIn(UnsafeDuringIrConstructionAPI::class)
@@ -359,6 +360,11 @@ class Fir2IrIrGeneratedDeclarationsRegistrar(private val components: Fir2IrCompo
             error("Enum classes are not supported for registerClassAsMetadataVisible: ${irClass.render()}")
         }
 
+        val outerFirClass: FirRegularClass? = runIf(irClass.isInner) {
+            val parentIrClass = irClass.parent as? IrClass
+                ?: error("Inner class must have an IrClass parent: ${irClass.render()}")
+            parentIrClass.toFirClass()
+        }
         val firClassSymbol = FirRegularClassSymbol(irClass.classIdOrFail)
         val firClass = buildRegularClass {
             moduleData = session.moduleData
@@ -387,7 +393,7 @@ class Fir2IrIrGeneratedDeclarationsRegistrar(private val components: Fir2IrCompo
                 isFun = irClass.isFun
                 isExternal = irClass.isExternal
             }
-            convertTypeParameters(irClass.typeParameters, typeParameters, firClassSymbol)
+            convertTypeParametersForClass(irClass, typeParameters, firClassSymbol, outerFirClass)
         }
 
         // Stash class metadata BEFORE recursing into members so per-member register methods
@@ -561,6 +567,28 @@ class Fir2IrIrGeneratedDeclarationsRegistrar(private val components: Fir2IrCompo
         }
     }
 
+    private fun convertTypeParametersForClass(
+        irClass: IrClass,
+        firTypeParameters: MutableList<FirTypeParameterRef>,
+        containingClassFirSymbol: FirRegularClassSymbol,
+        outerFirClass: FirRegularClass?,
+    ) {
+        val capturedCount = if (irClass.isInner) {
+            requireNotNull(outerFirClass) { "Inner class must have an outer FIR class: ${irClass.render()}" }
+            // Mirror the outer's typeParameters one-to-one as FirOuterClassTypeParameterRefs whose
+            // `.symbol` is the outer's existing FirTypeParameterSymbol. If the outer is itself
+            // inner, its list already contains nested FirOuterClassTypeParameterRef entries;
+            // copying by `.symbol` keeps every captured ref pointing at the original
+            // FirTypeParameter, so chained inner classes resolve transitively.
+            for (outerTpRef in outerFirClass.typeParameters) {
+                firTypeParameters += buildOuterClassTypeParameterRef { symbol = outerTpRef.symbol }
+            }
+            outerFirClass.typeParameters.size
+        } else 0
+        val ownIrTypeParameters = irClass.typeParameters.drop(capturedCount)
+        convertTypeParameters(ownIrTypeParameters, firTypeParameters, containingClassFirSymbol)
+    }
+
     private fun convertTypeParameters(
         irTypeParameters: List<IrTypeParameter>,
         firTypeParameters: MutableList<in FirTypeParameter>,
@@ -587,8 +615,10 @@ class Fir2IrIrGeneratedDeclarationsRegistrar(private val components: Fir2IrCompo
         firTypeParameters: List<FirTypeParameterRef>,
     ) {
         for ([firParameter, irParameter] in firTypeParameters.zip(irTypeParameters)) {
+            // Skip captured outer-class type parameters of inner classes — bounds/annotations
+            // are owned by the outer FirTypeParameter and must not be replaced here.
+            if (firParameter !is FirTypeParameter) continue
             val newBounds = irParameter.superTypes.map { it.toConeType().toFirResolvedTypeRef() }
-            require(firParameter is FirTypeParameter) { "Expected FirTypeParameter, got $firParameter" }
             firParameter.replaceBounds(newBounds)
             firParameter.replaceAnnotations(irParameter.convertAnnotations())
         }
