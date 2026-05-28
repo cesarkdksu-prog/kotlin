@@ -16,6 +16,8 @@
 
 package org.jetbrains.ring
 
+import kotlinx.benchmark.Blackhole
+
 /**
  * This class tests linked list performance
  * using prime number calculation algorithms
@@ -24,7 +26,7 @@ open class PrimeListBenchmark {
     private var primes: MutableList<Int> = mutableListOf()
 
     //Benchmark
-    fun calcDirect() {
+    fun calcDirect(bh: Blackhole) {
         primes.clear()
         primes.add(2)
         var i = 3
@@ -42,10 +44,11 @@ open class PrimeListBenchmark {
                 primes.add(i)
             i += 2
         }
+        bh.consume(primes)
     }
 
     //Benchmark
-    fun calcEratosthenes() {
+    fun calcEratosthenes(bh: Blackhole) {
         primes.clear()
         primes.addAll(2..BENCHMARK_SIZE)
         var i = 0
@@ -54,5 +57,6 @@ open class PrimeListBenchmark {
             primes.removeAll { it -> it > divisor && it % divisor == 0 }
             i++
         }
+        bh.consume(primes)
     }
 }

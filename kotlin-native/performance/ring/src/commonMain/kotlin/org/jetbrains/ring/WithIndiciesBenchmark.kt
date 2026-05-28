@@ -16,7 +16,7 @@
 
 package org.jetbrains.ring
 
-import org.jetbrains.benchmarksLauncher.Blackhole
+import kotlinx.benchmark.Blackhole
 
 open class WithIndiciesBenchmark {
     private var _data: ArrayList<Value>? = null
@@ -31,22 +31,22 @@ open class WithIndiciesBenchmark {
     }
 
     //Benchmark
-    fun withIndicies() {
+    fun withIndicies(bh: Blackhole) {
         for ((index, value) in data.withIndex()) {
             if (filterLoad(value)) {
-                Blackhole.consume(index)
-                Blackhole.consume(value)
+                bh.consume(index)
+                bh.consume(value)
             }
         }
     }
 
     //Benchmark
-    fun withIndiciesManual() {
+    fun withIndiciesManual(bh: Blackhole) {
         var index = 0
         for (value in data) {
             if (filterLoad(value)) {
-                Blackhole.consume(index)
-                Blackhole.consume(value)
+                bh.consume(index)
+                bh.consume(value)
             }
             index++
         }

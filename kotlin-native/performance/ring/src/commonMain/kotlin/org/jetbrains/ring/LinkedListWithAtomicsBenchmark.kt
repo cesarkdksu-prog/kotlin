@@ -5,9 +5,10 @@
 
 package org.jetbrains.ring
 
-import org.jetbrains.benchmarksLauncher.Random
+import kotlin.random.Random
+import kotlinx.benchmark.Blackhole
 
-class ChunkBuffer(var readPosition: Int, var writePosition: Int = readPosition + Random.nextInt(50)) {
+class ChunkBuffer(var readPosition: Int, var writePosition: Int) {
     private val nextRef: AtomicRef<ChunkBuffer?> = atomic(null)
 
     /**
@@ -64,11 +65,15 @@ class LinkedListOfBuffers(var head: ChunkBuffer = ChunkBuffer(0,0),
 }
 
 open class LinkedListWithAtomicsBenchmark {
+    // Use the same seed for reproducibility
+    private val rnd = Random(0)
+
     val list: LinkedListOfBuffers
     init {
         val chunks: MutableList<ChunkBuffer> = ArrayList()
         (0..BENCHMARK_SIZE/2).forEachIndexed { index, i ->
-            val chunk = ChunkBuffer(Random.nextInt())
+            val readPosition = rnd.nextInt()
+            val chunk = ChunkBuffer(readPosition, readPosition + rnd.nextInt(50))
             chunks.add(chunk)
             if (i > 0)
                 chunks[i - 1].next = chunk
@@ -81,10 +86,14 @@ open class LinkedListWithAtomicsBenchmark {
         return when {
             next == null -> null
             else -> {
-                list.tailRemaining = Random.nextInt().toLong() + 1
+                list.tailRemaining = rnd.nextInt().toLong() + 1
                 ensureNext(next)
             }
         }
+    }
+
+    fun benchmark(bh: Blackhole) {
+        bh.consume(ensureNext())
     }
 }
 

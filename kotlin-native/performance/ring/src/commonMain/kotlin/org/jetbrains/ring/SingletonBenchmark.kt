@@ -5,23 +5,26 @@
 
 package org.jetbrains.ring
 
-import org.jetbrains.benchmarksLauncher.Blackhole
-import org.jetbrains.benchmarksLauncher.Random
+import kotlin.random.Random
+import kotlinx.benchmark.Blackhole
 
 private object A {
-    val a = Random.nextInt(100)
+    // Use the same seed for reproducibility
+    private val rnd = Random(0)
+
+    val a = rnd.nextInt(100)
 }
 
 open class SingletonBenchmark {
     init {
         // Make sure A is initialized.
-        Blackhole.consume(A.a)
+        A.a
     }
 
     // Benchmark
-    fun access() {
+    fun access(bh: Blackhole) {
         for (i in 0 until BENCHMARK_SIZE) {
-            Blackhole.consume(A.a)
+            bh.consume(A.a)
         }
     }
 }

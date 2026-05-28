@@ -16,6 +16,8 @@
 
 package org.jetbrains.ring
 
+import kotlinx.benchmark.Blackhole
+
 /**
  * This test checks work with long numbers using Fibonacci sequence
  *
@@ -28,7 +30,7 @@ package org.jetbrains.ring
 open class FibonacciBenchmark {
 
     //Benchmark
-    fun calcClassic(): Long {
+    fun calcClassic(bh: Blackhole) {
         var a = 1L
         var b = 2L
         val size = BENCHMARK_SIZE
@@ -37,11 +39,11 @@ open class FibonacciBenchmark {
             a = b
             b = next
         }
-        return b
+        bh.consume(b)
     }
 
     //Benchmark
-    fun calc(): Long {
+    fun calc(bh: Blackhole) {
         // This test works CRITICALLY slower compared with java equivalent (05.03.2015)
         var a = 1L
         var b = 2L
@@ -51,11 +53,11 @@ open class FibonacciBenchmark {
             a = b
             b = next
         }
-        return b
+        bh.consume(b)
     }
 
     //Benchmark
-    fun calcWithProgression(): Long {
+    fun calcWithProgression(bh: Blackhole) {
         // This test works CRITICALLY slower compared with java equivalent (05.03.2015)
         var a = 1L
         var b = 2L
@@ -65,11 +67,11 @@ open class FibonacciBenchmark {
             a = b
             b = next
         }
-        return b
+        bh.consume(b)
     }
 
     //Benchmark
-    fun calcSquare(): Long {
+    fun calcSquare(bh: Blackhole) {
         // This test works CRITICALLY slower compared with java equivalent (05.03.2015)
         var a = 1L
         var b = 2L
@@ -81,6 +83,6 @@ open class FibonacciBenchmark {
             a = b
             b = next
         }
-        return b
+        bh.consume(b)
     }
 }

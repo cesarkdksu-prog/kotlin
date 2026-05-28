@@ -16,64 +16,64 @@
 
 package org.jetbrains.ring
 
-import org.jetbrains.benchmarksLauncher.Blackhole
+import kotlinx.benchmark.Blackhole
 
 open class ClassBaselineBenchmark {
 
     //Benchmark 
-    fun consume() {
+    fun consume(bh: Blackhole) {
         for (item in 1..BENCHMARK_SIZE) {
-            Blackhole.consume(Value(item))
+            bh.consume(Value(item))
         }
     }
 
     //Benchmark 
-    fun consumeField() {
+    fun consumeField(bh: Blackhole) {
         val value = Value(0)
         for (item in 1..BENCHMARK_SIZE) {
             value.value = item
-            Blackhole.consume(value)
+            bh.consume(value)
         }
     }
 
     //Benchmark 
-    fun allocateList(): List<Value> {
+    fun allocateList(bh: Blackhole) {
         val list = ArrayList<Value>(BENCHMARK_SIZE)
-        return list
+        bh.consume(list)
     }
 
     //Benchmark 
-    fun allocateArray(): Array<Value?> {
+    fun allocateArray(bh: Blackhole) {
         val list = arrayOfNulls<Value>(BENCHMARK_SIZE)
-        return list
+        bh.consume(list)
     }
 
     //Benchmark 
-    fun allocateListAndFill(): List<Value> {
+    fun allocateListAndFill(bh: Blackhole) {
         val list = ArrayList<Value>(BENCHMARK_SIZE)
         for (item in 1..BENCHMARK_SIZE) {
             list.add(Value(item))
         }
-        return list
+        bh.consume(list)
     }
 
     //Benchmark 
-    fun allocateListAndWrite(): List<Value> {
+    fun allocateListAndWrite(bh: Blackhole) {
         val value = Value(0)
         val list = ArrayList<Value>(BENCHMARK_SIZE)
         for (item in 1..BENCHMARK_SIZE) {
             list.add(value)
         }
-        return list
+        bh.consume(list)
     }
 
     //Benchmark 
-    fun allocateArrayAndFill(): Array<Value?> {
+    fun allocateArrayAndFill(bh: Blackhole) {
         val list = arrayOfNulls<Value>(BENCHMARK_SIZE)
         var index = 0
         for (item in 1..BENCHMARK_SIZE) {
             list[index++] = Value(item)
         }
-        return list
+        bh.consume(list)
     }
 }

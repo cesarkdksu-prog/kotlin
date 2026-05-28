@@ -1,6 +1,7 @@
 package org.jetbrains.ring
 
 import kotlin.experimental.and
+import kotlinx.benchmark.Blackhole
 
 class CoordinatesSolverBenchmark {
     val solver: Solver
@@ -336,15 +337,11 @@ class CoordinatesSolverBenchmark {
         return input
     }
 
-    fun solve() {
+    fun solve(bh: Blackhole) {
         val output = solver.solve()
 
         for (c in output.steps) {
-            val value = if (c == null) {
-                "felvesz"
-            } else {
-                "${c.x} ${c.y}"
-            }
+            bh.consume(c)
         }
     }
 }

@@ -16,7 +16,7 @@
 
 package org.jetbrains.ring
 
-import org.jetbrains.benchmarksLauncher.Blackhole
+import kotlinx.benchmark.Blackhole
 
 fun makeIterable(): Iterable<Int> = (0..BENCHMARK_SIZE)
 
@@ -31,19 +31,19 @@ internal inline fun sum(iterable: Iterable<Int>): Int {
 open class IteratorBenchmark {
     val iterable = makeIterable()
 
-    fun baseline() {
+    fun baseline(bh: Blackhole) {
         var sum = 0
         for (i in 0..BENCHMARK_SIZE) {
             sum += i
         }
-        Blackhole.consume(sum)
+        bh.consume(sum)
     }
 
-    fun concreteIterable() {
-        Blackhole.consume(sum((0..BENCHMARK_SIZE)))
+    fun concreteIterable(bh: Blackhole) {
+        bh.consume(sum((0..BENCHMARK_SIZE)))
     }
 
-    fun abstractIterable() {
-        Blackhole.consume(sum(iterable))
+    fun abstractIterable(bh: Blackhole) {
+        bh.consume(sum(iterable))
     }
 }

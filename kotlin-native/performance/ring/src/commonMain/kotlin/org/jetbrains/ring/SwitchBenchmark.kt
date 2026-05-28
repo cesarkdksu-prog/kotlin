@@ -16,8 +16,8 @@
 
 package org.jetbrains.ring
 
-import org.jetbrains.benchmarksLauncher.Blackhole
-import org.jetbrains.benchmarksLauncher.Random
+import kotlin.random.Random
+import kotlinx.benchmark.Blackhole
 
 val SPARSE_SWITCH_CASES = intArrayOf(11, 29, 47, 71, 103,
                                      149, 175, 227, 263, 307,
@@ -480,37 +480,37 @@ open class SwitchBenchmark {
 
 
     //Benchmark 
-    fun testSparseIntSwitch() {
+    fun testSparseIntSwitch(bh: Blackhole) {
         for (i in sparseIntData) {
-            Blackhole.consume(sparseIntSwitch(i))
+            bh.consume(sparseIntSwitch(i))
         }
     }
 
     //Benchmark 
-    fun testDenseIntSwitch() {
+    fun testDenseIntSwitch(bh: Blackhole) {
         for (i in denseIntData) {
-            Blackhole.consume(denseIntSwitch(i))
+            bh.consume(denseIntSwitch(i))
         }
     }
 
     //Benchmark 
-    fun testConstSwitch() {
+    fun testConstSwitch(bh: Blackhole) {
         for (i in denseIntData) {
-            Blackhole.consume(constSwitch(i))
+            bh.consume(constSwitch(i))
         }
     }
 
     //Benchmark 
-    fun testObjConstSwitch() {
+    fun testObjConstSwitch(bh: Blackhole) {
         for (i in denseIntData) {
-            Blackhole.consume(objConstSwitch(i))
+            bh.consume(objConstSwitch(i))
         }
     }
 
     //Benchmark 
-    fun testVarSwitch() {
+    fun testVarSwitch(bh: Blackhole) {
         for (i in denseIntData) {
-            Blackhole.consume(varSwitch(i))
+            bh.consume(varSwitch(i))
         }
     }
 
@@ -519,10 +519,10 @@ open class SwitchBenchmark {
 
 
     //Benchmark 
-    fun testStringsSwitch() {
+    fun testStringsSwitch(bh: Blackhole) {
         val n = data.size
         for (s in data) {
-            Blackhole.consume(stringSwitch(s))
+            bh.consume(stringSwitch(s))
         }
     }
 
@@ -588,20 +588,20 @@ open class SwitchBenchmark {
 
 
     //Benchmark 
-    fun testEnumsSwitch() {
+    fun testEnumsSwitch(bh: Blackhole) {
         val n = enumData.size -1
         val data = enumData
         for (i in 0..n) {
-            Blackhole.consume(enumSwitch(data[i]))
+            bh.consume(enumSwitch(data[i]))
         }
     }
 
     //Benchmark 
-    fun testDenseEnumsSwitch() {
+    fun testDenseEnumsSwitch(bh: Blackhole) {
         val n = denseEnumData.size -1
         val data = denseEnumData
         for (i in 0..n) {
-            Blackhole.consume(denseEnumSwitch(data[i]))
+            bh.consume(denseEnumSwitch(data[i]))
         }
     }
 
@@ -621,8 +621,10 @@ open class SwitchBenchmark {
     lateinit var sealedClassData: Array<MySealedClass>
 
     init {
+        // Use the same seed for reproducibility
+        val rnd = Random(0)
         data = Array(BENCHMARK_SIZE) {
-            "ABCDEFG" + Random.nextInt(22)
+            "ABCDEFG" + rnd.nextInt(22)
         }
         enumData = Array(BENCHMARK_SIZE) {
             MyEnum.values()[it % MyEnum.values().size]
@@ -630,10 +632,10 @@ open class SwitchBenchmark {
         denseEnumData = Array(BENCHMARK_SIZE) {
             MyEnum.values()[it % 20]
         }
-        denseIntData = IntArray(BENCHMARK_SIZE) { Random.nextInt(25) - 1 }
-        sparseIntData = IntArray(BENCHMARK_SIZE) { SPARSE_SWITCH_CASES[Random.nextInt(20)] }
+        denseIntData = IntArray(BENCHMARK_SIZE) { rnd.nextInt(25) - 1 }
+        sparseIntData = IntArray(BENCHMARK_SIZE) { SPARSE_SWITCH_CASES[rnd.nextInt(20)] }
         sealedClassData = Array(BENCHMARK_SIZE) {
-            when(Random.nextInt(10)) {
+            when(rnd.nextInt(10)) {
                 0 -> MySealedClass.MySealedClass1()
                 1 -> MySealedClass.MySealedClass2()
                 2 -> MySealedClass.MySealedClass3()
@@ -665,10 +667,10 @@ open class SwitchBenchmark {
 
 
     //Benchmark 
-    fun testSealedWhenSwitch() {
+    fun testSealedWhenSwitch(bh: Blackhole) {
         val n = sealedClassData.size -1
         for (i in 0..n) {
-            Blackhole.consume(sealedWhenSwitch(sealedClassData[i]))
+            bh.consume(sealedWhenSwitch(sealedClassData[i]))
         }
     }
 }

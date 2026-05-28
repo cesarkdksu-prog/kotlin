@@ -16,8 +16,8 @@
 
 package org.jetbrains.ring
 
-import org.jetbrains.benchmarksLauncher.Blackhole
-import org.jetbrains.benchmarksLauncher.Random
+import kotlin.random.Random
+import kotlinx.benchmark.Blackhole
 
 /**
  * This class emulates matrix behaviour using a hash map as its implementation
@@ -25,10 +25,10 @@ import org.jetbrains.benchmarksLauncher.Random
 class KMatrix internal constructor(val rows: Int, val columns: Int) {
     private val matrix: MutableMap<Pair<Int, Int>, Double> = HashMap();
 
-    init {
+    fun randomize(rnd: Random) {
         for (row in 0..rows-1) {
             for (col in 0..columns-1) {
-                matrix.put(Pair(row, col), Random.nextDouble())
+                matrix.put(Pair(row, col), rnd.nextDouble())
             }
         }
     }
@@ -56,9 +56,11 @@ class KMatrix internal constructor(val rows: Int, val columns: Int) {
  * This class tests hash map performance
  */
 open class MatrixMapBenchmark {
+    // Use the same seed for reproducibility
+    private val rnd = Random(0)
 
     //Benchmark
-    fun add(): KMatrix {
+    fun add(bh: Blackhole) {
         var rows = BENCHMARK_SIZE
         var cols = 1
         while (rows > cols) {
@@ -66,9 +68,11 @@ open class MatrixMapBenchmark {
             cols *= 2
         }
         val a = KMatrix(rows, cols)
+        a.randomize(rnd)
         val b = KMatrix(rows, cols)
+        b.randomize(rnd)
         a += b
-        return a
+        bh.consume(a)
     }
 
 }

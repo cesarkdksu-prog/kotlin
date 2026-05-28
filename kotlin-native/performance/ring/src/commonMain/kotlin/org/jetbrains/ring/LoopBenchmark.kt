@@ -16,7 +16,7 @@
 
 package org.jetbrains.ring
 
-import org.jetbrains.benchmarksLauncher.Blackhole
+import kotlinx.benchmark.Blackhole
 
 open class LoopBenchmark {
     lateinit var arrayList: List<Value>
@@ -31,50 +31,50 @@ open class LoopBenchmark {
     }
 
     //Benchmark 
-    fun arrayLoop() {
+    fun arrayLoop(bh: Blackhole) {
         for (x in array) {
-            Blackhole.consume(x)
+            bh.consume(x)
         }
     }
 
     //Benchmark 
-    fun arrayIndexLoop() {
+    fun arrayIndexLoop(bh: Blackhole) {
         for (i in array.indices) {
-            Blackhole.consume(array[i])
+            bh.consume(array[i])
         }
     }
 
     //Benchmark 
-    fun rangeLoop() {
+    fun rangeLoop(bh: Blackhole) {
         for (i in 0..BENCHMARK_SIZE) {
-            Blackhole.consume(i)
+            bh.consume(i)
         }
     }
 
     //Benchmark 
-    fun arrayListLoop() {
+    fun arrayListLoop(bh: Blackhole) {
         for (x in arrayList) {
-            Blackhole.consume(x)
+            bh.consume(x)
         }
     }
 
     //Benchmark 
-    fun arrayWhileLoop() {
+    fun arrayWhileLoop(bh: Blackhole) {
         var i = 0
         val s = array.size
         while (i < s) {
-            Blackhole.consume(array[i])
+            bh.consume(array[i])
             i++
         }
     }
 
     //Benchmark 
-    fun arrayForeachLoop() {
-        array.forEach { Blackhole.consume(it) }
+    fun arrayForeachLoop(bh: Blackhole) {
+        array.forEach { bh.consume(it) }
     }
 
     //Benchmark 
-    fun arrayListForeachLoop() {
-        arrayList.forEach { Blackhole.consume(it) }
+    fun arrayListForeachLoop(bh: Blackhole) {
+        arrayList.forEach { bh.consume(it) }
     }
 }

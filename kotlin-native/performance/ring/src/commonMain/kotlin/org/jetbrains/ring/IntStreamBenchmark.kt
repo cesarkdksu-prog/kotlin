@@ -16,7 +16,7 @@
 
 package org.jetbrains.ring
 
-import org.jetbrains.benchmarksLauncher.Blackhole
+import kotlinx.benchmark.Blackhole
 
 open class IntStreamBenchmark {
     private var _data: Iterable<Int>? = null
@@ -28,76 +28,76 @@ open class IntStreamBenchmark {
     }
     
     //Benchmark
-    fun copy(): List<Int> {
-        return data.asSequence().toList()
+    fun copy(bh: Blackhole) {
+        bh.consume(data.asSequence().toList())
     }
     
     //Benchmark
-    fun copyManual(): List<Int> {
+    fun copyManual(bh: Blackhole) {
         val list = ArrayList<Int>()
         for (item in data.asSequence()) {
             list.add(item)
         }
-        return list
+        bh.consume(list)
     }
     
     //Benchmark
-    fun filterAndCount(): Int {
-        return data.asSequence().filter { filterLoad(it) }.count()
+    fun filterAndCount(bh: Blackhole) {
+        bh.consume(data.asSequence().filter { filterLoad(it) }.count())
     }
     
     //Benchmark
-    fun filterAndMap() {
+    fun filterAndMap(bh: Blackhole) {
         for (item in data.asSequence().filter { filterLoad(it) }.map { mapLoad(it) })
-            Blackhole.consume(item)
+            bh.consume(item)
     }
     
     //Benchmark
-    fun filterAndMapManual() {
+    fun filterAndMapManual(bh: Blackhole) {
         for (it in data.asSequence()) {
             if (filterLoad(it)) {
                 val item = mapLoad(it)
-                Blackhole.consume(item)
+                bh.consume(item)
             }
         }
     }
     
     //Benchmark
-    fun filter() {
+    fun filter(bh: Blackhole) {
         for (item in data.asSequence().filter { filterLoad(it) })
-            Blackhole.consume(item)
+            bh.consume(item)
     }
     
     //Benchmark
-    fun filterManual(){
+    fun filterManual(bh: Blackhole){
         for (it in data.asSequence()) {
             if (filterLoad(it))
-                Blackhole.consume(it)
+                bh.consume(it)
         }
     }
     
     //Benchmark
-    fun countFilteredManual(): Int {
+    fun countFilteredManual(bh: Blackhole) {
         var count = 0
         for (it in data.asSequence()) {
             if (filterLoad(it))
                 count++
         }
-        return count
+        bh.consume(count)
     }
     
     //Benchmark
-    fun countFiltered(): Int {
-        return data.asSequence().count { filterLoad(it) }
+    fun countFiltered(bh: Blackhole) {
+        bh.consume(data.asSequence().count { filterLoad(it) })
     }
     
     //Benchmark
-    fun countFilteredLocal(): Int {
-        return data.asSequence().cnt { filterLoad(it) }
+    fun countFilteredLocal(bh: Blackhole) {
+        bh.consume(data.asSequence().cnt { filterLoad(it) })
     }
     
     //Benchmark
-    fun reduce(): Int {
-        return data.asSequence().fold(0) {acc, it -> if (filterLoad(it)) acc + 1 else acc }
+    fun reduce(bh: Blackhole) {
+        bh.consume(data.asSequence().fold(0) {acc, it -> if (filterLoad(it)) acc + 1 else acc })
     }
 }

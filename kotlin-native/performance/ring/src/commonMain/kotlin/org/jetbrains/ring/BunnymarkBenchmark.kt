@@ -5,8 +5,8 @@
 
 package org.jetbrains.ring
 
-import org.jetbrains.benchmarksLauncher.Blackhole
 import kotlin.random.Random
+import kotlinx.benchmark.Blackhole
 
 // Benchmark for KT-46425.
 open class BunnymarkBenchmark {
@@ -20,7 +20,7 @@ open class BunnymarkBenchmark {
     val containerSize = 800_000
 
     //Benchmark
-    fun testBunnymark() {
+    fun testBunnymark(bh: Blackhole) {
         val bunnys = BunnyContainer(containerSize)
 
         for (n in 0 until bunnys.maxSize) bunnys.alloc()
@@ -58,6 +58,7 @@ open class BunnymarkBenchmark {
         for (n in 0 until framesCount) {
             executeFrame()
         }
+        bh.consume(bunnys)
     }
 }
 

@@ -2,7 +2,9 @@
  * Created by semoro on 07.07.17.
  */
 
-fun octoTest() {
+import kotlinx.benchmark.Blackhole
+
+fun octoTest(bh: Blackhole) {
     val tree = OctoTree<Boolean>(4)
     val to = (2 shl tree.depth)
 
@@ -37,8 +39,7 @@ fun octoTest() {
 
                 val res = tree.get(x, y, z)
 
-                @OptIn(kotlin.experimental.ExperimentalNativeApi::class)
-                assert(res == c)
+                bh.consume(res)
                 z++
             }
             y++

@@ -15,12 +15,14 @@
  */
 
 package org.jetbrains.structsProducedByMacrosBenchmarks
+
+import kotlinx.benchmark.Blackhole
 import kotlinx.cinterop.*
 import kotlin.math.abs
 
 const val benachmarkSize = 1000
 
-actual fun macrosBenchmark() {
+actual fun macrosBenchmark(bh: Blackhole) {
     memScoped {
         val ints = new_list_int()
         for (i in 1..benachmarkSize) {

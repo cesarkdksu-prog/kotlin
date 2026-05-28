@@ -14,20 +14,15 @@
  * limitations under the License.
  */
 
-import kotlinx.benchmark.Benchmark
-import kotlinx.benchmark.BenchmarkTimeUnit
-import kotlinx.benchmark.Measurement
-import kotlinx.benchmark.Scope
-import kotlinx.benchmark.State
-import org.jetbrains.benchmarksLauncher.*
+import kotlinx.benchmark.*
 
 @State(Scope.Benchmark)
 @Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class LoopHideName {
     @Benchmark
-    fun Loop() {
+    fun Loop(bh: Blackhole) {
         for (i in 0..10000) {
-            Blackhole.consume(i)
+            bh.consume(i)
         }
     }
 }
