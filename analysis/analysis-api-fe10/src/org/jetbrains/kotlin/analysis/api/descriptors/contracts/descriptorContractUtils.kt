@@ -21,7 +21,6 @@ import org.jetbrains.kotlin.analysis.api.impl.base.contracts.description.KaBaseC
 import org.jetbrains.kotlin.analysis.api.impl.base.contracts.description.KaBaseContractReturnsContractEffectDeclarations.KaBaseContractReturnsNotNullEffectDeclaration
 import org.jetbrains.kotlin.analysis.api.impl.base.contracts.description.KaBaseContractReturnsContractEffectDeclarations.KaBaseContractReturnsSpecificValueEffectDeclaration
 import org.jetbrains.kotlin.analysis.api.impl.base.contracts.description.KaBaseContractReturnsContractEffectDeclarations.KaBaseContractReturnsSuccessfullyEffectDeclaration
-import org.jetbrains.kotlin.analysis.api.impl.base.contracts.description.toKaContractInvocationKind
 import org.jetbrains.kotlin.analysis.api.impl.base.contracts.description.booleans.*
 import org.jetbrains.kotlin.analysis.api.symbols.KaParameterSymbol
 import org.jetbrains.kotlin.contracts.description.*
@@ -71,7 +70,6 @@ private class ContractDescriptionElementToAnalysisApi(val analysisContext: Fe10A
         return KaBaseContractCallsInPlaceContractEffectDeclaration(
             backingValueParameterReference = callsEffect.variableReference.accept(),
             backingOccurrencesRange = callsEffect.kind,
-            backingInvocationKind = callsEffect.kind.toKaContractInvocationKind()
         )
     }
 
