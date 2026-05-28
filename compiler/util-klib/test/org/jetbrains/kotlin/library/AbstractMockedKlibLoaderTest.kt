@@ -28,6 +28,7 @@ abstract class AbstractMockedKlibLoaderTest(
         sourceFile: File,
         klibLocation: File,
         abiVersion: KotlinAbiVersion,
+        withCompanionBlocksAndExtensionsFeature: Boolean
     ) {
         val klibDir = if (asFile)
             klibLocation.resolveSibling(klibLocation.name + "-dir")
