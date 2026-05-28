@@ -359,6 +359,11 @@ fun serializeModuleIntoKlib(
         p.setProperty(KLIB_PROPERTY_SERIALIZED_KLIB_FINGERPRINT, SerializedKlibFingerprint(fingerprints).klibFingerprint.toString())
 
         addLanguageFeaturesToManifest(p, configuration.languageVersionSettings)
+
+        p.setProperty(
+            KLIB_PROPERTY_NEW_COMPANION_INITIALIZATION,
+            configuration.languageVersionSettings.supportsFeature(LanguageFeature.CompanionBlocksAndExtensions).toString()
+        )
     }
 
     performanceManager.tryMeasurePhaseTime(PhaseType.KlibWriting) {

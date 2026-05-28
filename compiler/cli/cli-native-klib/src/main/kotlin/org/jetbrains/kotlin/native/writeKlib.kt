@@ -9,6 +9,7 @@ import org.jetbrains.kotlin.backend.common.klibAbiVersionForManifest
 import org.jetbrains.kotlin.backend.common.serialization.addLanguageFeaturesToManifest
 import org.jetbrains.kotlin.backend.konan.driver.NativePhaseContext
 import org.jetbrains.kotlin.config.KotlinCompilerVersion
+import org.jetbrains.kotlin.config.LanguageFeature
 import org.jetbrains.kotlin.config.languageVersionSettings
 import org.jetbrains.kotlin.konan.config.konanDontCompressKlib
 import org.jetbrains.kotlin.konan.file.File
@@ -18,6 +19,7 @@ import org.jetbrains.kotlin.konan.library.writer.legacyNativeDependenciesInManif
 import org.jetbrains.kotlin.konan.library.writer.legacyNativeShortNameInManifest
 import org.jetbrains.kotlin.library.KLIB_PROPERTY_NATIVE_TARGETS
 import org.jetbrains.kotlin.library.KLIB_PROPERTY_HEADER
+import org.jetbrains.kotlin.library.KLIB_PROPERTY_NEW_COMPANION_INITIALIZATION
 import org.jetbrains.kotlin.library.KlibFormat
 import org.jetbrains.kotlin.library.KotlinLibraryVersioning
 import org.jetbrains.kotlin.library.impl.BuiltInsPlatform
@@ -51,6 +53,11 @@ fun NativePhaseContext.writeKlib(input: KlibWriterInput) {
     }
 
     addLanguageFeaturesToManifest(manifestProperties, configuration.languageVersionSettings)
+
+    manifestProperties.setProperty(
+        KLIB_PROPERTY_NEW_COMPANION_INITIALIZATION,
+        configuration.languageVersionSettings.supportsFeature(LanguageFeature.CompanionBlocksAndExtensions).toString()
+    )
 
     if (!dontCompressKlib) {
         if (!klibOutputFileName.endsWith(suffix)) {
