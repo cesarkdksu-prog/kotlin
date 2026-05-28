@@ -15,11 +15,14 @@
  */
 
 import kotlinx.benchmark.Benchmark
+import kotlinx.benchmark.BenchmarkTimeUnit
+import kotlinx.benchmark.Measurement
 import kotlinx.benchmark.Scope
 import kotlinx.benchmark.State
 import org.jetbrains.benchmarksLauncher.*
 
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class LoopHideName {
     @Benchmark
     fun Loop() {
