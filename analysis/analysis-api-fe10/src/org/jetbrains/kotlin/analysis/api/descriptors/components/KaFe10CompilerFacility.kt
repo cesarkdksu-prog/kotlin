@@ -73,8 +73,8 @@ internal class KaFe10CompilerFacility(
     }
 
     @OptIn(KaImplementationDetail::class)
-    override fun KaCompilationOptions.copy(init: KaCompilationOptionsBuilder.() -> Unit): KaCompilationOptions {
-        return (this as KaBaseCompilationOptions).copy(init)
+    override fun KaCompilationOptions.modify(init: KaCompilationOptionsBuilder.() -> Unit): KaCompilationOptions {
+        return (this as KaBaseCompilationOptions).modify(init)
     }
 
     private fun compileUnsafe(
