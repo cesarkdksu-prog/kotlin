@@ -515,28 +515,31 @@ internal class CastsOptimization(val context: Context) : BodyLoweringPass {
                     IrGetValueImpl(UNDEFINED_OFFSET, UNDEFINED_OFFSET, variable.symbol)
                 }
 
-        fun controlFlowMergePoint(cfmpInfo: ControlFlowMergePointInfo, result: VisitorResult) {
-            for ((variable, alias) in variableAliases) {
-                val accumulatedAlias = cfmpInfo.variableAliases[variable]
+        fun ControlFlowMergePointInfo.merge(result: VisitorResult) {
+            for ((variable, alias) in this@TypeCheckResolver.variableAliases) {
+                val accumulatedAlias = variableAliases[variable]
                 if (accumulatedAlias == null)
-                    cfmpInfo.variableAliases[variable] = alias
+                    variableAliases[variable] = alias
                 else if (accumulatedAlias != alias && accumulatedAlias != multipleValuesMarker)
-                    cfmpInfo.variableAliases[variable] = multipleValuesMarker
+                    variableAliases[variable] = multipleValuesMarker
             }
             val resultVariable = result.variable
             if (resultVariable != null) {
-                if (cfmpInfo.phiNodeAlias == null)
-                    cfmpInfo.phiNodeAlias = resultVariable
-                else if (cfmpInfo.phiNodeAlias != resultVariable)
-                    cfmpInfo.phiNodeAlias = multipleValuesMarker
+                if (phiNodeAlias == null)
+                    phiNodeAlias = resultVariable
+                else if (phiNodeAlias != resultVariable)
+                    phiNodeAlias = multipleValuesMarker
             }
-            cfmpInfo.predicate = Predicates.merge(
-                    cfmpInfo.predicate,
-                    getFullPredicate(result.predicate, false, cfmpInfo.level)
+            predicate = Predicates.merge(
+                    predicate,
+                    getFullPredicate(result.predicate, false, level)
             )
         }
 
-        fun finishControlFlowMerging(irElement: IrElement, cfmpInfo: ControlFlowMergePointInfo): VisitorResult {
+        inline fun mergeControlFlow(irElement: IrElement, block: (ControlFlowMergePointInfo) -> Unit): VisitorResult {
+            val cfmpInfo = ControlFlowMergePointInfo(upperLevelPredicates.size)
+            block(cfmpInfo)
+
             variableAliases.clear()
             for ((variable, alias) in cfmpInfo.variableAliases) {
                 variableAliases[variable] = if (alias != multipleValuesMarker)
@@ -931,12 +934,12 @@ internal class CastsOptimization(val context: Context) : BodyLoweringPass {
                 return VisitorResult(predicate, resultVariable)
             }
 
-            val cfmpInfo = ControlFlowMergePointInfo(upperLevelPredicates.size)
-            returnableBlockCFMPInfos[returnableBlock] = cfmpInfo
-            super.visitBlock(expression, data)
-            returnableBlockCFMPInfos.remove(returnableBlock)
+            val result = mergeControlFlow(expression) { cfmpInfo ->
+                returnableBlockCFMPInfos[returnableBlock] = cfmpInfo
+                super.visitBlock(expression, data)
+                returnableBlockCFMPInfos.remove(returnableBlock)
+            }
 
-            val result = finishControlFlowMerging(expression, cfmpInfo)
             return if (expression.type == nothingType)
                 VisitorResult.Nothing
             else result
@@ -948,7 +951,7 @@ internal class CastsOptimization(val context: Context) : BodyLoweringPass {
             if (returnableBlock != null) {
                 val cfmpInfo = returnableBlockCFMPInfos[returnableBlock]!!
                 if (result.predicate != Predicate.Unreachable)
-                    controlFlowMergePoint(cfmpInfo, result)
+                    cfmpInfo.merge(result)
                 context.logMultiple {
                     +expression.dump()
                     +"    result = ${cfmpInfo.predicate.format(leafTerms)}"
@@ -996,15 +999,13 @@ internal class CastsOptimization(val context: Context) : BodyLoweringPass {
         }
 
         override fun visitBreak(jump: IrBreak, data: Predicate): VisitorResult {
-            val cfmpInfo = breaksCFMPInfos[jump.loop]!!
-            controlFlowMergePoint(cfmpInfo, VisitorResult(data, null))
+            breaksCFMPInfos[jump.loop]!!.merge(VisitorResult(data, null))
 
             return VisitorResult.Nothing
         }
 
         override fun visitContinue(jump: IrContinue, data: Predicate): VisitorResult {
-            val cfmpInfo = continuesCFMPInfos[jump.loop]!!
-            controlFlowMergePoint(cfmpInfo, VisitorResult(data, null))
+            continuesCFMPInfos[jump.loop]!!.merge(VisitorResult(data, null))
 
             return VisitorResult.Nothing
         }
@@ -1025,69 +1026,64 @@ internal class CastsOptimization(val context: Context) : BodyLoweringPass {
                 variableAliasesAtLoopStart.forEach { (variable, alias) -> +"    ${variable.name} -> ${alias.name}" }
             }
 
-            val breaksCFMPInfo = ControlFlowMergePointInfo(upperLevelPredicates.size)
-            breaksCFMPInfos[loop] = breaksCFMPInfo
-            var iter = 0
-            do {
-                ++iter
+            var converged = false
+            val result = mergeControlFlow(loop) { breaksCFMPInfo ->
+                breaksCFMPInfos[loop] = breaksCFMPInfo
+                for (iter in 1..MAX_LOOP_ITERATIONS) {
+                    val prevPredicateAtLoopStart = predicateAtLoopStart
+                    val prevVariableAliasesAtLoopStart = variableAliasesAtLoopStart
+                    val body = loop.body
+                    val predicateAtConditionStart = if (body == null)
+                        predicateAtLoopStart
+                    else mergeControlFlow(body) { continuesCFMPInfo ->
+                        continuesCFMPInfos[loop] = continuesCFMPInfo
+                        val predicateAtBodyEnd = body.accept(this, predicateAtLoopStart).predicate
+                        continuesCFMPInfos.remove(loop)
+                        continuesCFMPInfo.merge(VisitorResult(predicateAtBodyEnd, null))
+                    }.predicate
+                    val conditionPredicate = usingUpperLevelPredicate(predicateAtConditionStart) { buildBooleanPredicate(loop.condition) }
+                    predicateAtLoopStart = Predicates.intersect(predicateAtConditionStart, conditionPredicate.ifTrue)
+                    variableAliasesAtLoopStart = variableAliases.toMutableMap()
+                    /*
+                     * Merge results of all iterations. Actually, this is not needed for variables aliases (their values depend
+                     * only on the aliases at the loop start, plus they get merged at all IrGetValue nodes). But it is needed for
+                     * the predicates because of conservative handling of assignments inside loops, consider the following example:
+                     *
+                     * do {
+                     *     o = foo(..)
+                     * } while (o !is A)
+                     *
+                     * The question is what value should be assigned to o here? If it is different for every loop iteration than the
+                     * analysis will never converge. So, here a common trick is done: the value returned by foo(..) is considered the
+                     * same on each iteration (it's pinned to a particular IR node). But then, starting with the second iteration,
+                     * the predicate will be (o$1 !is A) and the else predicate will be empty.
+                     * This is worked around by merging the exit predicates from all iterations, and for this example this leads to
+                     * correct answer (o$1 is A).
+                     */
+                    breaksCFMPInfo.merge(VisitorResult(Predicates.intersect(predicateAtConditionStart, conditionPredicate.ifFalse), null))
 
-                val prevPredicateAtLoopStart = predicateAtLoopStart
-                val prevVariableAliasesAtLoopStart = variableAliasesAtLoopStart
-                val body = loop.body
-                val predicateAtConditionStart = if (body == null)
-                    predicateAtLoopStart
-                else {
-                    val continuesCFMPInfo = ControlFlowMergePointInfo(upperLevelPredicates.size)
-                    continuesCFMPInfos[loop] = continuesCFMPInfo
-                    val predicateAtBodyEnd = body.accept(this, predicateAtLoopStart).predicate
-                    continuesCFMPInfos.remove(loop)
-                    controlFlowMergePoint(continuesCFMPInfo, VisitorResult(predicateAtBodyEnd, null))
-                    finishControlFlowMerging(body, continuesCFMPInfo).predicate
-                }
-                val conditionPredicate = usingUpperLevelPredicate(predicateAtConditionStart) { buildBooleanPredicate(loop.condition) }
-                predicateAtLoopStart = Predicates.intersect(predicateAtConditionStart, conditionPredicate.ifTrue)
-                variableAliasesAtLoopStart = variableAliases.toMutableMap()
-                /*
-                 * Merge results of all iterations. Actually, this is not needed for variables aliases (their values depend
-                 * only on the aliases at the loop start, plus they get merged at all IrGetValue nodes). But it is needed for
-                 * the predicates because of conservative handling of assignments inside loops, consider the following example:
-                 *
-                 * do {
-                 *     o = foo(..)
-                 * } while (o !is A)
-                 *
-                 * The question is what value should be assigned to o here? If it is different for every loop iteration than the
-                 * analysis will never converge. So, here a common trick is done: the value returned by foo(..) is considered the
-                 * same on each iteration (it's pinned to a particular IR node). But then, starting with the second iteration,
-                 * the predicate will be (o$1 !is A) and the else predicate will be empty.
-                 * This is worked around by merging the exit predicates from all iterations, and for this example this leads to
-                 * correct answer (o$1 is A).
-                 */
-                controlFlowMergePoint(breaksCFMPInfo, VisitorResult(Predicates.intersect(predicateAtConditionStart, conditionPredicate.ifFalse), null))
-
-                if (iter > 1) { // Merge starting with the second iteration since the first is always executed.
-                    predicateAtLoopStart = Predicates.merge(predicateAtLoopStart, prevPredicateAtLoopStart)
-                    for ((variable, prevAlias) in prevVariableAliasesAtLoopStart) {
-                        val alias = variableAliasesAtLoopStart[variable]
-                        if (alias == null)
-                            variableAliasesAtLoopStart[variable] = prevAlias
-                        else if (alias != prevAlias)
-                            variableAliasesAtLoopStart[variable] = variable
+                    if (iter > 1) { // Merge starting with the second iteration since the first is always executed.
+                        predicateAtLoopStart = Predicates.merge(predicateAtLoopStart, prevPredicateAtLoopStart)
+                        for ((variable, prevAlias) in prevVariableAliasesAtLoopStart) {
+                            val alias = variableAliasesAtLoopStart[variable]
+                            if (alias == null)
+                                variableAliasesAtLoopStart[variable] = prevAlias
+                            else if (alias != prevAlias)
+                                variableAliasesAtLoopStart[variable] = variable
+                        }
                     }
-                }
 
-                fun nothingChanged(): Boolean {
-                    if (variableAliasesAtLoopStart.size != prevVariableAliasesAtLoopStart.size) return false
-                    for ((variable, alias) in variableAliasesAtLoopStart)
-                        if (prevVariableAliasesAtLoopStart[variable] != alias) return false
+                    fun nothingChanged(): Boolean {
+                        if (variableAliasesAtLoopStart.size != prevVariableAliasesAtLoopStart.size) return false
+                        for ((variable, alias) in variableAliasesAtLoopStart)
+                            if (prevVariableAliasesAtLoopStart[variable] != alias) return false
 
-                    return Predicates.intersect(
-                            Predicates.merge(Predicates.negate(predicateAtLoopStart), prevPredicateAtLoopStart),
-                            Predicates.merge(predicateAtLoopStart, Predicates.negate(predicateAtLoopStart)),
-                    ) == Predicate.NoInfo
-                }
+                        return Predicates.intersect(
+                                Predicates.merge(Predicates.negate(predicateAtLoopStart), prevPredicateAtLoopStart),
+                                Predicates.merge(predicateAtLoopStart, Predicates.negate(predicateAtLoopStart)),
+                        ) == Predicate.NoInfo
+                    }
 
-                if (nothingChanged()) {
                     context.logMultiple {
                         +"LOOP ITER #$iter ${loop.condition.render()}"
                         +"    ${Predicates.intersect(data, predicateAtLoopStart).format(leafTerms)}"
@@ -1095,23 +1091,19 @@ internal class CastsOptimization(val context: Context) : BodyLoweringPass {
                         +"    ${Predicates.intersect(data, conditionPredicate.ifFalse).format(leafTerms)}"
                         variableAliasesAtLoopStart.forEach { (variable, alias) -> +"    ${variable.name} -> ${alias.name}" }
                     }
-
-                    val result = finishControlFlowMerging(loop, breaksCFMPInfo).predicate
-                    --loopsDepth
-                    breaksCFMPInfos.remove(loop)
-
-                    return@usingUpperLevelPredicate Predicates.intersect(data, result)
-                } else {
-                    context.logMultiple {
-                        +"LOOP ITER #$iter ${loop.condition.render()}"
-                        +"    ${Predicates.intersect(data, predicateAtLoopStart).format(leafTerms)}"
-                        +"    ${Predicates.intersect(data, breaksCFMPInfo.predicate).format(leafTerms)}"
-                        variableAliasesAtLoopStart.forEach { (variable, alias) -> +"    ${variable.name} -> ${alias.name}" }
+                    if (nothingChanged()) {
+                        converged = true
+                        break
                     }
                 }
-            } while (iter < MAX_LOOP_ITERATIONS)
+                breaksCFMPInfos.remove(loop)
+            }.predicate
 
-            throw DivergingAnalysisError("Failed to analyse a loop: has not converged in $MAX_LOOP_ITERATIONS iterations")
+            if (!converged)
+                throw DivergingAnalysisError("Failed to analyse a loop: has not converged in $MAX_LOOP_ITERATIONS iterations")
+
+            --loopsDepth
+            Predicates.intersect(data, result)
         }
 
         override fun visitWhileLoop(loop: IrWhileLoop, data: Predicate): VisitorResult = usingUpperLevelPredicate(data) {
@@ -1122,20 +1114,20 @@ internal class CastsOptimization(val context: Context) : BodyLoweringPass {
             val doWhileLoop = doWhileLoopForWhileLoops.getOrPut(loop) {
                 with(loop) { IrDoWhileLoopImpl(startOffset, endOffset, unitType, null) }
             }
-            val cfmpInfo = ControlFlowMergePointInfo(upperLevelPredicates.size)
-            val conditionBooleanPredicate = buildBooleanPredicate(loop.condition)
-            val savedVariableAliases = variableAliases.toMap()
-            val loopPredicate = handleDoWhileLoop(loop, conditionBooleanPredicate.ifTrue)
-            if (loopPredicate != Predicate.Unreachable) {
-                controlFlowMergePoint(cfmpInfo, VisitorResult(loopPredicate))
+            val result = mergeControlFlow(doWhileLoop) { cfmpInfo ->
+                val conditionBooleanPredicate = buildBooleanPredicate(loop.condition)
+                val savedVariableAliases = variableAliases.toMap()
+                val loopPredicate = handleDoWhileLoop(loop, conditionBooleanPredicate.ifTrue)
+                if (loopPredicate != Predicate.Unreachable) {
+                    cfmpInfo.merge(VisitorResult(loopPredicate))
+                }
+                variableAliases.clear()
+                for ((variable, alias) in savedVariableAliases)
+                    variableAliases[variable] = alias
+
+                cfmpInfo.merge(VisitorResult(conditionBooleanPredicate.ifFalse, null))
             }
-            variableAliases.clear()
-            for ((variable, alias) in savedVariableAliases)
-                variableAliases[variable] = alias
 
-            controlFlowMergePoint(cfmpInfo, VisitorResult(conditionBooleanPredicate.ifFalse, null))
-
-            val result = finishControlFlowMerging(doWhileLoop, cfmpInfo)
             val resultPredicate = Predicates.intersect(data, result.predicate)
             VisitorResult(resultPredicate, result.variable)
         }
@@ -1206,40 +1198,40 @@ internal class CastsOptimization(val context: Context) : BodyLoweringPass {
         }
 
         override fun visitWhen(expression: IrWhen, data: Predicate): VisitorResult = usingUpperLevelPredicate(data) {
-            val cfmpInfo = ControlFlowMergePointInfo(upperLevelPredicates.size)
-            var predicate: Predicate = Predicate.NoInfo
-            for (branch in expression.branches) {
-                usingUpperLevelPredicate(predicate) {
-                    val conditionBooleanPredicate = buildBooleanPredicate(branch.condition)
-                    context.logMultiple {
-                        +"WHEN: ${branch.condition.dump()}"
-                        +"    upperLevelPredicate = ${getFullPredicate(Predicate.NoInfo, false, 0).format(leafTerms)}"
-                        +"    condition = ${conditionBooleanPredicate.ifTrue.format(leafTerms)}"
-                        +"    ~condition = ${conditionBooleanPredicate.ifFalse.format(leafTerms)}"
-                        +"    result = ${cfmpInfo.predicate.format(leafTerms)}"
-                        +""
+            val result = mergeControlFlow(expression) { cfmpInfo ->
+                var predicate: Predicate = Predicate.NoInfo
+                for (branch in expression.branches) {
+                    usingUpperLevelPredicate(predicate) {
+                        val conditionBooleanPredicate = buildBooleanPredicate(branch.condition)
+                        context.logMultiple {
+                            +"WHEN: ${branch.condition.dump()}"
+                            +"    upperLevelPredicate = ${getFullPredicate(Predicate.NoInfo, false, 0).format(leafTerms)}"
+                            +"    condition = ${conditionBooleanPredicate.ifTrue.format(leafTerms)}"
+                            +"    ~condition = ${conditionBooleanPredicate.ifFalse.format(leafTerms)}"
+                            +"    result = ${cfmpInfo.predicate.format(leafTerms)}"
+                            +""
+                        }
+                        val savedVariableAliases = variableAliases.toMap()
+                        val branchResult = branch.result.accept(this, conditionBooleanPredicate.ifTrue)
+                        if (branchResult.predicate != Predicate.Unreachable) {
+                            cfmpInfo.merge(branchResult)
+                        }
+                        variableAliases.clear()
+                        for ((variable, alias) in savedVariableAliases)
+                            variableAliases[variable] = alias
+                        predicate = Predicates.intersect(predicate, conditionBooleanPredicate.ifFalse)
                     }
-                    val savedVariableAliases = variableAliases.toMap()
-                    val branchResult = branch.result.accept(this, conditionBooleanPredicate.ifTrue)
-                    if (branchResult.predicate != Predicate.Unreachable) {
-                        controlFlowMergePoint(cfmpInfo, branchResult)
-                    }
-                    variableAliases.clear()
-                    for ((variable, alias) in savedVariableAliases)
-                        variableAliases[variable] = alias
-                    predicate = Predicates.intersect(predicate, conditionBooleanPredicate.ifFalse)
                 }
+                context.logMultiple {
+                    +"WHEN END"
+                    +"    result = ${cfmpInfo.predicate.format(leafTerms)}"
+                    +"    predicate = ${predicate.format(leafTerms)}"
+                }
+                if (!expression.branches.last().isUnconditional()) // Non-exhaustive when.
+                    cfmpInfo.merge(VisitorResult(predicate, null))
+                context.log { "    result = ${cfmpInfo.predicate.format(leafTerms)}" }
             }
-            context.logMultiple {
-                +"WHEN END"
-                +"    result = ${cfmpInfo.predicate.format(leafTerms)}"
-                +"    predicate = ${predicate.format(leafTerms)}"
-            }
-            if (!expression.branches.last().isUnconditional()) // Non-exhaustive when.
-                controlFlowMergePoint(cfmpInfo, VisitorResult(predicate, null))
-            context.log { "    result = ${cfmpInfo.predicate.format(leafTerms)}" }
 
-            val result = finishControlFlowMerging(expression, cfmpInfo)
             context.log { "    result = ${result.predicate.format(leafTerms)}" }
             val resultPredicate = Predicates.intersect(data, result.predicate)
             context.logMultiple {
