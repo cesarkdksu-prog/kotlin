@@ -77,20 +77,6 @@ open class KotlinxBenchmarkingPlugin : BenchmarkingPlugin() {
                 iterations = attempts
                 mode = "AverageTime"
                 outputTimeUnit = "us"
-                when (repeatingType) {
-                    BenchmarkRepeatingType.EXTERNAL -> {
-                        // These benchmarks should not be internally repeated at all.
-                        iterationTime = 1
-                        iterationTimeUnit = "ns"
-                    }
-                    BenchmarkRepeatingType.INTERNAL -> {
-                        // The custom runner used 1s, but it was written in a different way,
-                        // so the iteration time could actually be a lot smaller. So, let's use
-                        // 100ms, and tweak it later, if the results are unstable.
-                        iterationTime = 100
-                        iterationTimeUnit = "ms"
-                    }
-                }
                 advanced("nativeGCAfterIteration", true)
                 advanced("nativeFork", when (repeatingType) {
                     BenchmarkRepeatingType.EXTERNAL -> "perIteration"
