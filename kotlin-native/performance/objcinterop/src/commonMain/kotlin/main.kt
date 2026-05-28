@@ -4,12 +4,15 @@
  */
 
 import kotlinx.benchmark.Benchmark
+import kotlinx.benchmark.BenchmarkTimeUnit
+import kotlinx.benchmark.Measurement
 import kotlinx.benchmark.Scope
 import kotlinx.benchmark.State
 import org.jetbrains.benchmarksLauncher.SkipWhenBaseOnly
 import org.jetbrains.complexNumbers.*
 
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class ComplexNumbersBenchmarkHideName : SkipWhenBaseOnly() {
     private val instance = ComplexNumbersBenchmark()
 
