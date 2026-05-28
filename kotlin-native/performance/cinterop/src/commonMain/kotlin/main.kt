@@ -15,6 +15,8 @@
  */
 
 import kotlinx.benchmark.Benchmark
+import kotlinx.benchmark.BenchmarkTimeUnit
+import kotlinx.benchmark.Measurement
 import kotlinx.benchmark.Scope
 import kotlinx.benchmark.State
 import org.jetbrains.benchmarksLauncher.SkipWhenBaseOnly
@@ -23,6 +25,7 @@ import org.jetbrains.structsBenchmarks.*
 import org.jetbrains.typesBenchmarks.*
 
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class StringBenchmarkHideName {
     private val instance = StringBenchmark()
 
@@ -38,6 +41,7 @@ class StringBenchmarkHideName {
 }
 
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class IntMatrixBenchmarkHideName {
     private val instance = IntMatrixBenchmark()
 
@@ -48,6 +52,7 @@ class IntMatrixBenchmarkHideName {
 }
 
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class CinteropHideName : SkipWhenBaseOnly() {
     @Benchmark
     fun macros() {
@@ -75,6 +80,7 @@ class CinteropHideName : SkipWhenBaseOnly() {
 }
 
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class IntBenchmarkHideName : SkipWhenBaseOnly() {
     private val instance = IntBenchmark()
 
@@ -86,6 +92,7 @@ class IntBenchmarkHideName : SkipWhenBaseOnly() {
 }
 
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class BoxedIntBenchmarkHideName : SkipWhenBaseOnly() {
     private val instance = BoxedIntBenchmark()
 
@@ -97,6 +104,7 @@ class BoxedIntBenchmarkHideName : SkipWhenBaseOnly() {
 }
 
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class PinnedArrayBenchmarkHideName : SkipWhenBaseOnly() {
     private val instance = PinnedArrayBenchmark()
 
