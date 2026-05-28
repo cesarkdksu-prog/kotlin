@@ -15,6 +15,7 @@ import org.jetbrains.kotlin.analysis.api.descriptors.utils.collectReachableInlin
 import org.jetbrains.kotlin.analysis.api.diagnostics.KaDiagnostic
 import org.jetbrains.kotlin.analysis.api.impl.base.components.*
 import org.jetbrains.kotlin.analysis.api.impl.base.util.KaBaseCompiledFileForOutputFile
+import org.jetbrains.kotlin.analysis.api.lifetime.withValidityAssertion
 import org.jetbrains.kotlin.backend.jvm.FacadeClassSourceShimForFragmentCompilation
 import org.jetbrains.kotlin.backend.jvm.JvmGeneratorExtensionsImpl
 import org.jetbrains.kotlin.backend.jvm.JvmIrCodegenFactory
@@ -54,7 +55,7 @@ internal class KaFe10CompilerFacility(
     }
 
     @OptIn(KaImplementationDetail::class)
-    override fun compile(file: KtFile, options: KaCompilationOptions): KaCompilationResult {
+    override fun compile(file: KtFile, options: KaCompilationOptions): KaCompilationResult = withPsiValidityAssertion(file) {
         require(options is KaBaseCompilationOptions)
         require(options.target == KaCompilationTarget.JVM) {
             "Unsupported compilation target: ${options.target}, expected ${KaCompilationTarget.JVM}"
@@ -68,12 +69,12 @@ internal class KaFe10CompilerFacility(
     }
 
     @OptIn(KaImplementationDetail::class, CompilerConfiguration.Internals::class)
-    override fun createCompilationOptions(init: KaCompilationOptionsBuilder.() -> Unit): KaCompilationOptions {
+    override fun createCompilationOptions(init: KaCompilationOptionsBuilder.() -> Unit): KaCompilationOptions = withValidityAssertion {
         return KaBaseCompilationOptionsBuilder(token, CompilerConfiguration.create()).apply(init).build()
     }
 
     @OptIn(KaImplementationDetail::class)
-    override fun KaCompilationOptions.modify(init: KaCompilationOptionsBuilder.() -> Unit): KaCompilationOptions {
+    override fun KaCompilationOptions.modify(init: KaCompilationOptionsBuilder.() -> Unit): KaCompilationOptions = withValidityAssertion {
         return (this as KaBaseCompilationOptions).modify(init)
     }
 
