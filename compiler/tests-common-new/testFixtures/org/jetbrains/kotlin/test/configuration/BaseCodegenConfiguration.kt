@@ -13,6 +13,7 @@ import org.jetbrains.kotlin.test.TestJdkKind
 import org.jetbrains.kotlin.test.TestStepBuilder
 import org.jetbrains.kotlin.test.backend.handlers.*
 import org.jetbrains.kotlin.test.backend.ir.BackendCliJvmFacade
+import org.jetbrains.kotlin.test.backend.ir.IrBackendInput
 import org.jetbrains.kotlin.test.builders.*
 import org.jetbrains.kotlin.test.directives.*
 import org.jetbrains.kotlin.test.directives.CodegenTestDirectives.DUMP_SMAP
@@ -28,6 +29,7 @@ import org.jetbrains.kotlin.test.frontend.fir.FirCliJvmFacade
 import org.jetbrains.kotlin.test.frontend.fir.FirMetaInfoDiffSuppressor
 import org.jetbrains.kotlin.test.frontend.fir.FirOutputArtifact
 import org.jetbrains.kotlin.test.model.ArtifactKinds
+import org.jetbrains.kotlin.test.model.BackendKinds
 import org.jetbrains.kotlin.test.model.BinaryArtifacts
 import org.jetbrains.kotlin.test.model.DependencyKind
 import org.jetbrains.kotlin.test.model.FrontendKinds
@@ -55,11 +57,11 @@ fun TestConfigurationBuilder.setupJvmPipelineSteps(parser: FirParser) {
     configureFirParser(parser)
 
     facadeStep(::FirCliJvmFacade)
-    firHandlersStep()
+    firHandlersStep { useHandlers(::NoFirCompilationErrorsHandler) }
     facadeStep(::Fir2IrCliJvmFacade)
-    irHandlersStep(init = {})
+    irHandlersStep { useHandlers(::NoIrCompilationErrorsHandler) }
     facadeStep(::BackendCliJvmFacade)
-    jvmArtifactsHandlersStep(init = {})
+    jvmArtifactsHandlersStep { useHandlers(::NoJvmSpecificCompilationErrorsHandler) }
 }
 
 /**
@@ -155,6 +157,9 @@ fun TestConfigurationBuilder.commonHandlersForCodegenTest() {
     configureFirHandlersStep {
         commonFirHandlersForCodegenTest()
     }
+    configureIrHandlersStep {
+        commonIrHandlersForCodegenTest()
+    }
     configureJvmArtifactsHandlersStep {
         commonBackendHandlersForCodegenTest()
     }
@@ -166,6 +171,15 @@ fun TestConfigurationBuilder.commonHandlersForCodegenTest() {
 fun TestStepBuilder.HandlersStepBuilder.NonGroupingStage<FirOutputArtifact, FrontendKinds.FIR>.commonFirHandlersForCodegenTest() {
     useHandlers(
         ::NoFirCompilationErrorsHandler,
+    )
+}
+
+/**
+ * Adds a handler which checks that there are no compilation errors reported at the K2 frontend step
+ */
+fun TestStepBuilder.HandlersStepBuilder.NonGroupingStage<IrBackendInput, BackendKinds.IrBackend>.commonIrHandlersForCodegenTest() {
+    useHandlers(
+        ::NoIrCompilationErrorsHandler,
     )
 }
 
