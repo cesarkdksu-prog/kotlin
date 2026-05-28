@@ -23,6 +23,8 @@ import SplayBenchmark
 import SplayBenchmarkUsingWorkers
 import SplayBenchmarkWithMarkHelpers
 import kotlinx.benchmark.Benchmark
+import kotlinx.benchmark.BenchmarkTimeUnit
+import kotlinx.benchmark.Measurement
 import kotlinx.benchmark.Scope
 import kotlinx.benchmark.State
 import kotlinx.benchmark.TearDown
@@ -31,6 +33,7 @@ import org.jetbrains.benchmarksLauncher.SkipWhenBaseOnly
 import org.jetbrains.ring.*
 
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class AbstractMethod : SkipWhenBaseOnly() {
     val instance = AbstractMethodBenchmark()
 
@@ -47,6 +50,7 @@ class AbstractMethod : SkipWhenBaseOnly() {
 }
 
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class AllocationBenchmark : SkipWhenBaseOnly() {
     val instance = org.jetbrains.ring.AllocationBenchmark()
 
@@ -58,6 +62,7 @@ class AllocationBenchmark : SkipWhenBaseOnly() {
 }
 
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class ArrayCopyBenchmark {
     val instance = org.jetbrains.ring.ArrayCopyBenchmark()
 
@@ -68,6 +73,7 @@ class ArrayCopyBenchmark {
 }
 
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class BunnymarkBenchmark {
     val instance = org.jetbrains.ring.BunnymarkBenchmark()
 
@@ -78,6 +84,7 @@ class BunnymarkBenchmark {
 }
 
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class Calls : SkipWhenBaseOnly() {
     val instance = CallsBenchmark()
 
@@ -138,6 +145,7 @@ class Calls : SkipWhenBaseOnly() {
 }
 
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class Casts {
     val instance = CastsBenchmark()
 
@@ -153,6 +161,7 @@ class Casts {
 }
 
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class ChainableBenchmark {
     val instance = org.jetbrains.ring.ChainableBenchmark()
 
@@ -163,6 +172,7 @@ class ChainableBenchmark {
 }
 
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class ClassArray : SkipWhenBaseOnly() {
     val instance = ClassArrayBenchmark()
 
@@ -225,6 +235,7 @@ class ClassArray : SkipWhenBaseOnly() {
 }
 
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class ClassBaseline : SkipWhenBaseOnly() {
     val instance = ClassBaselineBenchmark()
 
@@ -269,6 +280,7 @@ class ClassBaseline : SkipWhenBaseOnly() {
 }
 
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class ClassList : SkipWhenBaseOnly() {
     val instance = ClassListBenchmark()
 
@@ -366,6 +378,7 @@ class ClassList : SkipWhenBaseOnly() {
 }
 
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class ClassStream : SkipWhenBaseOnly() {
     val instance = ClassStreamBenchmark()
 
@@ -428,6 +441,7 @@ class ClassStream : SkipWhenBaseOnly() {
 }
 
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class CompanionObject : SkipWhenBaseOnly() {
     val instance = CompanionObjectBenchmark()
 
@@ -439,6 +453,7 @@ class CompanionObject : SkipWhenBaseOnly() {
 }
 
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class ComplexArrays : SkipWhenBaseOnly() {
     val instance = ComplexArraysBenchmark()
 
@@ -450,6 +465,7 @@ class ComplexArrays : SkipWhenBaseOnly() {
 }
 
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class CoordinatesSolver {
     val instance = CoordinatesSolverBenchmark()
 
@@ -460,6 +476,7 @@ class CoordinatesSolver {
 }
 
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class DefaultArgument : SkipWhenBaseOnly() {
     val instance = DefaultArgumentBenchmark()
 
@@ -501,6 +518,7 @@ class DefaultArgument : SkipWhenBaseOnly() {
 }
 
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class DeltaBlueHideName {
     val instance = DeltaBlueBenchmark()
 
@@ -511,6 +529,7 @@ class DeltaBlueHideName {
 }
 
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class Elvis : SkipWhenBaseOnly() {
     val instance = ElvisBenchmark()
 
@@ -527,6 +546,7 @@ class Elvis : SkipWhenBaseOnly() {
 }
 
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class Euler : SkipWhenBaseOnly() {
     val instance = EulerBenchmark()
 
@@ -577,6 +597,7 @@ class Euler : SkipWhenBaseOnly() {
 }
 
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class Fibonacci : SkipWhenBaseOnly() {
     val instance = FibonacciBenchmark()
 
@@ -604,6 +625,7 @@ class Fibonacci : SkipWhenBaseOnly() {
 }
 
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class ForLoops : SkipWhenBaseOnly() {
     val instance = ForLoopsBenchmark()
 
@@ -709,6 +731,7 @@ class ForLoops : SkipWhenBaseOnly() {
 }
 
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class GenericArrayView : SkipWhenBaseOnly() {
     val instance = GenericArrayViewBenchmark()
 
@@ -738,6 +761,7 @@ class GenericArrayView : SkipWhenBaseOnly() {
 }
 
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class GraphSolver {
     val instance = GraphSolverBenchmark()
 
@@ -747,8 +771,8 @@ class GraphSolver {
     }
 }
 
-
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class Inheritance {
     val instance = InheritanceBenchmark()
 
@@ -758,8 +782,8 @@ class Inheritance {
     }
 }
 
-
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class Inline : SkipWhenBaseOnly() {
     val instance = InlineBenchmark()
 
@@ -787,8 +811,8 @@ class Inline : SkipWhenBaseOnly() {
     }
 }
 
-
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class IntArray : SkipWhenBaseOnly() {
     val instance = IntArrayBenchmark()
 
@@ -913,8 +937,8 @@ class IntArray : SkipWhenBaseOnly() {
     }
 }
 
-
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class IntBaseline : SkipWhenBaseOnly() {
     val instance = IntBaselineBenchmark()
 
@@ -949,8 +973,8 @@ class IntBaseline : SkipWhenBaseOnly() {
     }
 }
 
-
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class IntList : SkipWhenBaseOnly() {
     val instance = IntListBenchmark()
 
@@ -1021,8 +1045,8 @@ class IntList : SkipWhenBaseOnly() {
     }
 }
 
-
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class IntStream : SkipWhenBaseOnly() {
     val instance = IntStreamBenchmark()
 
@@ -1093,8 +1117,8 @@ class IntStream : SkipWhenBaseOnly() {
     }
 }
 
-
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class Iterator : SkipWhenBaseOnly() {
     val instance = IteratorBenchmark()
 
@@ -1118,6 +1142,7 @@ class Iterator : SkipWhenBaseOnly() {
 }
 
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class Lambda : SkipWhenBaseOnly() {
     val instance = LambdaBenchmark()
 
@@ -1167,8 +1192,8 @@ class Lambda : SkipWhenBaseOnly() {
     }
 }
 
-
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class LifeHideName : SkipWhenBaseOnly() {
     val instance = LifeBenchmark()
 
@@ -1179,8 +1204,8 @@ class LifeHideName : SkipWhenBaseOnly() {
     }
 }
 
-
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class LifeWithMarkHelpersHideName : SkipWhenBaseOnly() {
     val instance = LifeWithMarkHelpersBenchmark()
 
@@ -1196,8 +1221,8 @@ class LifeWithMarkHelpersHideName : SkipWhenBaseOnly() {
     }
 }
 
-
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class LinkedListWithAtomicsBenchmarkHideName {
     val instance = org.jetbrains.ring.LinkedListWithAtomicsBenchmark()
 
@@ -1209,6 +1234,7 @@ class LinkedListWithAtomicsBenchmarkHideName {
 }
 
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class LocalObjects : SkipWhenBaseOnly() {
     val instance = LocalObjectsBenchmark()
 
@@ -1219,8 +1245,8 @@ class LocalObjects : SkipWhenBaseOnly() {
     }
 }
 
-
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class Loop : SkipWhenBaseOnly() {
     val instance = LoopBenchmark()
 
@@ -1262,8 +1288,8 @@ class Loop : SkipWhenBaseOnly() {
     }
 }
 
-
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class MatrixMap {
     val instance = MatrixMapBenchmark()
 
@@ -1273,8 +1299,8 @@ class MatrixMap {
     }
 }
 
-
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class OctoTestHideName {
     @Benchmark
     fun OctoTest() {
@@ -1282,8 +1308,8 @@ class OctoTestHideName {
     }
 }
 
-
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class ParameterNotNull : SkipWhenBaseOnly() {
     val instance = ParameterNotNullAssertionBenchmark()
 
@@ -1324,8 +1350,8 @@ class ParameterNotNull : SkipWhenBaseOnly() {
     }
 }
 
-
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class PrimeList {
     val instance = PrimeListBenchmark()
 
@@ -1340,8 +1366,8 @@ class PrimeList {
     }
 }
 
-
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class RichardsHideName {
     val instance = RichardsBenchmark()
 
@@ -1353,6 +1379,7 @@ class RichardsHideName {
 }
 
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class Singleton {
     val instance = SingletonBenchmark()
 
@@ -1364,6 +1391,7 @@ class Singleton {
 }
 
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class SplayHideName {
     val instance = SplayBenchmark()
 
@@ -1379,6 +1407,7 @@ class SplayHideName {
 }
 
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class SplayWithMarkHelpersHideName {
     val instance = SplayBenchmarkWithMarkHelpers()
 
@@ -1394,6 +1423,7 @@ class SplayWithMarkHelpersHideName {
 }
 
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class SplayWithWorkersHideName {
     val instance = SplayBenchmarkUsingWorkers()
 
@@ -1409,6 +1439,7 @@ class SplayWithWorkersHideName {
 }
 
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class String : SkipWhenBaseOnly() {
     val instance = StringBenchmark()
 
@@ -1439,8 +1470,8 @@ class String : SkipWhenBaseOnly() {
     }
 }
 
-
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class SubList : SkipWhenBaseOnly() {
     val instance = SubListBenchmark()
 
@@ -1499,8 +1530,8 @@ class SubList : SkipWhenBaseOnly() {
     }
 }
 
-
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class Switch : SkipWhenBaseOnly() {
     val instance = SwitchBenchmark()
 
@@ -1556,8 +1587,8 @@ class Switch : SkipWhenBaseOnly() {
     }
 }
 
-
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class WeakRefBenchmark : SkipWhenBaseOnly() {
     val instance = org.jetbrains.ring.WeakRefBenchmark()
 
@@ -1586,6 +1617,7 @@ class WeakRefBenchmark : SkipWhenBaseOnly() {
 }
 
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class WithIndicies : SkipWhenBaseOnly() {
     val instance = WithIndiciesBenchmark()
 
