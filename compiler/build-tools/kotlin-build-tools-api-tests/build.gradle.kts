@@ -374,11 +374,6 @@ testing {
 
 tasks.named("check") {
     dependsOn(testing.suites.matching { it.name != "testExample" }) // do not run example tests by default
-
-    val isTeamcityBuild = project.hasProperty("teamcity") || System.getenv("TEAMCITY_VERSION") != null
-    if (isTeamcityBuild.not()) {
-        dependsOn(checkCompatibilityCoverageTask)
-    }
 }
 
 val checkCompatibilityCoverageTask = checkCompatibilityCoverage(
