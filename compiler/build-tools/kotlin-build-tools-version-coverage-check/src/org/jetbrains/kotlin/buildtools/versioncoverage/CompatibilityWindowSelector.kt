@@ -12,10 +12,7 @@ internal class CompatibilityWindowSelector(private val compatibilityType: Compat
         val selectedVersionsWithHighestMaturity = all
             .groupBy { KotlinToolingVersion(it.major, it.minor, it.patch, null) }
             .filterKeys { kotlinVersion ->
-                when (compatibilityType) {
-                    CompatibilityType.FORWARD -> kotlinVersion >= current
-                    CompatibilityType.BACKWARD -> kotlinVersion <= current
-                }
+                getVersionComparator().compare(kotlinVersion, current) >= 0
             }
             .values.mapNotNull { it.maxOrNull() }
 
