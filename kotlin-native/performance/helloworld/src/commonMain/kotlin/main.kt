@@ -1,11 +1,14 @@
 import kotlin.text.lines
 import kotlinx.benchmark.Benchmark
+import kotlinx.benchmark.BenchmarkTimeUnit
+import kotlinx.benchmark.Measurement
 import kotlinx.benchmark.Param
 import kotlinx.benchmark.Scope
 import kotlinx.benchmark.Setup
 import kotlinx.benchmark.State
 
 @State(Scope.Benchmark)
+@Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class HelloWorldHideName {
     @Param("")
     var nativeCompiler: String = ""
