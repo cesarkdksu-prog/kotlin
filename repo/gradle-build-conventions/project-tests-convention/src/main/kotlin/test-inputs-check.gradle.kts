@@ -268,7 +268,6 @@ tasks.withType<Test>().configureEach {
                             "{{build_dir}}",
                             """
                                 permission java.io.FilePermission "${buildDir.get().asFile.absolutePath}/-", "read,write,execute,delete";
-                                permission java.io.FilePermission "${buildDir.get().asFile.absolutePath.uppercase()}/-", "read,write,execute,delete";
                             """.trimIndent()
                         )
                         .replace("{{java_library_paths}}", javaLibraryPaths.joinToString("\n    "))
