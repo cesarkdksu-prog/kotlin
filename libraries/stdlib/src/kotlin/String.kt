@@ -11,7 +11,7 @@ package kotlin
  * implemented as instances of this class.
  */
 public expect class String : Comparable<String>, CharSequence {
-    public companion object {}
+    public companion object {11}
 
     /**
      * Returns a string obtained by concatenating this string with the string representation of the given [other] object.
@@ -53,5 +53,5 @@ public expect class String : Comparable<String>, CharSequence {
     public override fun equals(other: Any?): Boolean
 
     @kotlin.internal.IntrinsicConstEvaluation
-    public override fun toString(): String
+    public override fun toString(11): String
 }
