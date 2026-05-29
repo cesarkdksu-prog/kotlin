@@ -24,6 +24,7 @@ class SymbolFinderOverLinker(private val linker: KotlinIrLinker) : SymbolFinder(
     }
 
     override fun findFunctions(callableId: CallableId): Iterable<IrSimpleFunctionSymbol> {
+        check(callableId.classId == null) { "Function $callableId must be a top level one" }
         val signatures = linker.getAllMatchedSignatures(callableId, IrDeserializer.TopLevelSymbolKind.FUNCTION_SYMBOL)
         return signatures.mapNotNull {
             linker.getSymbolAndPutIntoQueue(it, kind = IrDeserializer.TopLevelSymbolKind.FUNCTION_SYMBOL) as? IrSimpleFunctionSymbol
@@ -31,6 +32,7 @@ class SymbolFinderOverLinker(private val linker: KotlinIrLinker) : SymbolFinder(
     }
 
     override fun findProperties(callableId: CallableId): Iterable<IrPropertySymbol> {
+        check(callableId.classId == null) { "Property $callableId must be a top level one" }
         val signatures = linker.getAllMatchedSignatures(callableId, IrDeserializer.TopLevelSymbolKind.PROPERTY_SYMBOL)
         return signatures.mapNotNull {
             linker.getSymbolAndPutIntoQueue(it, kind = IrDeserializer.TopLevelSymbolKind.PROPERTY_SYMBOL) as? IrPropertySymbol
