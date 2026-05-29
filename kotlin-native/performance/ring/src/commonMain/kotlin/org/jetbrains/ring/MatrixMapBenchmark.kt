@@ -18,7 +18,8 @@ package org.jetbrains.ring
 
 import kotlin.random.Random
 import kotlinx.benchmark.Blackhole
-import org.jetbrains.benchmarksLauncher.BENCHMARK_SIZE
+
+private const val BENCHMARK_SIZE = 10000
 
 /**
  * This class emulates matrix behaviour using a hash map as its implementation

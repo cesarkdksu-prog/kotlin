@@ -18,7 +18,8 @@ package org.jetbrains.ring
 
 import kotlin.random.Random
 import kotlinx.benchmark.Blackhole
-import org.jetbrains.benchmarksLauncher.BENCHMARK_SIZE
+
+private const val BENCHMARK_SIZE = 10000
 
 val SPARSE_SWITCH_CASES = intArrayOf(11, 29, 47, 71, 103,
                                      149, 175, 227, 263, 307,

@@ -15,7 +15,8 @@
  */
 
 import kotlinx.benchmark.*
-import org.jetbrains.benchmarksLauncher.BENCHMARK_SIZE
+
+private const val BENCHMARK_SIZE = 10000
 
 @State(Scope.Benchmark)
 @Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)

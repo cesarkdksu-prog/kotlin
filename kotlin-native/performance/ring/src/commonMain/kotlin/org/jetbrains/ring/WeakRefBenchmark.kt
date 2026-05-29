@@ -11,7 +11,8 @@ import kotlin.native.ref.WeakReference
 import kotlin.random.Random
 import kotlinx.benchmark.Blackhole
 import kotlinx.cinterop.StableRef
-import org.jetbrains.benchmarksLauncher.BENCHMARK_SIZE
+
+private const val BENCHMARK_SIZE = 10000
 
 private const val REPEAT_COUNT = BENCHMARK_SIZE
 private const val REFERENCES_COUNT = 3

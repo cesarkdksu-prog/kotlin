@@ -6,7 +6,8 @@
 package org.jetbrains.ring
 
 import kotlinx.benchmark.Blackhole
-import org.jetbrains.benchmarksLauncher.BENCHMARK_SIZE
+
+private const val BENCHMARK_SIZE = 1000
 
 var counter = 0
 

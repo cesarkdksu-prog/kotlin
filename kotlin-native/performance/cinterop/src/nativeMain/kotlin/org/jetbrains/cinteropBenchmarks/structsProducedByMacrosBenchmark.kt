@@ -18,7 +18,8 @@ package org.jetbrains.structsProducedByMacrosBenchmarks
 
 import kotlinx.benchmark.Blackhole
 import kotlinx.cinterop.*
-import org.jetbrains.benchmarksLauncher.BENCHMARK_SIZE
+
+private const val BENCHMARK_SIZE = 10000
 
 actual fun macrosBenchmark(bh: Blackhole) {
     memScoped {

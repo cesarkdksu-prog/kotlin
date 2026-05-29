@@ -9,7 +9,8 @@ package org.jetbrains.ring
 import kotlin.concurrent.atomics.AtomicReference
 import kotlin.random.Random
 import kotlinx.benchmark.Blackhole
-import org.jetbrains.benchmarksLauncher.BENCHMARK_SIZE
+
+private const val BENCHMARK_SIZE = 10000
 
 class ChunkBuffer(var readPosition: Int, var writePosition: Int) {
     private val nextRef = AtomicReference<ChunkBuffer?>(null)

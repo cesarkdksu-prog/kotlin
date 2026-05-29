@@ -17,7 +17,8 @@
 package org.jetbrains.ring
 
 import kotlinx.benchmark.Blackhole
-import org.jetbrains.benchmarksLauncher.BENCHMARK_SIZE
+
+private const val BENCHMARK_SIZE = 10000
 
 open class ClassArrayBenchmark {
     private var _data: Array<Value>? = null

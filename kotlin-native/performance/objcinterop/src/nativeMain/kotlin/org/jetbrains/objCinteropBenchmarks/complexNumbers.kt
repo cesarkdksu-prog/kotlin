@@ -14,9 +14,10 @@ import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.random.Random
-import org.jetbrains.benchmarksLauncher.BENCHMARK_SIZE
 import platform.Foundation.*
 import platform.darwin.*
+
+private const val BENCHMARK_SIZE = 1000
 
 actual typealias ComplexNumber = Complex
 

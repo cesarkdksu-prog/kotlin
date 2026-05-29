@@ -17,7 +17,8 @@
 package org.jetbrains.ring
 
 import kotlinx.benchmark.Blackhole
-import org.jetbrains.benchmarksLauncher.BENCHMARK_SIZE
+
+private const val BENCHMARK_SIZE = 10000
 
 fun makeIterable(): Iterable<Int> = (0..BENCHMARK_SIZE)
 

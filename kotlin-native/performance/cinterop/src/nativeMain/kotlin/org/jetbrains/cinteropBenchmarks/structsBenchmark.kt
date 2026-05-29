@@ -20,7 +20,8 @@ import kotlinx.benchmark.Blackhole
 import kotlinx.cinterop.*
 import platform.posix.*
 import kotlin.math.sqrt
-import org.jetbrains.benchmarksLauncher.BENCHMARK_SIZE
+
+private const val BENCHMARK_SIZE = 10000
 
 actual fun structBenchmark(bh: Blackhole) {
     memScoped {
