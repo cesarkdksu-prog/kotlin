@@ -16,31 +16,31 @@ import kotlin.reflect.KParameter
 class ArgsToParamsMatchingTest {
     @Test
     fun testMatchFromStrings() {
-        Assert.assertNull(tryCreateCallableMappingFromStringArgs(::foo, listOf()))
-        Assert.assertNull(tryCreateCallableMappingFromStringArgs(::foo, listOf("1", "2")))
+        Assert.assertNull(tryCreateCallableMappingFromStringArgs(::foo, []))
+        Assert.assertNull(tryCreateCallableMappingFromStringArgs(::foo, ["1", "2"]))
 
         assertParamMapsEquals(
-            tryCreateCallableMappingFromStringArgs(::foo, listOf("1", "2", "s", "0.1")),
+            tryCreateCallableMappingFromStringArgs(::foo, ["1", "2", "s", "0.1"]),
             "i" to 1, "b" to 2.toByte(), "c" to 's', "d" to 0.1
         )
 
-        Assert.assertNull(tryCreateCallableMappingFromStringArgs(::foo, listOf("1", "258", "s", "0.1")))
-        Assert.assertNull(tryCreateCallableMappingFromStringArgs(::foo, listOf("1", "258", "s", "0")))
-        Assert.assertNull(tryCreateCallableMappingFromStringArgs(::foo, listOf("1", "258", "sss", "0.1")))
+        Assert.assertNull(tryCreateCallableMappingFromStringArgs(::foo, ["1", "258", "s", "0.1"]))
+        Assert.assertNull(tryCreateCallableMappingFromStringArgs(::foo, ["1", "258", "s", "0"]))
+        Assert.assertNull(tryCreateCallableMappingFromStringArgs(::foo, ["1", "258", "sss", "0.1"]))
 
         assertParamMapsEquals(
             tryCreateCallableMappingFromStringArgs(
                 ::foo,
-                listOf("1", "2", "s", "0.1", "abc", "true", "1", "2", "3")
+                ["1", "2", "s", "0.1", "abc", "true", "1", "2", "3"]
             ),
-            "i" to 1, "b" to 2.toByte(), "c" to 's', "d" to 0.1, "s" to "abc", "t" to true, "v" to arrayOf(1L, 2L, 3L)
+            "i" to 1, "b" to 2.toByte(), "c" to 's', "d" to 0.1, "s" to "abc", "t" to true, "v" to [1L, 2L, 3L]
         )
 
-        Assert.assertNull(tryCreateCallableMappingFromStringArgs(::foo, listOf("i", "b", "c")))
+        Assert.assertNull(tryCreateCallableMappingFromStringArgs(::foo, ["i", "b", "c"]))
         Assert.assertNull(
             tryCreateCallableMappingFromStringArgs(
                 ::foo,
-                listOf(
+                [
                     "1",
                     "2",
                     "s",
@@ -48,26 +48,26 @@ class ArgsToParamsMatchingTest {
                     "abc",
                     "true",
                     "not-a-long"
-                )
+                ]
             )
         )
-        Assert.assertNull(tryCreateCallableMappingFromStringArgs(::charArray, listOf("")))
+        Assert.assertNull(tryCreateCallableMappingFromStringArgs(::charArray, [""]))
 
         assertParamMapsEquals(
-            tryCreateCallableMappingFromStringArgs(::varargStrings, listOf("a", "b", "c")),
-            "s" to arrayOf("a", "b", "c")
+            tryCreateCallableMappingFromStringArgs(::varargStrings, ["a", "b", "c"]),
+            "s" to ["a", "b", "c"]
         )
     }
 
     @Test
     fun testMatchNamed() {
-        Assert.assertNull(tryCreateCallableMappingFromNamedArgs(::foo, listOf()))
-        Assert.assertNull(tryCreateCallableMappingFromNamedArgs(::foo, listOf(null to 1, null to 2)))
+        Assert.assertNull(tryCreateCallableMappingFromNamedArgs(::foo, []))
+        Assert.assertNull(tryCreateCallableMappingFromNamedArgs(::foo, [null to 1, null to 2]))
 
         assertParamMapsEquals(
             tryCreateCallableMappingFromNamedArgs(
                 ::foo,
-                listOf(null to 1, null to 2.toByte(), null to 's', null to 0.1)
+                [null to 1, null to 2.toByte(), null to 's', null to 0.1]
             ),
             "i" to 1, "b" to 2.toByte(), "c" to 's', "d" to 0.1
         )
@@ -75,7 +75,7 @@ class ArgsToParamsMatchingTest {
         assertParamMapsEquals(
             tryCreateCallableMappingFromNamedArgs(
                 ::foo,
-                listOf(null to 1, null to 2.toByte(), "c" to 's', "d" to 0.1)
+                [null to 1, null to 2.toByte(), "c" to 's', "d" to 0.1]
             ),
             "i" to 1, "b" to 2.toByte(), "c" to 's', "d" to 0.1
         )
@@ -83,7 +83,7 @@ class ArgsToParamsMatchingTest {
         assertParamMapsEquals(
             tryCreateCallableMappingFromNamedArgs(
                 ::foo,
-                listOf(null to 1, null to 2.toByte(), "d" to 0.1, "c" to 's')
+                [null to 1, null to 2.toByte(), "d" to 0.1, "c" to 's']
             ),
             "i" to 1, "b" to 2.toByte(), "c" to 's', "d" to 0.1
         )
@@ -91,54 +91,54 @@ class ArgsToParamsMatchingTest {
         assertParamMapsEquals(
             tryCreateCallableMappingFromNamedArgs(
                 ::foo,
-                listOf(
+                [
                     null to 1,
                     null to 2.toByte(),
                     null to 's',
                     null to 0.1,
-                    "v" to arrayOf(1L, 2L, 3L)
-                )
+                    "v" to [1L, 2L, 3L]
+                ]
             ),
-            "i" to 1, "b" to 2.toByte(), "c" to 's', "d" to 0.1, "v" to arrayOf(1L, 2L, 3L)
+            "i" to 1, "b" to 2.toByte(), "c" to 's', "d" to 0.1, "v" to [1L, 2L, 3L]
         )
 
         Assert.assertNull(
             tryCreateCallableMappingFromNamedArgs(
                 ::foo,
-                listOf(
+                [
                     null to 1,
                     null to 2.toByte(),
                     null to 's',
                     "x" to 0.1
-                )
+                ]
             )
         ) // wrong name
         Assert.assertNull(
             tryCreateCallableMappingFromNamedArgs(
                 ::foo,
-                listOf(
+                [
                     null to 1,
                     null to 2.toByte(),
                     "c" to 's',
                     null to 0.1
-                )
+                ]
             )
         ) // unnamed after named
 
-        Assert.assertNull(tryCreateCallableMappingFromNamedArgs(::notNullNumber, listOf(null to null)))
+        Assert.assertNull(tryCreateCallableMappingFromNamedArgs(::notNullNumber, [null to null]))
         assertParamMapsEquals(
-            tryCreateCallableMappingFromNamedArgs(::nullableNumber, listOf(null to null)),
+            tryCreateCallableMappingFromNamedArgs(::nullableNumber, [null to null]),
             "n" to null
         )
         assertParamMapsEquals(
-            tryCreateCallableMappingFromNamedArgs(::notNullNumber, listOf(null to 42)),
+            tryCreateCallableMappingFromNamedArgs(::notNullNumber, [null to 42]),
             "n" to 42
         )
-        Assert.assertNull(tryCreateCallableMappingFromNamedArgs(::notNullNumber, listOf(null to "42")))
+        Assert.assertNull(tryCreateCallableMappingFromNamedArgs(::notNullNumber, [null to "42"]))
 
         assertParamMapsEquals(
             tryCreateCallableMappingFromNamedArgs(::varargStrings, listOf("a", "b", "c").map { null to it }),
-            "s" to arrayOf("a", "b", "c")
+            "s" to ["a", "b", "c"]
         )
     }
 }
@@ -156,8 +156,8 @@ private fun assertParamMapsEquals(actuals: Map<KParameter, Any?>?, vararg expect
                 if ((exp.value?.javaClass?.isArray ?: false) && (actVal?.javaClass?.isArray ?: false)) {
                     Assert.assertArrayEquals(
                         msg,
-                        arrayOf(exp.value),
-                        arrayOf(actVal)
+                        [exp.value],
+                        [actVal]
                     ) // tricking Array.deepEquals to compare single element arrays (instead of tedious casting to typed array)
                 } else {
                     Assert.assertEquals(msg, exp.value, actVal)

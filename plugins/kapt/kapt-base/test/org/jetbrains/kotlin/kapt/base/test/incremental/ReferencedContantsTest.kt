@@ -29,7 +29,7 @@ class ReferencedConstantsTest {
         @BeforeAll
         fun setUp(@TempDir tmp: File) {
             val compiledClasses = tmp.newFolder("compiledClasses")
-            compileSources(listOf(MY_TEST_DIR.resolve("CKlass.java")), compiledClasses)
+            compileSources([MY_TEST_DIR.resolve("CKlass.java")], compiledClasses)
 
             cache = JavaClassCacheManager(tmp.newCacheFolder())
             generatedSources = tmp.newGeneratedSourcesFolder()
@@ -43,11 +43,11 @@ class ReferencedConstantsTest {
             ).map { File(MY_TEST_DIR, it) }
             runAnnotationProcessing(
                 srcFiles,
-                listOf(processor),
+                [processor],
                 generatedSources,
-                listOf(compiledClasses)
+                [compiledClasses]
             ) { elements, trees -> MentionedTypesTaskListener(cache.javaCache, elements, trees) }
-            cache.updateCache(listOf(processor), false)
+            cache.updateCache([processor], false)
         }
     }
 
@@ -61,8 +61,8 @@ class ReferencedConstantsTest {
         assertEquals(setOf("test.A"), klassA.getMentionedTypes())
         assertEquals(
             mapOf(
-                "test.B" to setOf("INT_VALUE"),
-                "test.CKlass" to setOf("INT_VALUE")
+                "test.B" to ["INT_VALUE"],
+                "test.CKlass" to ["INT_VALUE"]
             ), klassA.getMentionedConstants()
         )
     }
@@ -75,7 +75,7 @@ class ReferencedConstantsTest {
         assertEquals(emptySet<String>(), annotationA.getMentionedAnnotations())
         assertEquals(emptySet<String>(), annotationA.getPrivateTypes())
         assertEquals(setOf("test.AnnotationA"), annotationA.getMentionedTypes())
-        assertEquals(mapOf("test.B" to setOf("INT_VALUE")), annotationA.getMentionedConstants())
+        assertEquals(mapOf("test.B" to ["INT_VALUE"]), annotationA.getMentionedConstants())
     }
 
     @Test
@@ -88,8 +88,8 @@ class ReferencedConstantsTest {
         assertEquals(setOf("test.AnnotatedType", "test.AnnotationA"), annotated.getMentionedTypes())
         assertEquals(
             mapOf(
-                "test.B" to setOf("INT_VALUE"),
-                "test.CKlass" to setOf("INT_VALUE")
+                "test.B" to ["INT_VALUE"],
+                "test.CKlass" to ["INT_VALUE"]
             ), annotated.getMentionedConstants()
         )
     }

@@ -272,12 +272,12 @@ class Candidate(
 
     // ---------------------------------------- PCLA-related parts ----------------------------------------
 
-    val postponedPCLACalls: MutableList<ConeResolutionAtom> = mutableListOf()
-    val lambdasAnalyzedWithPCLA: MutableList<FirAnonymousFunction> = mutableListOf()
+    val postponedPCLACalls: MutableList<ConeResolutionAtom> = []
+    val lambdasAnalyzedWithPCLA: MutableList<FirAnonymousFunction> = []
 
     // Currently, it's only about completion results writing for property delegation inference info
     // See the call sites of [FirDelegatedPropertyInferenceSession.completeSessionOrPostponeIfNonRoot]
-    val onPCLACompletionResultsWritingCallbacks: MutableList<(ConeSubstitutor) -> Unit> = mutableListOf()
+    val onPCLACompletionResultsWritingCallbacks: MutableList<(ConeSubstitutor) -> Unit> = []
 
     // ---------------------------------------- Applicability ----------------------------------------
 
@@ -334,7 +334,7 @@ class Candidate(
     }
 
     fun contextArguments(): List<FirExpression> {
-        return contextArguments?.map { it.expression.unwrapArgument() } ?: emptyList()
+        return contextArguments?.map { it.expression.unwrapArgument() } ?: []
     }
 
     private var sourcesWereUpdated = false

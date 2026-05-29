@@ -18,13 +18,13 @@ class ImmutableBlobTest {
                 add(b)
             }
         }
-        assertContentEquals(listOf<Byte>(1, 2, 3), actual)
+        assertContentEquals([1, 2, 3], actual)
     }
 
     @Test fun toByteArray() {
         val blob = immutableBlobOf(1, 2, 3)
         val actual = blob.toByteArray()
-        assertContentEquals(byteArrayOf(1, 2, 3), actual)
+        assertContentEquals([1, 2, 3], actual)
     }
 
     @Test fun toByteArraySlice() {

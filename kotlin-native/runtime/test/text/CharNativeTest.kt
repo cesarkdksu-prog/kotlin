@@ -95,10 +95,10 @@ class CharNativeTest {
 
     @Test
     fun toChars() {
-        assertContentEquals(Char.toChars(0x010000), charArrayOf('\uD800', '\uDC00'))
-        assertContentEquals(Char.toChars(0x010001), charArrayOf('\uD800', '\uDC01'))
-        assertContentEquals(Char.toChars(0x010401), charArrayOf('\uD801', '\uDC01'))
-        assertContentEquals(Char.toChars(0x10FFFF), charArrayOf('\uDBFF', '\uDFFF'))
+        assertContentEquals(Char.toChars(0x010000), ['\uD800', '\uDC00'])
+        assertContentEquals(Char.toChars(0x010001), ['\uD800', '\uDC01'])
+        assertContentEquals(Char.toChars(0x010401), ['\uD801', '\uDC01'])
+        assertContentEquals(Char.toChars(0x10FFFF), ['\uDBFF', '\uDFFF'])
 
         assertFailsWith<IllegalArgumentException> { Char.toChars(Int.MAX_VALUE) }
     }

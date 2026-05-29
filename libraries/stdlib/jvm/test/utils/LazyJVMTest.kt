@@ -124,7 +124,7 @@ class LazyJVMTest {
     }
 
     @Test fun lazyInitializationForcedOnSerialization() {
-        for (mode in listOf(LazyThreadSafetyMode.SYNCHRONIZED, LazyThreadSafetyMode.PUBLICATION, LazyThreadSafetyMode.NONE)) {
+        for (mode in [LazyThreadSafetyMode.SYNCHRONIZED, LazyThreadSafetyMode.PUBLICATION, LazyThreadSafetyMode.NONE]) {
             val lazy = lazy(mode) { "initialized" }
             assertFalse(lazy.isInitialized())
             val lazy2 = serializeAndDeserialize(lazy)
@@ -142,7 +142,7 @@ class LazyJVMTest {
     ) {
 
         val runResult = java.util.Collections.synchronizedList(mutableListOf<TResult>())
-        val invalidResults = mutableListOf<Pair<Int, List<TResult>>>()
+        val invalidResults: MutableList<Pair<Int, List<TResult>>> = []
         lateinit var state: TState
 
         var runId = -1

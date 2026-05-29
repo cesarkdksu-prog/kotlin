@@ -185,7 +185,7 @@ class ScriptJvmK2CompilerImpl(
                 scriptRefinedCompilationConfiguration.asSuccess()
             )
 
-        val allSourceFiles = mutableListOf(script)
+        val allSourceFiles: MutableList<SourceCode> = [script]
         (
             val classpath, val newSources = sources, val sourceDependencies
         ) =
@@ -198,7 +198,7 @@ class ScriptJvmK2CompilerImpl(
 
         val ignoredOptionsReportingState = state.compilerContext.ignoredOptionsReportingState
         val updatedCompilerOptions = allSourceFiles.flatMapTo(mutableListOf()) {
-            getRefinedConfiguration(it)[ScriptCompilationConfiguration.compilerOptions] ?: emptyList()
+            getRefinedConfiguration(it)[ScriptCompilationConfiguration.compilerOptions] ?: []
         }
         if (updatedCompilerOptions.isNotEmpty() && updatedCompilerOptions != state.baseScriptCompilationConfiguration[ScriptCompilationConfiguration.compilerOptions]) {
             compilerConfiguration.updateWithCompilerOptions(

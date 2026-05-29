@@ -12,7 +12,7 @@ import kotlin.io.path.deleteRecursively
 import kotlin.test.AfterTest
 
 abstract class AbstractPathTest {
-    private val cleanUpActions = mutableListOf<Pair<Path, (Path) -> Unit>>()
+    private val cleanUpActions: MutableList<Pair<Path, (Path) -> Unit>> = []
 
     fun Path.cleanup(): Path {
         cleanUpActions.add(this to { it.deleteIfExists() })
@@ -45,7 +45,7 @@ abstract class AbstractPathTest {
         }
     }
 
-    fun withRestrictedRead(vararg paths: Path, alsoReset: List<Path> = emptyList(), block: () -> Unit) {
+    fun withRestrictedRead(vararg paths: Path, alsoReset: List<Path> = [], block: () -> Unit) {
         try {
             if (paths.all { it.toFile().setReadable(false) }) {
                 block()
@@ -58,7 +58,7 @@ abstract class AbstractPathTest {
         }
     }
 
-    fun withRestrictedWrite(vararg paths: Path, alsoReset: List<Path> = emptyList(), block: () -> Unit) {
+    fun withRestrictedWrite(vararg paths: Path, alsoReset: List<Path> = [], block: () -> Unit) {
         try {
             if (paths.all { it.toFile().setWritable(false) }) {
                 block()

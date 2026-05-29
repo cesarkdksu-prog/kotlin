@@ -225,7 +225,7 @@ fun makeScriptCompilerArguments(compilerOptions: List<String>): K2JVMCompilerArg
 
     val compilerArguments = K2JVMCompilerArguments()
     val argumentsWithExternalProp =
-        (System.getProperty(SCRIPT_BASE_COMPILER_ARGUMENTS_PROPERTY)?.takeIf { it.isNotBlank() }?.split(' ') ?: emptyList()) +
+        (System.getProperty(SCRIPT_BASE_COMPILER_ARGUMENTS_PROPERTY)?.takeIf { it.isNotBlank() }?.split(' ') ?: []) +
                 compilerOptions
 
     parseCommandLineArguments(argumentsWithExternalProp, compilerArguments)
@@ -244,7 +244,7 @@ private fun createInitialCompilerConfiguration(
 ): CompilerConfiguration {
 
     val baseArguments = makeScriptCompilerArguments(
-        scriptCompilationConfiguration[ScriptCompilationConfiguration.compilerOptions] ?: emptyList()
+        scriptCompilationConfiguration[ScriptCompilationConfiguration.compilerOptions] ?: []
     )
 
     reportArgumentsIgnoredGenerally(baseArguments, messageCollector, reportingState)
@@ -284,7 +284,7 @@ private fun createInitialCompilerConfiguration(
         scriptCompilationConfiguration[ScriptCompilationConfiguration.dependencies]?.let { dependencies ->
             addJvmClasspathRoots(
                 dependencies.flatMap {
-                    (it as? JvmDependency)?.classpath ?: emptyList()
+                    (it as? JvmDependency)?.classpath ?: []
                 }
             )
         }
@@ -376,7 +376,7 @@ private fun CompilerConfiguration.updateWithRefinedConfigurations(
     val updatedCompilerOptions = sourceFiles.flatMapTo(mutableListOf()) {
         getScriptCompilationConfiguration(it)?.valueOrNull()?.configuration?.get(
             ScriptCompilationConfiguration.compilerOptions
-        ) ?: emptyList()
+        ) ?: []
     }
     if (updatedCompilerOptions.isNotEmpty() &&
         updatedCompilerOptions != context.baseScriptCompilationConfiguration[ScriptCompilationConfiguration.compilerOptions]

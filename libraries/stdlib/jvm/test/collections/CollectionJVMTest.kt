@@ -24,7 +24,7 @@ class CollectionJVMTest {
     private data class IdentityData(public val value: Int)
 
     @Test fun removeAllWithDifferentEquality() {
-        val data = listOf(IdentityData(1), IdentityData(1))
+        val data = [IdentityData(1), IdentityData(1)]
         val list = data.toMutableList()
         list -= identitySetOf(data[0]) as Iterable<IdentityData>
         assertTrue(list.single() === data[1], "Identity contains should be used")
@@ -34,12 +34,12 @@ class CollectionJVMTest {
         assertTrue(list2.isEmpty(), "Equality contains should be used")
 
         val set3: MutableSet<IdentityData> = identitySetOf(*data.toTypedArray())
-        set3 -= arrayOf(data[1])
+        set3 -= [data[1]]
         assertTrue(set3.isEmpty(), "Array doesn't have contains, equality contains is used instead")
     }
 
     @Test fun flatMap() {
-        val data = listOf("", "foo", "bar", "x", "")
+        val data = ["", "foo", "bar", "x", ""]
         val characters = data.flatMap { it.toList() }
         println("Got list of characters ${characters}")
         assertEquals(7, characters.size)
@@ -49,43 +49,43 @@ class CollectionJVMTest {
 
 
     @Test fun filterIntoLinkedList() {
-        val data = listOf("foo", "bar")
+        val data = ["foo", "bar"]
         val foo = data.filterTo(LinkedList<String>()) { it.startsWith("f") }
 
         assertTrue {
             foo.all { it.startsWith("f") }
         }
         assertEquals(1, foo.size)
-        assertEquals(listOf("foo"), foo)
+        assertEquals(["foo"], foo)
 
         assertStaticAndRuntimeTypeIs<LinkedList<String>>(foo)
     }
 
     @Test fun filterNotIntoLinkedListOf() {
-        val data = listOf("foo", "bar")
+        val data = ["foo", "bar"]
         val foo = data.filterNotTo(LinkedList<String>()) { it.startsWith("f") }
 
         assertTrue {
             foo.all { !it.startsWith("f") }
         }
         assertEquals(1, foo.size)
-        assertEquals(listOf("bar"), foo)
+        assertEquals(["bar"], foo)
 
         assertStaticAndRuntimeTypeIs<LinkedList<String>>(foo)
     }
 
     @Test fun filterNotNullIntoLinkedListOf() {
-        val data = listOf(null, "foo", null, "bar")
+        val data = [null, "foo", null, "bar"]
         val foo = data.filterNotNullTo(LinkedList<String>())
 
         assertEquals(2, foo.size)
-        assertEquals(LinkedList(listOf("foo", "bar")), foo)
+        assertEquals(LinkedList(["foo", "bar"]), foo)
 
         assertStaticAndRuntimeTypeIs<LinkedList<String>>(foo)
     }
 
     @Test fun filterIntoSortedSet() {
-        val data = listOf("foo", "bar")
+        val data = ["foo", "bar"]
         val sorted = data.filterTo(sortedSetOf<String>()) { it.length == 3 }
         assertEquals(2, sorted.size)
         assertEquals(sortedSetOf("bar", "foo"), sorted)
@@ -94,14 +94,14 @@ class CollectionJVMTest {
     }
 
     @Test fun first() {
-        assertEquals(19, TreeSet(listOf(90, 47, 19)).first())
+        assertEquals(19, TreeSet([90, 47, 19]).first())
     }
 
     @Test fun last() {
-        val data = listOf("foo", "bar")
+        val data = ["foo", "bar"]
         assertEquals("bar", data.last())
         assertEquals(25, listOf(15, 19, 20, 25).last())
-        assertEquals('a', LinkedList(listOf('a')).last())
+        assertEquals('a', LinkedList(['a']).last())
     }
 
     @Test fun lastException() {
@@ -109,11 +109,11 @@ class CollectionJVMTest {
     }
 
     @Test fun contains() {
-        assertTrue(LinkedList(listOf(15, 19, 20)).contains(15))
+        assertTrue(LinkedList([15, 19, 20]).contains(15))
     }
 
     @Test fun toArray() {
-        val data = listOf("foo", "bar")
+        val data = ["foo", "bar"]
         val arr = data.toTypedArray()
         println("Got array ${arr}")
         assertEquals(2, arr.size)
@@ -125,32 +125,32 @@ class CollectionJVMTest {
     }
 
     @Test fun toSortedSet() {
-        val data = listOf("foo", "Foo", "bar")
+        val data = ["foo", "Foo", "bar"]
         val set1 = data.toSortedSet()
-        assertEquals(listOf("Foo", "bar", "foo"), set1.toList())
+        assertEquals(["Foo", "bar", "foo"], set1.toList())
 
         val set2 = data.toSortedSet(reverseOrder())
-        assertEquals(listOf("foo", "bar", "Foo"), set2.toList())
+        assertEquals(["foo", "bar", "Foo"], set2.toList())
 
         val set3 = data.toSortedSet(String.CASE_INSENSITIVE_ORDER)
-        assertEquals(listOf("bar", "foo"), set3.toList())
+        assertEquals(["bar", "foo"], set3.toList())
     }
 
     @Test fun takeReturnsFirstNElements() {
-        expect(setOf(1, 2)) { sortedSetOf(1, 2, 3, 4, 5).take(2).toSet() }
+        expect([1, 2]) { sortedSetOf(1, 2, 3, 4, 5).take(2).toSet() }
     }
 
     @Test fun filterIsInstanceList() {
-        val values: List<Any> = listOf(1, 2, 3.toDouble(), "abc", "cde")
+        val values: List<Any> = [1, 2, 3.toDouble(), "abc", "cde"]
 
         val intValues: List<Int> = values.filterIsInstance<Int>()
-        assertEquals(listOf(1, 2), intValues)
+        assertEquals([1, 2], intValues)
 
         val doubleValues: List<Double> = values.filterIsInstance<Double>()
-        assertEquals(listOf(3.0), doubleValues)
+        assertEquals([3.0], doubleValues)
 
         val stringValues: List<String> = values.filterIsInstance<String>()
-        assertEquals(listOf("abc", "cde"), stringValues)
+        assertEquals(["abc", "cde"], stringValues)
 
         val anyValues: List<Any> = values.filterIsInstance<Any>()
         assertEquals(values.toList(), anyValues)
@@ -160,16 +160,16 @@ class CollectionJVMTest {
     }
 
     @Test fun filterIsInstanceArray() {
-        val src: Array<Any> = arrayOf(1, 2, 3.toDouble(), "abc", "cde")
+        val src: Array<Any> = [1, 2, 3.toDouble(), "abc", "cde"]
 
         val intValues: List<Int> = src.filterIsInstance<Int>()
-        assertEquals(listOf(1, 2), intValues)
+        assertEquals([1, 2], intValues)
 
         val doubleValues: List<Double> = src.filterIsInstance<Double>()
-        assertEquals(listOf(3.0), doubleValues)
+        assertEquals([3.0], doubleValues)
 
         val stringValues: List<String> = src.filterIsInstance<String>()
-        assertEquals(listOf("abc", "cde"), stringValues)
+        assertEquals(["abc", "cde"], stringValues)
 
         val anyValues: List<Any> = src.filterIsInstance<Any>()
         assertEquals(src.toList(), anyValues)
@@ -262,7 +262,7 @@ class CollectionJVMTest {
         }
     }
 
-    @Test fun singletonListIsSerializable() = testSingletonCollectionSerialization(listOf(42))
+    @Test fun singletonListIsSerializable() = testSingletonCollectionSerialization([42])
 
     @Test fun singletonSetIsSerializable() = testSingletonCollectionSerialization(setOf(42))
 

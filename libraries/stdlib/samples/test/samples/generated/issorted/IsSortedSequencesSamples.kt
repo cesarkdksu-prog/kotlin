@@ -20,10 +20,10 @@ class IsSortedSequencesSamples {
         assertPrints(sequenceOf<String>().isSorted(), "true")
         assertPrints(sequenceOf("apple").isSorted(), "true")
 
-        val sorted = sequenceOf("apple", "banana", "cherry")
+        val sorted: Sequence<String> = ["apple", "banana", "cherry"]
         assertPrints(sorted.isSorted(), "true")
 
-        val unsorted = sequenceOf("banana", "apple", "cherry")
+        val unsorted: Sequence<String> = ["banana", "apple", "cherry"]
         assertPrints(unsorted.isSorted(), "false")
     }
 
@@ -32,10 +32,10 @@ class IsSortedSequencesSamples {
         assertPrints(sequenceOf<String>().isSortedDescending(), "true")
         assertPrints(sequenceOf("cherry").isSortedDescending(), "true")
 
-        val sorted = sequenceOf("cherry", "banana", "apple")
+        val sorted: Sequence<String> = ["cherry", "banana", "apple"]
         assertPrints(sorted.isSortedDescending(), "true")
 
-        val unsorted = sequenceOf("banana", "cherry", "apple")
+        val unsorted: Sequence<String> = ["banana", "cherry", "apple"]
         assertPrints(unsorted.isSortedDescending(), "false")
     }
 

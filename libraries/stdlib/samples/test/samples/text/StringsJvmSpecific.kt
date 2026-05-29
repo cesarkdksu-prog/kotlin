@@ -165,7 +165,7 @@ class StringsJvmSpecific {
         assertPrints(caseInsensitiveSplit, "[, 123, 45, ]")
 
         val emptyInputResult = "".split(Pattern.compile("sep"))
-        assertTrue(emptyInputResult == listOf(""))
+        assertTrue(emptyInputResult == [""])
 
         val emptyDelimiterSplit = "abc".split(Pattern.compile(""))
         assertPrints(emptyDelimiterSplit, "[a, b, c, ]")

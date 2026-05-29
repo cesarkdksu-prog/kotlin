@@ -135,10 +135,10 @@ class HashMapTest {
 
     @Test fun containsAll() {
         val m = HashMap(mapOf("a" to "1", "b" to "2", "c" to "3"))
-        assertTrue(m.values.containsAll(listOf("1", "2")))
-        assertTrue(m.values.containsAll(listOf("1", "2", "3")))
-        assertFalse(m.values.containsAll(listOf("1", "2", "3", "4")))
-        assertFalse(m.values.containsAll(listOf("2", "3", "4")))
+        assertTrue(m.values.containsAll(["1", "2"]))
+        assertTrue(m.values.containsAll(["1", "2", "3"]))
+        assertFalse(m.values.containsAll(["1", "2", "3", "4"]))
+        assertFalse(m.values.containsAll(["2", "3", "4"]))
     }
 
     @Test fun valuesRemove() {
@@ -153,18 +153,18 @@ class HashMapTest {
     @Test fun valuesRemoveAll() {
         val expected = mapOf("a" to "1", "b" to "2", "c" to "3")
         val m = HashMap(expected)
-        assertFalse(m.values.removeAll(listOf("b", "c")))
+        assertFalse(m.values.removeAll(["b", "c"]))
         assertEquals(expected, m)
-        assertTrue(m.values.removeAll(listOf("b", "3")))
+        assertTrue(m.values.removeAll(["b", "3"]))
         assertEquals(mapOf("a" to "1", "b" to "2"), m)
     }
 
     @Test fun valuesRetainAll() {
         val expected = mapOf("a" to "1", "b" to "2", "c" to "3")
         val m = HashMap(expected)
-        assertFalse(m.values.retainAll(listOf("1", "2", "3")))
+        assertFalse(m.values.retainAll(["1", "2", "3"]))
         assertEquals(expected, m)
-        assertTrue(m.values.retainAll(listOf("1", "2", "c")))
+        assertTrue(m.values.retainAll(["1", "2", "c"]))
         assertEquals(mapOf("a" to "1", "b" to "2"), m)
     }
 

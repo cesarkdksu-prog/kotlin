@@ -11,19 +11,19 @@ import kotlin.math.*
 class MathJVMTest {
 
     @Test fun IEEEremainder() {
-        val data = arrayOf(  //  a    a IEEErem 2.5
-                doubleArrayOf(-2.0,   0.5),
-                doubleArrayOf(-1.25, -1.25),
-                doubleArrayOf( 0.0,   0.0),
-                doubleArrayOf( 1.0,   1.0),
-                doubleArrayOf( 1.25,  1.25),
-                doubleArrayOf( 1.5,  -1.0),
-                doubleArrayOf( 2.0,  -0.5),
-                doubleArrayOf( 2.5,   0.0),
-                doubleArrayOf( 3.5,   1.0),
-                doubleArrayOf( 3.75, -1.25),
-                doubleArrayOf( 4.0,  -1.0)
-        )
+        val data: Array<DoubleArray> = [  //  a    a IEEErem 2.5
+            [-2.0, 0.5],
+            [-1.25, -1.25],
+            [0.0, 0.0],
+            [1.0, 1.0],
+            [1.25, 1.25],
+            [1.5, -1.0],
+            [2.0, -0.5],
+            [2.5, 0.0],
+            [3.5, 1.0],
+            [3.75, -1.25],
+            [4.0, -1.0]
+        ]
         for ([a, r] in data) {
             assertEquals(r, a.IEEErem(2.5), "($a).IEEErem(2.5)")
         }

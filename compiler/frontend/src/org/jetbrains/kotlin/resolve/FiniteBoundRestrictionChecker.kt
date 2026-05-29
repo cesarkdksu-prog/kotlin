@@ -72,7 +72,7 @@ object FiniteBoundRestrictionChecker {
 
             return object : Graph<TypeParameterDescriptor> {
                 override val nodes = this@GraphBuilder.nodes
-                override fun getNeighbors(node: TypeParameterDescriptor) = edgeLists[node] ?: emptyList<TypeParameterDescriptor>()
+                override fun getNeighbors(node: TypeParameterDescriptor) = edgeLists[node] ?: []
             }
         }
 

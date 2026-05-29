@@ -7,7 +7,7 @@ class Builders {
     class Lists {
         @Sample
         fun buildListSample() {
-            val x = listOf('b', 'c')
+            val x = ['b', 'c']
 
             val y = buildList {
                 add('a')
@@ -20,7 +20,7 @@ class Builders {
 
         @Sample
         fun buildListSampleWithCapacity() {
-            val x = listOf('b', 'c')
+            val x = ['b', 'c']
 
             val y = buildList(x.size + 2) {
                 add('a')
@@ -35,7 +35,7 @@ class Builders {
     class Sets {
         @Sample
         fun buildSetSample() {
-            val x = setOf('a', 'b')
+            val x: Set<Char> = ['a', 'b']
 
             val y = buildSet {
                 add('b')
@@ -48,7 +48,7 @@ class Builders {
 
         @Sample
         fun buildSetSampleWithCapacity() {
-            val x = setOf('a', 'b')
+            val x: Set<Char> = ['a', 'b']
 
             val y = buildSet(x.size + 2) {
                 add('b')

@@ -21,7 +21,7 @@ import samples.*
 class ReversedViews {
     @Sample
     fun asReversedList() {
-        val original = mutableListOf('a', 'b', 'c', 'd', 'e')
+        val original: MutableList<Char> = ['a', 'b', 'c', 'd', 'e']
         val originalReadOnly = original as List<Char>
         val reversed = originalReadOnly.asReversed()
 
@@ -40,7 +40,7 @@ class ReversedViews {
 
     @Sample
     fun asReversedMutableList() {
-        val original = mutableListOf(1, 2, 3, 4, 5)
+        val original: MutableList<Int> = [1, 2, 3, 4, 5]
         val reversed = original.asReversed()
 
         assertPrints(original, "[1, 2, 3, 4, 5]")

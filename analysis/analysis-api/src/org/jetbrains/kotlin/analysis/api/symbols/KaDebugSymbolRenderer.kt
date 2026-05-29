@@ -490,7 +490,7 @@ public class KaDebugRenderer(
 
     @KaNonPublicApi
     public companion object {
-        private val ignoredPropertyNames = setOf(
+        private val ignoredPropertyNames: Set<String> = [
             "psi",
             "token",
             "builder",
@@ -503,7 +503,7 @@ public class KaDebugRenderer(
             "classIdIfNonLocal",
             "containingClassIdIfNonLocal",
             "callableIdIfNonLocal",
-        )
+        ]
     }
 }
 

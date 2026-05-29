@@ -73,7 +73,7 @@ abstract class CustomKlibCompilerFirstStageFacade(
         val modulesToCompile: List<TestModule> = if (isKmpSupported)
             module.transitiveDependsOnDependencies(includeSelf = true, reverseOrder = true)
         else
-            listOf(module)
+            [module]
 
         val sourceFileProvider = testServices.sourceFileProvider
         val filesToCompile: List<String> = modulesToCompile.flatMap { it.files }

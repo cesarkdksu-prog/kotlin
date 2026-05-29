@@ -72,7 +72,7 @@ class Strings {
     @Sample
     fun chunkedSequence() {
         val dnaFragment = "ATTCGCCAAXXX"
-        val knownAcids = setOf("ATT", "CGC", "CAA") // XXX would cause error if processed
+        val knownAcids: Set<String> = ["ATT", "CGC", "CAA"] // XXX would cause error if processed
         val codons = dnaFragment.chunkedSequence(3).onEach { check(it in knownAcids) }
         val firstTwo = codons.take(2).toList()
 
@@ -655,7 +655,7 @@ class Strings {
         assertPrints(limitSplit, "[a, b, c->d->e]")
 
         val emptyInputResult = "".split("sep")
-        assertTrue(emptyInputResult == listOf(""))
+        assertTrue(emptyInputResult == [""])
 
         val emptyDelimiterSplit = "abc".split("")
         assertPrints(emptyDelimiterSplit, "[, a, b, c, ]")
@@ -693,7 +693,7 @@ class Strings {
         assertPrints(limitSplit, "[a, b, c->d->e]")
 
         val emptyInputResult = "".splitToSequence("sep").toList()
-        assertTrue(emptyInputResult == listOf(""))
+        assertTrue(emptyInputResult == [""])
 
         val emptyDelimiterSplit = "abc".splitToSequence("").toPrettyString()
         assertPrints(emptyDelimiterSplit, "[, a, b, c, ]")
@@ -723,7 +723,7 @@ class Strings {
         assertPrints(limitSplit, "[a, b, c,d,e]")
 
         val emptyInputResult = "".split('|')
-        assertTrue(emptyInputResult == listOf(""))
+        assertTrue(emptyInputResult == [""])
 
         val mixedCase = "abcXdef".split('x')
         assertPrints(mixedCase, "[abcXdef]")  // No match with case sensitivity
@@ -752,7 +752,7 @@ class Strings {
         assertPrints(limitSplit, "[a, b, c,d,e]")
 
         val emptyInputResult = "".splitToSequence('|').toList()
-        assertTrue(emptyInputResult == listOf(""))
+        assertTrue(emptyInputResult == [""])
 
         val mixedCase = "abcXdef".splitToSequence('x').toPrettyString()
         assertPrints(mixedCase, "[abcXdef]")  // No match with case sensitivity
@@ -785,7 +785,7 @@ class Strings {
         assertPrints(caseInsensitiveSplit, "[, 123, 45, ]")
 
         val emptyInputResult = "".split(Regex("sep"))
-        assertTrue(emptyInputResult == listOf(""))
+        assertTrue(emptyInputResult == [""])
 
         val emptyDelimiterSplit = "abc".split(Regex(""))
         assertPrints(emptyDelimiterSplit, "[, a, b, c, ]")
@@ -987,7 +987,7 @@ class Strings {
         // 2 is not a string, but plus concatenates its string representation with the "Kotlin " string
         assertPrints("Kotlin " + 2, "Kotlin 2")
         // list is converted to a String first and then concatenated with the "Numbers: " string
-        assertPrints("Numbers: " + listOf(1, 2, 3), "Numbers: [1, 2, 3]")
+        assertPrints("Numbers: " + [1, 2, 3], "Numbers: [1, 2, 3]")
     }
 
     @Sample

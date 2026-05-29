@@ -10,14 +10,14 @@ import kotlin.test.*
 // Native-specific part of stdlib/test/collections/MutableCollectionsTest.kt
 class MutableCollectionsNativeTest {
     @Test fun sortListString() {
-        val x = mutableListOf("x", "a", "b")
+        val x: MutableList<String> = ["x", "a", "b"]
         x.sort()
-        assertContentEquals(listOf("a", "b", "x"), x)
+        assertContentEquals(["a", "b", "x"], x)
     }
 
     @Test fun sortListInt() {
-        val x = mutableListOf(239, 42, -1, 100500, 0)
+        val x: MutableList<Int> = [239, 42, -1, 100500, 0]
         x.sort()
-        assertContentEquals(listOf(-1, 0, 42, 239, 100500), x)
+        assertContentEquals([-1, 0, 42, 239, 100500], x)
     }
 }

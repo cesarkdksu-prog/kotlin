@@ -55,7 +55,7 @@ class HashSetTest {
     }
 
     @Test fun iterator() {
-        val s = HashSet(listOf("1", "2", "3"))
+        val s = HashSet(["1", "2", "3"])
         val it = s.iterator()
         assertTrue(it.hasNext())
         assertEquals("1", it.next())
@@ -67,7 +67,7 @@ class HashSetTest {
     }
 
     @Test fun equals() {
-        val s = HashSet(listOf("1", "2", "3"))
+        val s = HashSet(["1", "2", "3"])
         assertTrue(s == setOf("1", "2", "3"))
         assertTrue(s == setOf("2", "3", "1")) // order does not matter
         assertFalse(s == setOf("1", "2", "4"))
@@ -75,37 +75,37 @@ class HashSetTest {
     }
 
     @Test fun hashCodeTest() {
-        val s = HashSet(listOf("1", "2", "3"))
+        val s = HashSet(["1", "2", "3"])
         assertTrue(s.hashCode() == setOf("1", "2", "3").hashCode())
     }
 
     @Test fun toStringTest() {
-        val s = HashSet(listOf("1", "2", "3"))
+        val s = HashSet(["1", "2", "3"])
         assertTrue(s.toString() == setOf("1", "2", "3").toString())
     }
 
     @Test fun containsAll() {
-        val s = HashSet(listOf("1", "2", "3", "4", "5"))
-        assertFalse(s.containsAll(listOf("6", "7", "8")))
-        assertFalse(s.containsAll(listOf("5", "6", "7")))
-        assertFalse(s.containsAll(listOf("4", "5", "6")))
-        assertTrue(s.containsAll(listOf("3", "4", "5")))
-        assertTrue(s.containsAll(listOf("2", "3", "4")))
+        val s = HashSet(["1", "2", "3", "4", "5"])
+        assertFalse(s.containsAll(["6", "7", "8"]))
+        assertFalse(s.containsAll(["5", "6", "7"]))
+        assertFalse(s.containsAll(["4", "5", "6"]))
+        assertTrue(s.containsAll(["3", "4", "5"]))
+        assertTrue(s.containsAll(["2", "3", "4"]))
     }
 
     @Test fun removeAll() {
-        val s = HashSet(listOf("1", "2", "3", "4", "5", "1"))
-        assertFalse(s.removeAll(listOf("6", "7", "8")))
+        val s = HashSet(["1", "2", "3", "4", "5", "1"])
+        assertFalse(s.removeAll(["6", "7", "8"]))
         assertEquals(setOf("1", "2", "3", "4", "5", "1"), s)
-        assertTrue(s.removeAll(listOf("5", "3", "1")))
+        assertTrue(s.removeAll(["5", "3", "1"]))
         assertEquals(setOf("2", "4"), s)
     }
 
     @Test fun retainAll() {
-        val s = HashSet(listOf("1", "2", "3", "4", "5"))
-        assertFalse(s.retainAll(listOf("1", "2", "3", "4", "5")))
+        val s = HashSet(["1", "2", "3", "4", "5"])
+        assertFalse(s.retainAll(["1", "2", "3", "4", "5"]))
         assertEquals(setOf("1", "2", "3", "4", "5"), s)
-        assertTrue(s.retainAll(listOf("5", "3", "1")))
+        assertTrue(s.retainAll(["5", "3", "1"]))
         assertEquals(setOf("1", "3", "5"), s)
     }
 }

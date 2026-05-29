@@ -24,7 +24,7 @@ import kotlin.streams.*
 
 class CollectionTest {
 
-    val data = listOf("abc", "fo", "baar")
+    val data = ["abc", "fo", "baar"]
 
     @Test fun stream() {
         assertEquals(
@@ -40,7 +40,7 @@ class CollectionTest {
     @Test fun removeIf() {
         val coll: MutableCollection<String> = data.toMutableList()
         assertTrue(coll.removeIf { it.length < 3 })
-        assertEquals(listOf("abc", "baar"), coll as Collection<String>)
+        assertEquals(["abc", "baar"], coll as Collection<String>)
         assertFalse(coll.removeIf(Predicate { it.length > 4 }))
     }
 

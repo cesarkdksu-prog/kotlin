@@ -41,20 +41,20 @@ class StatsCalculatorTests {
             assertEquals(moduleStats0.backendStats!! + moduleStats1.backendStats + moduleStats2.backendStats, backendStats)
             assertEquals(
                 dynamicStats,
-                listOf(
+                [
                     DynamicStats(PhaseType.IrPreLowering, "IrPreLoweringDynamicStat1", irPreLoweringStats!! / 2),
                     DynamicStats(PhaseType.IrPreLowering, "IrPreLoweringDynamicStat2", irPreLoweringStats!! / 4),
                     DynamicStats(PhaseType.IrPreLowering, "IrPreLoweringDynamicStat3", irPreLoweringStats!! / 4),
-                )
+                ]
             )
             assertEquals(moduleStats0.findJavaClassStats!! + moduleStats1.findJavaClassStats + moduleStats2.findJavaClassStats, findJavaClassStats)
             assertEquals(moduleStats0.findKotlinClassStats!! + moduleStats1.findKotlinClassStats + moduleStats2.findKotlinClassStats, findKotlinClassStats)
             assertEquals(
-                listOf(
+                [
                     GarbageCollectionStats("gc-1", 100, 1),
                     GarbageCollectionStats("gc-2", 200, 2),
                     GarbageCollectionStats("gc-3", 300, 3),
-                ),
+                ],
                 gcStats
             )
             assertEquals(moduleStats0.jitTimeMillis!! + moduleStats1.jitTimeMillis!! + moduleStats2.jitTimeMillis!!, jitTimeMillis)
@@ -68,7 +68,7 @@ class StatsCalculatorTests {
             statsCalculator.getTopModulesBy { it.getTotalTime().nanos }.single()
         )
         assertEquals(
-            listOf(moduleStats2, moduleStats1),
+            [moduleStats2, moduleStats1],
             statsCalculator.getTopModulesBy(count = 2) { it.getTotalTime().nanos }
         )
     }
@@ -80,7 +80,7 @@ class StatsCalculatorTests {
             statsCalculator.getTopModulesBy(max = false) { it.getTotalTime().nanos }.single()
         )
         assertEquals(
-            listOf(moduleStats0, moduleStats1),
+            [moduleStats0, moduleStats1],
             statsCalculator.getTopModulesBy(max = false, count = 2) { it.getTotalTime().nanos }
         )
     }

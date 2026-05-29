@@ -20,7 +20,7 @@ object ClassMapperLite {
     //      "kotlin.String.Companion" -> "Lkotlin/jvm/internal/StringCompanionObject"
     //      "kotlin/collections/Map.Entry" -> "Ljava/util/Map$Entry"
     private val map: Map<String, String> = mutableMapOf<String, String>().apply {
-        val primitives = listOf(
+        val primitives = [
             "Boolean", "Z",
             "Char", "C",
             "Byte", "B",
@@ -29,7 +29,7 @@ object ClassMapperLite {
             "Float", "F",
             "Long", "J",
             "Double", "D"
-        )
+        ]
 
         for (i in primitives.indices step 2) {
             put("$kotlin/${primitives[i]}", primitives[i + 1])
@@ -46,11 +46,11 @@ object ClassMapperLite {
         add("Nothing", "java/lang/Void")
         add("Annotation", "java/lang/annotation/Annotation")
 
-        for (klass in listOf("String", "CharSequence", "Throwable", "Cloneable", "Number", "Comparable", "Enum")) {
+        for (klass in ["String", "CharSequence", "Throwable", "Cloneable", "Number", "Comparable", "Enum"]) {
             add(klass, "java/lang/$klass")
         }
 
-        for (klass in listOf("Iterator", "Collection", "List", "Set", "Map", "ListIterator")) {
+        for (klass in ["Iterator", "Collection", "List", "Set", "Map", "ListIterator"]) {
             add("collections/$klass", "java/util/$klass")
             add("collections/Mutable$klass", "java/util/$klass")
         }
@@ -67,7 +67,7 @@ object ClassMapperLite {
 
         //Boolean is purposefully omitted from this list, even though it has a Companion Object.
         //This assures that an older compiler won't get confused by the new signature, preventing a bug in compatibility.
-        for (klass in listOf("Char", "Byte", "Short", "Int", "Float", "Long", "Double", "String", "Enum")) {
+        for (klass in ["Char", "Byte", "Short", "Int", "Float", "Long", "Double", "String", "Enum"]) {
             add("$klass.Companion", "$kotlin/jvm/internal/${klass}CompanionObject")
         }
     }

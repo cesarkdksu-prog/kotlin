@@ -53,7 +53,7 @@ class AtomicLongArrayConversionTest {
 class AtomicReferenceArrayConversionTest {
     @Test
     fun asJavaAtomicArrayTest() {
-        val x = kotlin.concurrent.atomics.AtomicArray(arrayOf("a", "b", "c"))
+        val x = kotlin.concurrent.atomics.AtomicArray(["a", "b", "c"])
         assertEquals("a", x.asJavaAtomicArray().getAndSet(0,"foo"))
         assertEquals("foo", x.asJavaAtomicArray().get(0))
         assertEquals("foo", x.exchangeAt(0, "bar"))
@@ -62,7 +62,7 @@ class AtomicReferenceArrayConversionTest {
 
     @Test
     fun asKotlinAtomicArrayTest() {
-        val x = java.util.concurrent.atomic.AtomicReferenceArray(arrayOf("a", "b", "c"))
+        val x = java.util.concurrent.atomic.AtomicReferenceArray(["a", "b", "c"])
         assertEquals("a", x.asKotlinAtomicArray().exchangeAt(0, "foo"))
         assertEquals("foo", x.asKotlinAtomicArray().loadAt(0))
         assertEquals("foo", x.getAndSet(0, "bar"))

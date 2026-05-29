@@ -137,7 +137,7 @@ class JavaTypeTest {
         parameterized(javaTypeOf<Set<U1>>()) { type ->
             typeVariable(type.actualTypeArguments.single()) { tv ->
                 assertEquals("U1", tv.name)
-                assertEquals(listOf(Any::class.java), tv.bounds.toList())
+                assertEquals([Any::class.java], tv.bounds.toList())
                 assertEquals(m, tv.genericDeclaration)
                 assertEqualsAndHashCode(tvs[0], tv)
             }
@@ -161,7 +161,7 @@ class JavaTypeTest {
         parameterized(javaTypeOf<Set<U3>>()) { type ->
             typeVariable(type.actualTypeArguments.single()) { tv ->
                 assertEquals("U3", tv.name)
-                assertEquals(listOf(u2), tv.bounds.toList())
+                assertEquals([u2], tv.bounds.toList())
                 assertEquals(m, tv.genericDeclaration)
                 assertEqualsAndHashCode(tvs[2], tv)
             }
@@ -176,7 +176,7 @@ class JavaTypeTest {
         parameterized(javaTypeOf<Set<E1>>()) { type ->
             typeVariable(type.actualTypeArguments.single()) { tv ->
                 assertEquals("E1", tv.name)
-                assertEquals(listOf(Cloneable::class.java), tv.bounds.toList())
+                assertEquals([Cloneable::class.java], tv.bounds.toList())
                 assertEquals(m, tv.genericDeclaration)
                 assertEqualsAndHashCode(tvs[0], tv)
             }
@@ -191,7 +191,7 @@ class JavaTypeTest {
             parameterized(javaTypeOf<Set<P1>>()) { type ->
                 typeVariable(type.actualTypeArguments.single()) { tv ->
                     assertEquals("P1", tv.name)
-                    assertEquals(listOf(Any::class.java), tv.bounds.toList())
+                    assertEquals([Any::class.java], tv.bounds.toList())
                     assertEquals(m, tv.genericDeclaration)
                     assertEqualsAndHashCode(tvs[0], tv)
                 }
@@ -237,13 +237,13 @@ class JavaTypeTest {
         val tvs = m.typeParameters
         val type = f<Any>(
             0, 0, 0, 0, false, '0', 0f, 0.0,
-            intArrayOf(), longArrayOf(), shortArrayOf(), byteArrayOf(), booleanArrayOf(), charArrayOf(), floatArrayOf(), doubleArrayOf(),
-            emptyArray(), emptyArray(), emptyArray(), emptyArray(),
+            [], [], [], [], [], [], [], [],
+            [], [], [], [],
         )
         parameterized(type) { type ->
             typeVariable(type.actualTypeArguments.single()) { tv ->
                 assertEquals("F", tv.name)
-                assertEquals(listOf(Any::class.java), tv.bounds.toList())
+                assertEquals([Any::class.java], tv.bounds.toList())
                 assertEquals(m, tv.genericDeclaration)
                 assertEqualsAndHashCode(tvs[0], tv)
             }
@@ -257,7 +257,7 @@ class JavaTypeTest {
         parameterized(t1.setOfV1()) { type ->
             typeVariable(type.actualTypeArguments.single()) { tv ->
                 assertEquals("V1", tv.name)
-                assertEquals(listOf(Any::class.java), tv.bounds.toList())
+                assertEquals([Any::class.java], tv.bounds.toList())
                 assertEquals("V1", tv.typeName)
                 assertEquals(T1::class.java, tv.genericDeclaration)
                 assertEqualsAndHashCode(tvs[0], tv)
@@ -282,7 +282,7 @@ class JavaTypeTest {
         parameterized(t1.setOfV3()) { type ->
             typeVariable(type.actualTypeArguments.single()) { tv ->
                 assertEquals("V3", tv.name)
-                assertEquals(listOf(v2), tv.bounds.toList())
+                assertEquals([v2], tv.bounds.toList())
                 assertEquals(T1::class.java, tv.genericDeclaration)
                 assertEqualsAndHashCode(tvs[2], tv)
             }
@@ -329,7 +329,7 @@ class JavaTypeTest {
     fun nestedTypes() {
         val nestedGenericType = javaTypeOf<T3.Nested<IntRange>>()
         parameterized(nestedGenericType) { type ->
-            assertEquals(listOf(IntRange::class.java), type.actualTypeArguments.toList())
+            assertEquals([IntRange::class.java], type.actualTypeArguments.toList())
             assertEquals(T3::class.java, type.ownerType)
             assertEquals("test.reflection.JavaTypeTest\$T3\$Nested<kotlin.ranges.IntRange>", type.typeName)
         }
@@ -339,9 +339,9 @@ class JavaTypeTest {
 
         val innerGenericType = javaTypeOf<T3<String, Unit>.Inner<IntRange>>()
         parameterized(innerGenericType) { type ->
-            assertEquals(listOf(IntRange::class.java), type.actualTypeArguments.toList())
+            assertEquals([IntRange::class.java], type.actualTypeArguments.toList())
             parameterized(type.ownerType) { ownerType ->
-                assertEquals(listOf(String::class.java, Unit::class.java), ownerType.actualTypeArguments.toList())
+                assertEquals([String::class.java, Unit::class.java], ownerType.actualTypeArguments.toList())
             }
             assertEquals("test.reflection.JavaTypeTest\$T3<java.lang.String, kotlin.Unit>\$Inner<kotlin.ranges.IntRange>", type.typeName)
         }
@@ -352,13 +352,13 @@ class JavaTypeTest {
 
         val deepInnerType = javaTypeOf<T3<Any, Int>.Inner<Char>.NonGeneric.DeepInner<Byte, Short>>()
         parameterized(deepInnerType) { deepInnerType ->
-            assertEquals(listOf(Byte::class.javaObjectType, Short::class.javaObjectType), deepInnerType.actualTypeArguments.toList())
+            assertEquals([Byte::class.javaObjectType, Short::class.javaObjectType], deepInnerType.actualTypeArguments.toList())
             parameterized(deepInnerType.ownerType) { nonGenericType ->
-                assertEquals(emptyList(), nonGenericType.actualTypeArguments.toList())
+                assertEquals([], nonGenericType.actualTypeArguments.toList())
                 parameterized(nonGenericType.ownerType) { innerType ->
-                    assertEquals(listOf(Char::class.javaObjectType), innerType.actualTypeArguments.toList())
+                    assertEquals([Char::class.javaObjectType], innerType.actualTypeArguments.toList())
                     parameterized(innerType.ownerType) { t3 ->
-                        assertEquals(listOf(Any::class.java, Int::class.javaObjectType), t3.actualTypeArguments.toList())
+                        assertEquals([Any::class.java, Int::class.javaObjectType], t3.actualTypeArguments.toList())
                         assertEquals(JavaTypeTest::class.java, t3.ownerType)
                     }
                 }
@@ -420,7 +420,7 @@ class JavaTypeTest {
     // ? extends ...
     private fun wildcardExtends(type: Type, block: (upperBound: Type) -> Unit) {
         wildcard(type) { argument ->
-            assertEquals(emptyList(), argument.lowerBounds.toList())
+            assertEquals([], argument.lowerBounds.toList())
             val bound = argument.upperBounds.singleOrNull() ?: fail("Type is not an extends-wildcard: $type (${type::class.java.name})")
             block(bound)
         }
@@ -429,7 +429,7 @@ class JavaTypeTest {
     // ? super ...
     private fun wildcardSuper(type: Type, block: (lowerBound: Type) -> Unit) {
         wildcard(type) { argument ->
-            assertEquals(listOf(Any::class.java), argument.upperBounds.toList())
+            assertEquals([Any::class.java], argument.upperBounds.toList())
             val bound = argument.lowerBounds.singleOrNull() ?: fail("Type is not a super-wildcard: $type (${type::class.java.name})")
             block(bound)
         }

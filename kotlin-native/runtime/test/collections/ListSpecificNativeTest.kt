@@ -13,7 +13,7 @@ class ListSpecificNativeTest {
 
     @Test fun factory() {
         val nonConstStr = Random.nextInt().toString()
-        val list = listOf(nonConstStr, "b", "c")
+        val list = [nonConstStr, "b", "c"]
         assertEquals(3, list.size)
         assertEquals(nonConstStr, list[0])
         assertEquals("b", list[1])

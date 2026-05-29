@@ -58,10 +58,10 @@ class Uuids {
 
     @Sample
     fun byteBufferGet() {
-        val uuidBytes = byteArrayOf(
+        val uuidBytes: ByteArray = [
             0x55, 0x0e, 0x84.toByte(), 0x00, 0xe2.toByte(), 0x9b.toByte(), 0x41, 0xd4.toByte(),
             0xa7.toByte(), 0x16, 0x44, 0x66, 0x55, 0x44, 0x00, 0x00
-        )
+        ]
         val buffer = java.nio.ByteBuffer.wrap(uuidBytes)
         val uuid = buffer.getUuid()
 
@@ -72,10 +72,10 @@ class Uuids {
 
     @Sample
     fun byteBufferGetByIndex() {
-        val bytes = byteArrayOf(
+        val bytes: ByteArray = [
             0x00, 0x00, 0x55, 0x0e, 0x84.toByte(), 0x00, 0xe2.toByte(), 0x9b.toByte(),
             0x41, 0xd4.toByte(), 0xa7.toByte(), 0x16, 0x44, 0x66, 0x55, 0x44, 0x00, 0x00
-        )
+        ]
         val buffer = java.nio.ByteBuffer.wrap(bytes)
         val uuid = buffer.getUuid(index = 2)
 
@@ -145,20 +145,20 @@ class Uuids {
 
     @Sample
     fun fromByteArray() {
-        val byteArray = byteArrayOf(
+        val byteArray: ByteArray = [
             0x55, 0x0e, 0x84.toByte(), 0x00, 0xe2.toByte(), 0x9b.toByte(), 0x41, 0xd4.toByte(),
             0xa7.toByte(), 0x16, 0x44, 0x66, 0x55, 0x44, 0x00, 0x00
-        )
+        ]
         val uuid = Uuid.fromByteArray(byteArray)
         assertPrints(uuid, "550e8400-e29b-41d4-a716-446655440000")
     }
 
     @Sample
     fun fromUByteArray() {
-        val ubyteArray = ubyteArrayOf(
+        val ubyteArray: UByteArray = [
             0x55u, 0x0Eu, 0x84u, 0x00u, 0xE2u, 0x9Bu, 0x41u, 0xD4u,
             0xA7u, 0x16u, 0x44u, 0x66u, 0x55u, 0x44u, 0x00u, 0x00u
-        )
+        ]
         val uuid = Uuid.fromUByteArray(ubyteArray)
         assertPrints(uuid, "550e8400-e29b-41d4-a716-446655440000")
     }

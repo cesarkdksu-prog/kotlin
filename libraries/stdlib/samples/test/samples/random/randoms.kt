@@ -54,7 +54,7 @@ class Randoms {
 
     @Sample
     fun nextBoolean() {
-        val presents = listOf("Candy", "Balloon", "Ball")
+        val presents = ["Candy", "Balloon", "Ball"]
         // a random partition, the result may be different every time
         val [alicePresents, bobPresents] = presents.partition { Random.nextBoolean() }
 
@@ -118,7 +118,7 @@ class Randoms {
 
     @Sample
     fun nextIntFromUntil() {
-        val menu = listOf("Omelette", "Porridge", "Cereal", "Chicken", "Pizza", "Pasta")
+        val menu = ["Omelette", "Porridge", "Cereal", "Chicken", "Pizza", "Pasta"]
         val forBreakfast = Random.nextInt(until = 3).let { menu[it] }
         val forLunch = Random.nextInt(from = 3, until = 6).let { menu[it] }
         // new meals every time

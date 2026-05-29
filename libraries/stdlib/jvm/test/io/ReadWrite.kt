@@ -24,7 +24,7 @@ class ReadWriteTest {
         file.appendText("Again")
 
         assertEquals("Hello\nWorld\nAgain", file.readText())
-        assertEquals(listOf("Hello", "World", "Again"), file.readLines(Charsets.UTF_8))
+        assertEquals(["Hello", "World", "Again"], file.readLines(Charsets.UTF_8))
         file.deleteOnExit()
     }
 
@@ -45,16 +45,16 @@ class ReadWriteTest {
         sample().forEachLine {
             list.add(it)
         }
-        assertEquals(listOf("Hello", "World"), list)
+        assertEquals(["Hello", "World"], list)
 
-        assertEquals(listOf("Hello", "World"), sample().readLines())
+        assertEquals(["Hello", "World"], sample().readLines())
 
         val lines: List<String>
         val linesResult = sample().useLines {
             lines = it.toList()
             lines
         }
-        assertEquals(listOf("Hello", "World"), lines)
+        assertEquals(["Hello", "World"], lines)
         assertEquals(lines, linesResult)
 
 
@@ -105,7 +105,7 @@ class ReadWriteTest {
             lines = it.toList()
             lines
         }
-        assertEquals(listOf("Hello", "World"), lines)
+        assertEquals(["Hello", "World"], lines)
         assertEquals(lines, linesResult)
 
         val text = file.inputStream().reader().readText()
@@ -156,8 +156,8 @@ class LineIteratorTest {
         val list1 = sample().useLines { it.toList() }
         val list2 = sample().useLines<ArrayList<String>>{ it.toCollection(arrayListOf()) }
 
-        assertEquals(listOf("Hello", "World"), list1)
-        assertEquals(listOf("Hello", "World"), list2)
+        assertEquals(["Hello", "World"], list1)
+        assertEquals(["Hello", "World"], list2)
     }
 
     @Test fun manualClose() {
@@ -172,19 +172,19 @@ class LineIteratorTest {
 
     @Test fun boundaryConditions() {
         var reader = StringReader("").buffered()
-        assertEquals(emptyList(), reader.lineSequence().toList())
+        assertEquals([], reader.lineSequence().toList())
         reader.close()
 
         reader = StringReader(" ").buffered()
-        assertEquals(listOf(" "), reader.lineSequence().toList())
+        assertEquals([" "], reader.lineSequence().toList())
         reader.close()
 
         reader = StringReader(" \n").buffered()
-        assertEquals(listOf(" "), reader.lineSequence().toList())
+        assertEquals([" "], reader.lineSequence().toList())
         reader.close()
 
         reader = StringReader(" \n ").buffered()
-        assertEquals(listOf(" ", " "), reader.lineSequence().toList())
+        assertEquals([" ", " "], reader.lineSequence().toList())
         reader.close()
 
         reader = StringReader("a\nb\nc").buffered()

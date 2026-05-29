@@ -15,8 +15,8 @@ class StringJVMTest {
 
     @Test fun testSplitByPattern() = withOneCharSequenceArg("ab1cd2def3") { s ->
         val isDigit = "\\d".toRegex()
-        assertEquals(listOf("ab", "cd", "def", ""), s.split(isDigit))
-        assertEquals(listOf("ab", "cd", "def3"), s.split(isDigit, 3))
+        assertEquals(["ab", "cd", "def", ""], s.split(isDigit))
+        assertEquals(["ab", "cd", "def3"], s.split(isDigit, 3))
 
         // deprecation replacement equivalence
         assertEquals("\\d".toPattern().split(s).toList(), s.split("\\d".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray().toList())
@@ -31,7 +31,7 @@ class StringJVMTest {
             arg1("abc").slice(1..4)
         }
         assertFails {
-            arg1("ABCDabcd").slice(listOf(10))
+            arg1("ABCDabcd").slice([10])
         }
     }
 
@@ -60,11 +60,11 @@ class StringJVMTest {
     @Test fun toCharArray() {
         val s = "hello"
         val chars = s.toCharArray()
-        assertArrayNotSameButEquals(charArrayOf('h', 'e', 'l', 'l', 'o'), chars)
+        assertArrayNotSameButEquals(['h', 'e', 'l', 'l', 'o'], chars)
 
         val buffer = CharArray(4)
         s.toCharArray(buffer, 2, 1, 3)
-        assertArrayNotSameButEquals(charArrayOf('\u0000', '\u0000', 'e', 'l'), buffer)
+        assertArrayNotSameButEquals(['\u0000', '\u0000', 'e', 'l'], buffer)
     }
 
 

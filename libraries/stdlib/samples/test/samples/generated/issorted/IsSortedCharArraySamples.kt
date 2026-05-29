@@ -20,10 +20,10 @@ class IsSortedCharArraySamples {
         assertPrints(charArrayOf().isSorted(), "true")
         assertPrints(charArrayOf('a').isSorted(), "true")
 
-        val sorted = charArrayOf('a', 'b', 'c')
+        val sorted: CharArray = ['a', 'b', 'c']
         assertPrints(sorted.isSorted(), "true")
 
-        val unsorted = charArrayOf('b', 'a', 'c')
+        val unsorted: CharArray = ['b', 'a', 'c']
         assertPrints(unsorted.isSorted(), "false")
     }
 
@@ -32,10 +32,10 @@ class IsSortedCharArraySamples {
         assertPrints(charArrayOf().isSortedDescending(), "true")
         assertPrints(charArrayOf('c').isSortedDescending(), "true")
 
-        val sorted = charArrayOf('c', 'b', 'a')
+        val sorted: CharArray = ['c', 'b', 'a']
         assertPrints(sorted.isSortedDescending(), "true")
 
-        val unsorted = charArrayOf('b', 'c', 'a')
+        val unsorted: CharArray = ['b', 'c', 'a']
         assertPrints(unsorted.isSortedDescending(), "false")
     }
 
@@ -44,11 +44,11 @@ class IsSortedCharArraySamples {
         assertPrints(charArrayOf().isSortedWith(naturalOrder()), "true")
         assertPrints(charArrayOf('a').isSortedWith(naturalOrder()), "true")
 
-        val sorted = charArrayOf('a', 'b', 'c')
+        val sorted: CharArray = ['a', 'b', 'c']
         assertPrints(sorted.isSortedWith(naturalOrder()), "true")
         assertPrints(sorted.isSortedWith(reverseOrder()), "false")
 
-        val reversed = charArrayOf('c', 'b', 'a')
+        val reversed: CharArray = ['c', 'b', 'a']
         assertPrints(reversed.isSortedWith(reverseOrder()), "true")
     }
 
@@ -57,7 +57,7 @@ class IsSortedCharArraySamples {
         assertPrints(charArrayOf().isSortedBy { it.uppercaseChar() }, "true")
         assertPrints(charArrayOf('A').isSortedBy { it.uppercaseChar() }, "true")
 
-        val values = charArrayOf('A', 'b', 'C')
+        val values: CharArray = ['A', 'b', 'C']
         assertPrints(values.isSortedBy { it.uppercaseChar() }, "true")
         assertPrints(values.isSortedBy { it.lowercaseChar() }, "true")
         assertPrints(values.isSortedBy { it }, "false")
@@ -69,7 +69,7 @@ class IsSortedCharArraySamples {
         assertPrints(charArrayOf().isSortedByDescending { it.uppercaseChar() }, "true")
         assertPrints(charArrayOf('C').isSortedByDescending { it.uppercaseChar() }, "true")
 
-        val values = charArrayOf('C', 'b', 'A')
+        val values: CharArray = ['C', 'b', 'A']
         assertPrints(values.isSortedByDescending { it.uppercaseChar() }, "true")
         assertPrints(values.isSortedByDescending { it.lowercaseChar() }, "true")
         assertPrints(values.isSortedByDescending { it }, "false")

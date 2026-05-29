@@ -288,7 +288,7 @@ object CheckContextArguments : ResolutionStage() {
                 .values.map { it.filterNot(FirExpression::isInaccessibleAndInapplicable) }
                 .reversed()
 
-        val resultingContextArguments = mutableListOf<ConeResolutionAtom>()
+        val resultingContextArguments: MutableList<ConeResolutionAtom> = []
         var errorReported = false
 
         val contextArgumentsByParameterSymbol = buildMap {
@@ -342,14 +342,14 @@ object CheckContextArguments : ResolutionStage() {
             if (currentResult.isNotEmpty()) return currentResult
         }
 
-        return emptyList()
+        return []
     }
 
     private fun Candidate.replaceArgumentPrefixForInvokeWithImplicitlyMappedContextValues(
         count: Int,
         resultingContextArguments: List<ConeResolutionAtom>?,
     ) {
-        val newArgumentPrefix = mutableListOf<ConeResolutionAtom>()
+        val newArgumentPrefix: MutableList<ConeResolutionAtom> = []
         repeat(count) { index ->
             val newValue =
                 resultingContextArguments?.get(index)?.copyImplicitValueExpression() ?: ConeResolutionAtom.createRawAtom(
@@ -1177,7 +1177,7 @@ internal object CheckLambdaAgainstTypeVariableContradiction : ResolutionStage() 
 
         // We use Function<Nothing> as our representative type for "some function type".
         val lambdaType = StandardClassIds.Function
-            .constructClassLikeType(arrayOf(context.session.builtinTypes.nothingType.coneType))
+            .constructClassLikeType([context.session.builtinTypes.nothingType.coneType])
 
         // We don't add the constraint to the system in the end, we only check for contradictions and roll back the transaction.
         // This ensures we don't get any issues if a different function type constraint is added later, e.g., during completion.

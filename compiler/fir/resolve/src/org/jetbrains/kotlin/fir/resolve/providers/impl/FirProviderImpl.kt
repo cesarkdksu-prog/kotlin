@@ -67,18 +67,18 @@ class FirProviderImpl(val session: FirSession, val kotlinScopeProvider: FirKotli
 
         @FirSymbolProviderInternals
         override fun getTopLevelCallableSymbolsTo(destination: MutableList<FirCallableSymbol<*>>, packageFqName: FqName, name: Name) {
-            destination += (state.functionMap[CallableId(packageFqName, name)] ?: emptyList())
-            destination += (state.propertyMap[CallableId(packageFqName, name)] ?: emptyList())
+            destination += (state.functionMap[CallableId(packageFqName, name)] ?: [])
+            destination += (state.propertyMap[CallableId(packageFqName, name)] ?: [])
         }
 
         @FirSymbolProviderInternals
         override fun getTopLevelFunctionSymbolsTo(destination: MutableList<FirNamedFunctionSymbol>, packageFqName: FqName, name: Name) {
-            destination += (state.functionMap[CallableId(packageFqName, name)] ?: emptyList())
+            destination += (state.functionMap[CallableId(packageFqName, name)] ?: [])
         }
 
         @FirSymbolProviderInternals
         override fun getTopLevelPropertySymbolsTo(destination: MutableList<FirPropertySymbol>, packageFqName: FqName, name: Name) {
-            destination += (state.propertyMap[CallableId(packageFqName, name)] ?: emptyList())
+            destination += (state.propertyMap[CallableId(packageFqName, name)] ?: [])
         }
 
         override fun hasPackage(fqName: FqName): Boolean {
@@ -222,7 +222,7 @@ class FirProviderImpl(val session: FirSession, val kotlinScopeProvider: FirKotli
 
     private class State {
         val fileMap: MutableMap<FqName, List<FirFile>> = hashMapOf()
-        val allSubPackages = mutableSetOf<FqName>()
+        val allSubPackages: MutableSet<FqName> = []
         val classifierMap = hashMapOf<ClassId, FirClassLikeDeclaration>()
         val classifierContainerFileMap = hashMapOf<ClassId, FirFile>()
         val classifierInPackage = hashMapOf<FqName, MutableSet<Name>>()
@@ -281,7 +281,7 @@ class FirProviderImpl(val session: FirSession, val kotlinScopeProvider: FirKotli
         val newState = State()
         files.forEach { recordFile(it, newState) }
 
-        val failures = mutableListOf<String>()
+        val failures: MutableList<String> = []
 
         fun <K, V> checkMapDiff(
             title: String,
@@ -349,7 +349,7 @@ class FirProviderImpl(val session: FirSession, val kotlinScopeProvider: FirKotli
     }
 
     override fun getClassNamesInPackage(fqName: FqName): Set<Name> {
-        return state.classesInPackage[fqName] ?: emptySet()
+        return state.classesInPackage[fqName] ?: []
     }
 }
 

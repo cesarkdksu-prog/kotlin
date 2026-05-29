@@ -21,10 +21,10 @@ class IsSortedFloatArraySamples {
         assertPrints(floatArrayOf().isSorted(), "true")
         assertPrints(floatArrayOf(1.0f).isSorted(), "true")
 
-        val sorted = floatArrayOf(1.0f, 2.5f, 3.14f)
+        val sorted: FloatArray = [1.0f, 2.5f, 3.14f]
         assertPrints(sorted.isSorted(), "true")
 
-        val unsorted = floatArrayOf(2.5f, 1.0f, 3.14f)
+        val unsorted: FloatArray = [2.5f, 1.0f, 3.14f]
         assertPrints(unsorted.isSorted(), "false")
     }
 
@@ -33,10 +33,10 @@ class IsSortedFloatArraySamples {
         assertPrints(floatArrayOf().isSortedDescending(), "true")
         assertPrints(floatArrayOf(3.14f).isSortedDescending(), "true")
 
-        val sorted = floatArrayOf(3.14f, 2.5f, 1.0f)
+        val sorted: FloatArray = [3.14f, 2.5f, 1.0f]
         assertPrints(sorted.isSortedDescending(), "true")
 
-        val unsorted = floatArrayOf(2.5f, 3.14f, 1.0f)
+        val unsorted: FloatArray = [2.5f, 3.14f, 1.0f]
         assertPrints(unsorted.isSortedDescending(), "false")
     }
 
@@ -45,11 +45,11 @@ class IsSortedFloatArraySamples {
         assertPrints(floatArrayOf().isSortedWith(naturalOrder()), "true")
         assertPrints(floatArrayOf(1.0f).isSortedWith(naturalOrder()), "true")
 
-        val sorted = floatArrayOf(1.0f, 2.5f, 3.14f)
+        val sorted: FloatArray = [1.0f, 2.5f, 3.14f]
         assertPrints(sorted.isSortedWith(naturalOrder()), "true")
         assertPrints(sorted.isSortedWith(reverseOrder()), "false")
 
-        val reversed = floatArrayOf(3.14f, 2.5f, 1.0f)
+        val reversed: FloatArray = [3.14f, 2.5f, 1.0f]
         assertPrints(reversed.isSortedWith(reverseOrder()), "true")
     }
 
@@ -58,7 +58,7 @@ class IsSortedFloatArraySamples {
         assertPrints(floatArrayOf().isSortedBy { it * it }, "true")
         assertPrints(floatArrayOf(-0.5f).isSortedBy { it * it }, "true")
 
-        val values = floatArrayOf(-0.5f, 1.0f, -1.5f, 2.0f)
+        val values: FloatArray = [-0.5f, 1.0f, -1.5f, 2.0f]
         assertPrints(values.isSortedBy { it * it }, "true")
         assertPrints(values.isSortedBy { abs(it) }, "true")
         assertPrints(values.isSortedBy { it }, "false")
@@ -70,7 +70,7 @@ class IsSortedFloatArraySamples {
         assertPrints(floatArrayOf().isSortedByDescending { it * it }, "true")
         assertPrints(floatArrayOf(2.0f).isSortedByDescending { it * it }, "true")
 
-        val values = floatArrayOf(2.0f, -1.5f, 1.0f, -0.5f)
+        val values: FloatArray = [2.0f, -1.5f, 1.0f, -0.5f]
         assertPrints(values.isSortedByDescending { it * it }, "true")
         assertPrints(values.isSortedByDescending { abs(it) }, "true")
         assertPrints(values.isSortedByDescending { it }, "false")

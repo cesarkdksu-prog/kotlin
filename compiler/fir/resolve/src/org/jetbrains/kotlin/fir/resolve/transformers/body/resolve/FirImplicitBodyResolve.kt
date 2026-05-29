@@ -417,12 +417,12 @@ open class FirDesignatedBodyResolveTransformerForReturnTypeCalculator(
 
 open class ImplicitBodyResolveComputationSession {
     private val implicitBodyResolveStatusMap = hashMapOf<FirCallableSymbol<*>, ImplicitBodyResolveComputationStatus>()
-    private val computingSymbolsStack: MutableList<FirCallableSymbol<*>> = mutableListOf()
+    private val computingSymbolsStack: MutableList<FirCallableSymbol<*>> = []
 
     /**
      * Stores all symbols that belong to a loop of length > 1
      */
-    private val nonTrivialLoops: MutableSet<FirCallableSymbol<*>> = mutableSetOf()
+    private val nonTrivialLoops: MutableSet<FirCallableSymbol<*>> = []
 
     internal fun getStatus(symbol: FirCallableSymbol<*>): ImplicitBodyResolveComputationStatus {
         if (symbol is FirSyntheticPropertySymbol) {

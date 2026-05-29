@@ -129,7 +129,7 @@ object FirContextParametersDeclarationChecker : FirBasicDeclarationChecker(MppCh
         return when (this) {
             is FirCallableDeclaration -> contextParameters
             is FirRegularClass -> contextParameters
-            else -> emptyList()
+            else -> []
         }
     }
 
@@ -165,8 +165,8 @@ object FirContextParametersDeclarationChecker : FirBasicDeclarationChecker(MppCh
         val replacedTypeParameters = types.flatMap { r ->
             when (r) {
                 is ConeTypeParameterType -> r.lookupTag.typeParameterSymbol.resolvedBounds.map { it.coneType }
-                is ConeClassLikeType -> listOf(replaceTypeParametersByStarProjections(r))
-                else -> listOf(r)
+                is ConeClassLikeType -> [replaceTypeParametersByStarProjections(r)]
+                else -> [r]
             }
         }
 

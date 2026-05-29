@@ -11,9 +11,9 @@ class CollectionsJsTest {
     @Test
     fun toJSON() {
         val list = arrayListOf("array", "List", "Of")
-        assertContentEquals(arrayOf("array", "List", "Of"), list.asDynamic().toJSON() as Array<String>)
+        assertContentEquals(["array", "List", "Of"], list.asDynamic().toJSON() as Array<String>)
 
         val set = linkedSetOf("linked", "Set", "Of")
-        assertContentEquals(arrayOf("linked", "Set", "Of"), (set as AbstractMutableCollection<String>).asDynamic().toJSON() as Array<String>)
+        assertContentEquals(["linked", "Set", "Of"], (set as AbstractMutableCollection<String>).asDynamic().toJSON() as Array<String>)
     }
 }

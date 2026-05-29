@@ -39,7 +39,7 @@ public data class TypeScriptModuleConfig(
 
 public fun runTypeScriptExport(klibs: List<KlibInputModule<TypeScriptModuleConfig>>, config: TypeScriptExportConfig): List<File> {
     if (config.artifactConfiguration.tsCompilationStrategy == TsCompilationStrategy.NONE) {
-        return emptyList()
+        return []
     }
 
     val kaModules = createKaModulesForStandaloneAnalysis(klibs, config.targetPlatform)
@@ -49,7 +49,7 @@ public fun runTypeScriptExport(klibs: List<KlibInputModule<TypeScriptModuleConfi
     val artifacts = TsArtifactProducer.generateArtifacts(exportModel, config.artifactConfiguration.granularity)
     config.artifactConfiguration.outputDirectory.normalizedAbsoluteFile.mkdirs()
     return when (config.artifactConfiguration.tsCompilationStrategy) {
-        TsCompilationStrategy.NONE -> emptyList()
+        TsCompilationStrategy.NONE -> []
         TsCompilationStrategy.MERGED -> {
             writeMergedTsFile(artifacts, config.artifactConfiguration, config.artifactConfiguration.moduleName)
         }
@@ -84,7 +84,7 @@ private fun writeMergedTsFile(
         .toTypeScript(moduleName, config.moduleKind)
     dtsFile.writeText(mergedTsDefinitions)
 
-    return listOf(dtsFile)
+    return [dtsFile]
 }
 
 private val File.normalizedAbsoluteFile

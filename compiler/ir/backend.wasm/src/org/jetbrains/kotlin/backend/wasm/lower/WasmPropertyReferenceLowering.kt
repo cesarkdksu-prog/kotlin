@@ -81,7 +81,7 @@ class WasmPropertyReferenceLowering(context: WasmBackendContext) : AbstractPrope
         return irCall(
             callee = constructor,
             type = constructor.owner.returnType,
-            typeArguments = listOf(reference.type)
+            typeArguments = [reference.type]
         ).apply {
             arguments[0] = irString(propertyName)
         }

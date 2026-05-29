@@ -65,7 +65,7 @@ class Comparisons {
 
     @Sample
     fun compareByWithSingleSelector() {
-        val list = listOf("aa", "b", "bb", "a")
+        val list = ["aa", "b", "bb", "a"]
 
         val sorted = list.sortedWith(compareBy { it.length })
 
@@ -74,7 +74,7 @@ class Comparisons {
 
     @Sample
     fun compareByWithSelectors() {
-        val list = listOf("aa", "b", "bb", "a")
+        val list = ["aa", "b", "bb", "a"]
 
         val sorted = list.sortedWith(compareBy(
             { it.length },
@@ -86,7 +86,7 @@ class Comparisons {
 
     @Sample
     fun compareByWithComparator() {
-        val list = listOf('B', 'a', 'A', 'b')
+        val list = ['B', 'a', 'A', 'b']
 
         val sorted = list.sortedWith(
             compareBy(String.CASE_INSENSITIVE_ORDER) { v -> v.toString() }
@@ -97,7 +97,7 @@ class Comparisons {
 
     @Sample
     fun compareByDescendingWithSingleSelector() {
-        val list = listOf("aa", "b", "bb", "a")
+        val list = ["aa", "b", "bb", "a"]
 
         val sorted = list.sortedWith(compareByDescending { it.length })
 
@@ -106,7 +106,7 @@ class Comparisons {
 
     @Sample
     fun compareByDescendingWithComparator() {
-        val list = listOf('B', 'a', 'A', 'b')
+        val list = ['B', 'a', 'A', 'b']
 
         val sorted = list.sortedWith(
             compareByDescending(String.CASE_INSENSITIVE_ORDER) { v -> v.toString() }
@@ -117,7 +117,7 @@ class Comparisons {
 
     @Sample
     fun thenBy() {
-        val list = listOf("aa", "b", "bb", "a")
+        val list = ["aa", "b", "bb", "a"]
 
         val lengthComparator = compareBy<String> { it.length }
         assertPrints(list.sortedWith(lengthComparator), "[b, a, aa, bb]")
@@ -128,7 +128,7 @@ class Comparisons {
 
     @Sample
     fun thenByWithComparator() {
-        val list = listOf("A", "aa", "b", "bb", "a")
+        val list = ["A", "aa", "b", "bb", "a"]
 
         val lengthComparator = compareBy<String> { it.length }
         assertPrints(list.sortedWith(lengthComparator), "[A, b, a, aa, bb]")
@@ -140,7 +140,7 @@ class Comparisons {
 
     @Sample
     fun thenByDescending() {
-        val list = listOf("aa", "b", "bb", "a")
+        val list = ["aa", "b", "bb", "a"]
 
         val lengthComparator = compareBy<String> { it.length }
         assertPrints(list.sortedWith(lengthComparator), "[b, a, aa, bb]")
@@ -151,7 +151,7 @@ class Comparisons {
 
     @Sample
     fun thenByDescendingWithComparator() {
-        val list = listOf("A", "aa", "b", "bb", "a")
+        val list = ["A", "aa", "b", "bb", "a"]
 
         val lengthComparator = compareBy<String> { it.length }
         assertPrints(list.sortedWith(lengthComparator), "[A, b, a, aa, bb]")
@@ -163,7 +163,7 @@ class Comparisons {
 
     @Sample
     fun thenComparator() {
-        val list = listOf("c" to 1, "b" to 2, "a" to 1, "d" to 0, null to 0)
+        val list = ["c" to 1, "b" to 2, "a" to 1, "d" to 0, null to 0]
 
         val valueComparator = compareBy<Pair<String?, Int>> { it.second }
         val map1 = list.sortedWith(valueComparator).toMap()
@@ -177,7 +177,7 @@ class Comparisons {
 
     @Sample
     fun then() {
-        val list = listOf("A", "aa", "b", "bb", "a")
+        val list = ["A", "aa", "b", "bb", "a"]
 
         val lengthThenCaseInsensitive = compareBy<String> { it.length }
             .then(String.CASE_INSENSITIVE_ORDER)
@@ -189,7 +189,7 @@ class Comparisons {
 
     @Sample
     fun thenDescending() {
-        val list = listOf("A", "aa", "b", "bb", "a")
+        val list = ["A", "aa", "b", "bb", "a"]
 
         val lengthThenCaseInsensitive = compareBy<String> { it.length }
             .thenDescending(String.CASE_INSENSITIVE_ORDER)
@@ -201,7 +201,7 @@ class Comparisons {
 
     @Sample
     fun nullsFirstLastComparator() {
-        val list = listOf(4, null, -1, 1)
+        val list = [4, null, -1, 1]
 
         val nullsFirstList = list.sortedWith(nullsFirst())
         assertPrints(nullsFirstList, "[null, -1, 1, 4]")
@@ -212,7 +212,7 @@ class Comparisons {
 
     @Sample
     fun nullsFirstLastWithComparator() {
-        val list = listOf(4, null, 1, -2, 3)
+        val list = [4, null, 1, -2, 3]
 
         val nullsFirstList = list.sortedWith(nullsFirst(reverseOrder()))
         assertPrints(nullsFirstList, "[null, 4, 3, 1, -2]")
@@ -223,7 +223,7 @@ class Comparisons {
 
     @Sample
     fun naturalOrderComparator() {
-        val list = listOf("aa", "b", "bb", "a")
+        val list = ["aa", "b", "bb", "a"]
 
         val lengthThenNatural = compareBy<String> { it.length }
             .then(naturalOrder())
@@ -235,7 +235,7 @@ class Comparisons {
 
     @Sample
     fun reversed() {
-        val list = listOf("aa", "b", "bb", "a")
+        val list = ["aa", "b", "bb", "a"]
 
         val lengthThenString = compareBy<String> { it.length }.thenBy { it }
 

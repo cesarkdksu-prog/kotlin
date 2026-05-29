@@ -139,7 +139,7 @@ class FirKotlinScopeProvider(
                 it.fullyExpandedType(useSiteSession).toRegularClassSymbol(useSiteSession)?.takeIf { it.classKind == ClassKind.CLASS }
             }?.fir
             val superClassScope = superClass?.staticScopeForBackend(useSiteSession, scopeSession) ?: return scope
-            scope?.let { FirNameAwareCompositeScope(listOf(it, superClassScope)) } ?: superClassScope
+            scope?.let { FirNameAwareCompositeScope([it, superClassScope]) } ?: superClassScope
         } else {
             scope
         }

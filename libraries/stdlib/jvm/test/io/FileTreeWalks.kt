@@ -16,7 +16,7 @@ class FileTreeWalkTest {
 
     companion object {
         val referenceFilenames =
-                listOf("1", "1/2", "1/3", "1/3/4.txt", "1/3/5.txt", "6", "7.txt", "8", "8/9.txt")
+            ["1", "1/2", "1/3", "1/3/4.txt", "1/3/5.txt", "6", "7.txt", "8", "8/9.txt"]
         fun createTestFiles(): File {
             val basedir = createTempDirectory().toFile()
             for (name in referenceFilenames) {
@@ -57,7 +57,7 @@ class FileTreeWalkTest {
         val testFile = createTempFile().toFile()
         val nonExistantFile = testFile.resolve("foo")
         try {
-            for (walk in listOf(File::walkTopDown, File::walkBottomUp)) {
+            for (walk in [File::walkTopDown, File::walkBottomUp]) {
                 assertEquals(testFile, walk(testFile).single(), "${walk.name}")
                 assertEquals(testFile, testFile.walk().onEnter { false }.single(), "${walk.name} - enter should not be called for single file")
 
@@ -72,8 +72,8 @@ class FileTreeWalkTest {
     @Test fun withEnterLeave() {
         val basedir = createTestFiles()
         try {
-            val referenceNames =
-                    setOf("", "1", "1/2", "6", "8")
+            val referenceNames: Set<String> =
+                ["", "1", "1/2", "6", "8"]
             val namesTopDownEnter = HashSet<String>()
             val namesTopDownLeave = HashSet<String>()
             val namesTopDown = HashSet<String>()
@@ -134,7 +134,7 @@ class FileTreeWalkTest {
     @Test fun withFilterAndMap() {
         val basedir = createTestFiles()
         try {
-            val referenceNames = setOf("", "1", "1/2", "1/3", "6", "8")
+            val referenceNames: Set<String> = ["", "1", "1/2", "1/3", "6", "8"]
             assertEquals(referenceNames, basedir.walkTopDown().filter { it.isDirectory }.map {
                 it.relativeToOrSelf(basedir).invariantSeparatorsPath
             }.toHashSet())
@@ -147,7 +147,7 @@ class FileTreeWalkTest {
     @Test fun withDeleteTxtTopDown() {
         val basedir = createTestFiles()
         try {
-            val referenceNames = setOf("", "1", "1/2", "1/3", "6", "8")
+            val referenceNames: Set<String> = ["", "1", "1/2", "1/3", "6", "8"]
             val namesTopDown = HashSet<String>()
             fun enter(file: File) {
                 assertTrue(file.isDirectory)
@@ -170,7 +170,7 @@ class FileTreeWalkTest {
     @Test fun withDeleteTxtBottomUp() {
         val basedir = createTestFiles()
         try {
-            val referenceNames = setOf("", "1", "1/2", "1/3", "6", "8")
+            val referenceNames: Set<String> = ["", "1", "1/2", "1/3", "6", "8"]
             val namesTopDown = HashSet<String>()
             fun enter(file: File) {
                 assertTrue(file.isDirectory)
@@ -224,7 +224,7 @@ class FileTreeWalkTest {
     @Test fun withTotalDirectoryFilter() {
         val basedir = createTestFiles()
         try {
-            val referenceNames = emptySet<String>()
+            val referenceNames: Set<String> = []
             compareWalkResults(referenceNames, basedir, { false })
         } finally {
             basedir.deleteRecursively()

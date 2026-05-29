@@ -119,6 +119,6 @@ object NewSchemeOfIntegerOperatorResolutionChecker : CallChecker {
         "plus", "minus", "times", "div", "rem", "plus", "minus",
         "times", "div", "rem", "shl", "shr", "ushr", "and", "or",
         "xor", "unaryPlus", "unaryMinus", "inv",
-    ).mapTo(mutableSetOf()) { FqName.fromSegments(listOf("kotlin", "Int", it)) }
+    ).mapTo(mutableSetOf()) { FqName.fromSegments(["kotlin", "Int", it]) }
 }
 

@@ -37,7 +37,7 @@ class Iterators {
 
     @Sample
     fun iterator() {
-        val mutableList = mutableListOf(1, 2, 3)
+        val mutableList: MutableList<Int> = [1, 2, 3]
         val mutableIterator = mutableList.iterator()
 
         // iterator() extension is called here

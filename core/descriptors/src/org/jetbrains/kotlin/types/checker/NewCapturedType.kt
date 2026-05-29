@@ -85,8 +85,8 @@ fun captureFromExpression(type: UnwrappedType): UnwrappedType? {
             }
         } else {
             val capturedArguments = findCorrespondingCapturedArgumentsForType(typeToReplace)
-                ?: return listOf(typeToReplace.asSimpleType())
-            listOf(typeToReplace.unwrap().replaceArguments(capturedArguments))
+                ?: return [typeToReplace.asSimpleType()]
+            [typeToReplace.unwrap().replaceArguments(capturedArguments)]
         }
     }
 
@@ -109,7 +109,7 @@ internal fun captureFromArguments(type: SimpleType, status: CaptureStatus) =
 private fun captureArgumentsForIntersectionType(type: KotlinType): List<CapturedArguments>? {
     // It's possible to have one of the bounds as non-intersection type
     fun getTypesToCapture(type: KotlinType) =
-        if (type.constructor is IntersectionTypeConstructor) type.constructor.supertypes else listOf(type)
+        if (type.constructor is IntersectionTypeConstructor) type.constructor.supertypes else [type]
 
     val filteredTypesToCapture =
         if (type is FlexibleType) {
@@ -208,7 +208,7 @@ class NewCapturedType(
         captureStatus: CaptureStatus, lowerType: UnwrappedType?, projection: TypeProjection, typeParameter: TypeParameterDescriptor
     ) : this(captureStatus, NewCapturedTypeConstructor(projection, typeParameter = typeParameter), lowerType)
 
-    override val arguments: List<TypeProjection> get() = listOf()
+    override val arguments: List<TypeProjection> get() = []
 
     override val memberScope: MemberScope // todo what about foo().bar() where foo() return captured type?
         get() = ErrorUtils.createErrorScope(ErrorScopeKind.CAPTURED_TYPE_SCOPE, throwExceptions = true)
@@ -254,8 +254,8 @@ class NewCapturedTypeConstructor(
         this.supertypesComputation = { supertypes }
     }
 
-    override fun getSupertypes() = _supertypes ?: emptyList()
-    override fun getParameters(): List<TypeParameterDescriptor> = emptyList()
+    override fun getSupertypes() = _supertypes ?: []
+    override fun getParameters(): List<TypeParameterDescriptor> = []
 
     override fun isFinal() = false
     override fun isDenotable() = false

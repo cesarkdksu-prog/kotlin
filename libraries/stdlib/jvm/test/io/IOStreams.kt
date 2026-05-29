@@ -35,7 +35,7 @@ class IOStreamsTest {
     @Test fun testInputStreamIterator() {
         val x = ByteArray(10) { it.toByte() }
 
-        val result = mutableListOf<Byte>()
+        val result: MutableList<Byte> = []
 
         x.inputStream().buffered().use { stream ->
             for (b in stream) {

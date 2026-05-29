@@ -29,7 +29,7 @@ class GenerateKotlinVersionTest {
         )
 
         assertEquals(
-            setOf(Triple(2, 0, 0), Triple(2, 1, 0)),
+            [Triple(2, 0, 0), Triple(2, 1, 0)],
             versions
         )
         assertEquals("v2_0_0\nv2_1_0", versionsFile.readText().trim())
@@ -49,7 +49,7 @@ class GenerateKotlinVersionTest {
         )
 
         assertEquals(
-            setOf(Triple(2, 0, 0), Triple(2, 1, 0)),
+            [Triple(2, 0, 0), Triple(2, 1, 0)],
             versions
         )
         // File should not have been modified
@@ -67,14 +67,14 @@ class GenerateKotlinVersionTest {
             Triple(2, 2, 0)
         )
 
-        assertEquals(setOf(Triple(2, 2, 0)), versions)
+        assertEquals([Triple(2, 2, 0)], versions)
         assertEquals("v2_2_0", versionsFile.readText().trim())
     }
 
     @Test
     @DisplayName("NativeCacheKotlinVersionsGenerator should generate the sealed class correctly")
     fun `test NativeCacheKotlinVersionsGenerator - generates correct code`() {
-        val versions = setOf(
+        val versions: Set<Triple<Int, Int, Int>> = [
             Triple(1, 9, 0),
             Triple(1, 9, 255),
             Triple(1, 9, 2),
@@ -83,7 +83,7 @@ class GenerateKotlinVersionTest {
             Triple(2, 0, 255),
             Triple(2, 1, 0),
             Triple(2, 1, 255)
-        )
+        ]
         val [_, actualContent] = NativeCacheKotlinVersionsGenerator.generate(versions, true)
 
         // Use a multiline string to assert the exact file content is generated correctly.
@@ -186,10 +186,10 @@ class GenerateKotlinVersionTest {
     @Test
     @DisplayName("NativeCacheKotlinVersionsGenerator should generate the sealed class correctly")
     fun `test NativeCacheKotlinVersionsGenerator - generates without snapshots`() {
-        val versions = setOf(
+        val versions: Set<Triple<Int, Int, Int>> = [
             Triple(2, 1, 0),
             Triple(2, 1, 255)
-        )
+        ]
         val [_, actualContent] = NativeCacheKotlinVersionsGenerator.generate(versions)
 
 

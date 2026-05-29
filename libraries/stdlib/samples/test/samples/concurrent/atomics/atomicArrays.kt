@@ -20,7 +20,7 @@ class AtomicIntArray {
 
     @Sample
     fun intArrCons() {
-        val a = AtomicIntArray(intArrayOf(1, 2, 3))
+        val a = AtomicIntArray([1, 2, 3])
         assertPrints(a.toString(), "[1, 2, 3]")
     }
 
@@ -32,13 +32,13 @@ class AtomicIntArray {
 
     @Sample
     fun size() {
-        val a = AtomicIntArray(intArrayOf(1, 2, 3, 4, 5))
+        val a = AtomicIntArray([1, 2, 3, 4, 5])
         assertPrints(a.size, "5")
     }
 
     @Sample
     fun loadAt() {
-        val a = AtomicIntArray(intArrayOf(0, 10, 20))
+        val a = AtomicIntArray([0, 10, 20])
         assertPrints(a.loadAt(1), "10")
     }
 
@@ -52,7 +52,7 @@ class AtomicIntArray {
 
     @Sample
     fun exchangeAt() {
-        val a = AtomicIntArray(intArrayOf(1, 2, 3))
+        val a = AtomicIntArray([1, 2, 3])
         assertPrints(a.exchangeAt(1, 7), "2")
         assertPrints(a.loadAt(1), "7")
         assertPrints(a.toString(), "[1, 7, 3]")
@@ -60,7 +60,7 @@ class AtomicIntArray {
 
     @Sample
     fun compareAndSetAt() {
-        val a = AtomicIntArray(intArrayOf(1, 2, 3))
+        val a = AtomicIntArray([1, 2, 3])
         // Current value of a[1] is 2, it is equal to the expected value 2 -> compareAndSetAt succeeds.
         assertPrints(a.compareAndSetAt(index = 1, expectedValue = 2, newValue = 7), "true")
         assertPrints(a.loadAt(1), "7")
@@ -74,7 +74,7 @@ class AtomicIntArray {
 
     @Sample
     fun compareAndExchangeAt() {
-        val a = AtomicIntArray(intArrayOf(1, 2, 3))
+        val a = AtomicIntArray([1, 2, 3])
         // Current value of a[1] is 2, it is equal to the expected value 2 ->
         // compareAndExchangeAt succeeds, stores the new value 7 to a[1] and returns the old value 2.
         assertPrints(a.compareAndExchangeAt(index = 1, expectedValue = 2, newValue = 7), "2")
@@ -90,7 +90,7 @@ class AtomicIntArray {
 
     @Sample
     fun fetchAndAddAt() {
-        val a = AtomicIntArray(intArrayOf(1, 2, 3))
+        val a = AtomicIntArray([1, 2, 3])
         // Returns the old value before the addition.
         assertPrints(a.fetchAndAddAt(1, 10), "2")
         assertPrints(a.loadAt(1), "12")
@@ -99,7 +99,7 @@ class AtomicIntArray {
 
     @Sample
     fun addAndFetchAt() {
-        val a = AtomicIntArray(intArrayOf(1, 2, 3))
+        val a = AtomicIntArray([1, 2, 3])
         // Returns the new value after the addition.
         assertPrints(a.addAndFetchAt(1, 10), "12")
         assertPrints(a.loadAt(1), "12")
@@ -108,7 +108,7 @@ class AtomicIntArray {
 
     @Sample
     fun fetchAndIncrementAt() {
-        val a = AtomicIntArray(intArrayOf(1, 2, 3))
+        val a = AtomicIntArray([1, 2, 3])
         assertPrints(a.fetchAndIncrementAt(1), "2")
         assertPrints(a.loadAt(1), "3")
         assertPrints(a.toString(), "[1, 3, 3]")
@@ -116,7 +116,7 @@ class AtomicIntArray {
 
     @Sample
     fun incrementAndFetchAt() {
-        val a = AtomicIntArray(intArrayOf(1, 2, 3))
+        val a = AtomicIntArray([1, 2, 3])
         assertPrints(a.incrementAndFetchAt(1), "3")
         assertPrints(a.loadAt(1), "3")
         assertPrints(a.toString(), "[1, 3, 3]")
@@ -124,7 +124,7 @@ class AtomicIntArray {
 
     @Sample
     fun fetchAndDecrementAt() {
-        val a = AtomicIntArray(intArrayOf(1, 2, 3))
+        val a = AtomicIntArray([1, 2, 3])
         assertPrints(a.fetchAndDecrementAt(1), "2")
         assertPrints(a.loadAt(1), "1")
         assertPrints(a.toString(), "[1, 1, 3]")
@@ -132,7 +132,7 @@ class AtomicIntArray {
 
     @Sample
     fun decrementAndFetchAt() {
-        val a = AtomicIntArray(intArrayOf(1, 2, 3))
+        val a = AtomicIntArray([1, 2, 3])
         assertPrints(a.decrementAndFetchAt(1), "1")
         assertPrints(a.loadAt(1), "1")
         assertPrints(a.toString(), "[1, 1, 3]")
@@ -140,7 +140,7 @@ class AtomicIntArray {
 
     @Sample
     fun updateAt() {
-        val a = AtomicIntArray(intArrayOf(1, 2, 3))
+        val a = AtomicIntArray([1, 2, 3])
         a.updateAt(1) { currentValue -> currentValue * 10 }
         assertPrints(a.toString(), "[1, 20, 3]")
 
@@ -150,7 +150,7 @@ class AtomicIntArray {
 
     @Sample
     fun updateAndFetchAt() {
-        val a = AtomicIntArray(intArrayOf(1, 2, 3))
+        val a = AtomicIntArray([1, 2, 3])
         val updatedValue = a.updateAndFetchAt(1) { currentValue -> currentValue * 10 }
         assertPrints(updatedValue, "20")
         assertPrints(a.toString(), "[1, 20, 3]")
@@ -161,7 +161,7 @@ class AtomicIntArray {
 
     @Sample
     fun fetchAndUpdateAt() {
-        val a = AtomicIntArray(intArrayOf(1, 2, 3))
+        val a = AtomicIntArray([1, 2, 3])
         val oldValue = a.fetchAndUpdateAt(1) { currentValue -> currentValue * 10 }
         assertPrints(oldValue, "2")
         assertPrints(a.toString(), "[1, 20, 3]")
@@ -181,7 +181,7 @@ class AtomicLongArray {
 
     @Sample
     fun longArrCons() {
-        val a = AtomicLongArray(longArrayOf(1, 2, 3))
+        val a = AtomicLongArray([1, 2, 3])
         assertPrints(a.toString(), "[1, 2, 3]")
     }
 
@@ -193,13 +193,13 @@ class AtomicLongArray {
 
     @Sample
     fun size() {
-        val a = AtomicLongArray(longArrayOf(1, 2, 3, 4, 5))
+        val a = AtomicLongArray([1, 2, 3, 4, 5])
         assertPrints(a.size, "5")
     }
 
     @Sample
     fun loadAt() {
-        val a = AtomicLongArray(longArrayOf(0, 10, 20))
+        val a = AtomicLongArray([0, 10, 20])
         assertPrints(a.loadAt(1), "10")
         assertPrints(a.toString(), "[0, 10, 20]")
     }
@@ -214,7 +214,7 @@ class AtomicLongArray {
 
     @Sample
     fun exchangeAt() {
-        val a = AtomicLongArray(longArrayOf(1, 2, 3))
+        val a = AtomicLongArray([1, 2, 3])
         assertPrints(a.exchangeAt(1, 7), "2")
         assertPrints(a.loadAt(1), "7")
         assertPrints(a.toString(), "[1, 7, 3]")
@@ -222,7 +222,7 @@ class AtomicLongArray {
 
     @Sample
     fun compareAndSetAt() {
-        val a = AtomicLongArray(longArrayOf(1, 2, 3))
+        val a = AtomicLongArray([1, 2, 3])
         // Current value of a[1] is 2, it is equal to the expected value 2 -> compareAndSetAt succeeds.
         assertPrints(a.compareAndSetAt(index = 1, expectedValue = 2, newValue = 7), "true")
         assertPrints(a.loadAt(1), "7")
@@ -236,7 +236,7 @@ class AtomicLongArray {
 
     @Sample
     fun compareAndExchangeAt() {
-        val a = AtomicLongArray(longArrayOf(1, 2, 3))
+        val a = AtomicLongArray([1, 2, 3])
         // Current value of a[1] is 2, it is equal to the expected value 2 ->
         // compareAndExchangeAt succeeds, stores the new value 7 to a[1] and returns the old value 2.
         assertPrints(a.compareAndExchangeAt(index = 1, expectedValue = 2, newValue = 7), "2")
@@ -252,7 +252,7 @@ class AtomicLongArray {
 
     @Sample
     fun fetchAndAddAt() {
-        val a = AtomicLongArray(longArrayOf(1, 2, 3))
+        val a = AtomicLongArray([1, 2, 3])
         // Returns the old value before the addition.
         assertPrints(a.fetchAndAddAt(1, 10), "2")
         assertPrints(a.loadAt(1), "12")
@@ -261,7 +261,7 @@ class AtomicLongArray {
 
     @Sample
     fun addAndFetchAt() {
-        val a = AtomicLongArray(longArrayOf(1, 2, 3))
+        val a = AtomicLongArray([1, 2, 3])
         // Returns the new value after the addition.
         assertPrints(a.addAndFetchAt(1, 10), "12")
         assertPrints(a.loadAt(1), "12")
@@ -270,7 +270,7 @@ class AtomicLongArray {
 
     @Sample
     fun fetchAndIncrementAt() {
-        val a = AtomicLongArray(longArrayOf(1, 2, 3))
+        val a = AtomicLongArray([1, 2, 3])
         assertPrints(a.fetchAndIncrementAt(1), "2")
         assertPrints(a.loadAt(1), "3")
         assertPrints(a.toString(), "[1, 3, 3]")
@@ -278,7 +278,7 @@ class AtomicLongArray {
 
     @Sample
     fun incrementAndFetchAt() {
-        val a = AtomicLongArray(longArrayOf(1, 2, 3))
+        val a = AtomicLongArray([1, 2, 3])
         assertPrints(a.incrementAndFetchAt(1), "3")
         assertPrints(a.loadAt(1), "3")
         assertPrints(a.toString(), "[1, 3, 3]")
@@ -286,7 +286,7 @@ class AtomicLongArray {
 
     @Sample
     fun fetchAndDecrementAt() {
-        val a = AtomicLongArray(longArrayOf(1, 2, 3))
+        val a = AtomicLongArray([1, 2, 3])
         assertPrints(a.fetchAndDecrementAt(1), "2")
         assertPrints(a.loadAt(1), "1")
         assertPrints(a.toString(), "[1, 1, 3]")
@@ -294,7 +294,7 @@ class AtomicLongArray {
 
     @Sample
     fun decrementAndFetchAt() {
-        val a = AtomicLongArray(longArrayOf(1, 2, 3))
+        val a = AtomicLongArray([1, 2, 3])
         assertPrints(a.decrementAndFetchAt(1), "1")
         assertPrints(a.loadAt(1), "1")
         assertPrints(a.toString(), "[1, 1, 3]")
@@ -302,7 +302,7 @@ class AtomicLongArray {
 
     @Sample
     fun updateAt() {
-        val a = AtomicLongArray(longArrayOf(1L, 2L, 3L))
+        val a = AtomicLongArray([1L, 2L, 3L])
         a.updateAt(1) { currentValue -> currentValue * 10L }
         assertPrints(a.toString(), "[1, 20, 3]")
 
@@ -312,7 +312,7 @@ class AtomicLongArray {
 
     @Sample
     fun updateAndFetchAt() {
-        val a = AtomicLongArray(longArrayOf(1L, 2L, 3L))
+        val a = AtomicLongArray([1L, 2L, 3L])
         val updatedValue = a.updateAndFetchAt(1) { currentValue -> currentValue * 10L }
         assertPrints(updatedValue, "20")
         assertPrints(a.toString(), "[1, 20, 3]")
@@ -323,7 +323,7 @@ class AtomicLongArray {
 
     @Sample
     fun fetchAndUpdateAt() {
-        val a = AtomicLongArray(longArrayOf(1L, 2L, 3L))
+        val a = AtomicLongArray([1L, 2L, 3L])
         val oldValue = a.fetchAndUpdateAt(1) { currentValue -> currentValue * 10L }
         assertPrints(oldValue, "2")
         assertPrints(a.toString(), "[1, 20, 3]")
@@ -337,7 +337,7 @@ class AtomicLongArray {
 class AtomicArray {
     @Sample
     fun arrCons() {
-        val a = AtomicArray(arrayOf("aaa", "bbb", "ccc"))
+        val a = AtomicArray(["aaa", "bbb", "ccc"])
         assertPrints(a.toString(), "[aaa, bbb, ccc]")
     }
 
@@ -363,20 +363,20 @@ class AtomicArray {
 
     @Sample
     fun size() {
-        val a = AtomicArray(arrayOf("a", "b", "c", "d", "e"))
+        val a = AtomicArray(["a", "b", "c", "d", "e"])
         assertPrints(a.size, "5")
     }
 
     @Sample
     fun loadAt() {
-        val a = AtomicArray(arrayOf("aaa", "bbb", "ccc"))
+        val a = AtomicArray(["aaa", "bbb", "ccc"])
         assertPrints(a.loadAt(1), "bbb")
         assertPrints(a.toString(), "[aaa, bbb, ccc]")
     }
 
     @Sample
     fun storeAt() {
-        val a = AtomicArray(arrayOf("aaa", "bbb", "ccc"))
+        val a = AtomicArray(["aaa", "bbb", "ccc"])
         a.storeAt(1, "kkk")
         assertPrints(a.loadAt(1), "kkk")
         assertPrints(a.toString(), "[aaa, kkk, ccc]")
@@ -384,7 +384,7 @@ class AtomicArray {
 
     @Sample
     fun exchangeAt() {
-        val a = AtomicArray(arrayOf("aaa", "bbb", "ccc"))
+        val a = AtomicArray(["aaa", "bbb", "ccc"])
         assertPrints(a.exchangeAt(1, "kkk"), "bbb")
         assertPrints(a.loadAt(1), "kkk")
         assertPrints(a.toString(), "[aaa, kkk, ccc]")
@@ -392,7 +392,7 @@ class AtomicArray {
 
     @Sample
     fun compareAndSetAt() {
-        val a = AtomicArray(arrayOf("aaa", "bbb", "ccc"))
+        val a = AtomicArray(["aaa", "bbb", "ccc"])
         // Current value of a[1] is "bbb", it is equal to the expected value "bbb" -> compareAndSetAt succeeds.
         assertPrints(a.compareAndSetAt(index = 1, expectedValue = "bbb", newValue = "kkk"), "true")
         assertPrints(a.loadAt(1), "kkk")
@@ -406,7 +406,7 @@ class AtomicArray {
 
     @Sample
     fun compareAndExchangeAt() {
-        val a = AtomicArray(arrayOf("aaa", "bbb", "ccc"))
+        val a = AtomicArray(["aaa", "bbb", "ccc"])
         // Current value of a[1] is "bbb, it is equal to the expected value "bbb" ->
         // compareAndExchangeAt succeeds, stores the new value "kkk" to a[1] and returns the old value "bbb".
         assertPrints(a.compareAndExchangeAt(index = 1, expectedValue = "bbb", newValue = "kkk"), "bbb")
@@ -422,7 +422,7 @@ class AtomicArray {
 
     @Sample
     fun updateAt() {
-        val a = AtomicArray(arrayOf("hello", "concurrent", "world"))
+        val a = AtomicArray(["hello", "concurrent", "world"])
         a.updateAt(1) { currentValue -> currentValue.uppercase() }
         assertPrints(a.toString(), "[hello, CONCURRENT, world]")
 
@@ -432,7 +432,7 @@ class AtomicArray {
 
     @Sample
     fun updateAndFetchAt() {
-        val a = AtomicArray(arrayOf("hello", "concurrent", "world"))
+        val a = AtomicArray(["hello", "concurrent", "world"])
         val updatedValue = a.updateAndFetchAt(1) { currentValue -> currentValue.uppercase() }
         assertPrints(updatedValue, "CONCURRENT")
         assertPrints(a.toString(), "[hello, CONCURRENT, world]")
@@ -443,7 +443,7 @@ class AtomicArray {
 
     @Sample
     fun fetchAndUpdateAt() {
-        val a = AtomicArray(arrayOf("hello", "concurrent", "world"))
+        val a = AtomicArray(["hello", "concurrent", "world"])
         val oldValue = a.fetchAndUpdateAt(1) { currentValue -> currentValue.uppercase() }
         assertPrints(oldValue, "concurrent")
         assertPrints(a.toString(), "[hello, CONCURRENT, world]")

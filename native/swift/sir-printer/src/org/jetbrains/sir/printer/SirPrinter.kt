@@ -74,7 +74,7 @@ public class SirPrinter(
 }
 
 private val fatalErrorBodyStub: SirFunctionBody = SirFunctionBody(
-    listOf("fatalError()")
+    ["fatalError()"]
 )
 
 private fun collectBridges(container: SirDeclarationContainer): List<SirBridge> = buildList {

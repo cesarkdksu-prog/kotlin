@@ -19,76 +19,76 @@ class ConsoleTest {
 
     @Test
     fun shouldReadEmptyLine() {
-        testReadLine("", emptyList())
+        testReadLine("", [])
     }
 
     @Test
     fun shouldReadSingleLine() {
         for (length in 1..3) {
             val line = buildString { repeat(length) { append('a' + it) } }
-            testReadLine(line, listOf(line))
+            testReadLine(line, [line])
         }
     }
 
     @Test
     fun trailingEmptyLineIsIgnored() {
-        testReadLine(linuxLineSeparator, listOf(""))
-        testReadLine(windowsLineSeparator, listOf(""))
-        testReadLine("a$linuxLineSeparator", listOf("a"))
-        testReadLine("a$windowsLineSeparator", listOf("a"))
+        testReadLine(linuxLineSeparator, [""])
+        testReadLine(windowsLineSeparator, [""])
+        testReadLine("a$linuxLineSeparator", ["a"])
+        testReadLine("a$windowsLineSeparator", ["a"])
     }
 
     @Test
     fun shouldReadOneLine() {
-        testReadLine("first", listOf("first"))
+        testReadLine("first", ["first"])
     }
 
     @Test
     fun shouldReadTwoLines() {
-        testReadLine("first${linuxLineSeparator}second", listOf("first", "second"))
+        testReadLine("first${linuxLineSeparator}second", ["first", "second"])
     }
 
     @Test
     fun shouldReadMultipleEmptyLines() {
         testReadLine(
             "first${linuxLineSeparator}second${linuxLineSeparator}${linuxLineSeparator}${linuxLineSeparator}",
-            listOf("first", "second", "", "")
+            ["first", "second", "", ""]
         )
     }
 
     @Test
     fun shouldReadAloneCarriageReturn() {
         val result = readLines("\r", Charsets.UTF_8)
-        assertEquals(listOf("\r"), result)
+        assertEquals(["\r"], result)
     }
 
     @Test
     fun shouldReadConsecutiveEmptyLines() {
-        testReadLine("$linuxLineSeparator$linuxLineSeparator", listOf("", ""))
-        testReadLine("$linuxLineSeparator$windowsLineSeparator", listOf("", ""))
-        testReadLine("$windowsLineSeparator$linuxLineSeparator", listOf("", ""))
-        testReadLine("$windowsLineSeparator$windowsLineSeparator", listOf("", ""))
+        testReadLine("$linuxLineSeparator$linuxLineSeparator", ["", ""])
+        testReadLine("$linuxLineSeparator$windowsLineSeparator", ["", ""])
+        testReadLine("$windowsLineSeparator$linuxLineSeparator", ["", ""])
+        testReadLine("$windowsLineSeparator$windowsLineSeparator", ["", ""])
     }
 
     @Test
     fun shouldReadWindowsLineSeparator() {
-        testReadLine("first${windowsLineSeparator}second", listOf("first", "second"))
+        testReadLine("first${windowsLineSeparator}second", ["first", "second"])
     }
 
     @Test
     fun shouldReadMultibyteEncodings() {
-        testReadLine("first${linuxLineSeparator}second", listOf("first", "second"), charset = Charsets.UTF_32)
+        testReadLine("first${linuxLineSeparator}second", ["first", "second"], charset = Charsets.UTF_32)
     }
 
     @Test
     fun shouldReadAllSupportedEncodings() {
-        val lines = listOf(
-            "ONE", "TWICE", "", "0123456", 
+        val lines = [
+            "ONE", "TWICE", "", "0123456",
             "This is a very long line that will overflow buffers that are allocated in the code of LineReader object",
             "This line is quite short",
             "x".repeat(1000), // stress
             "7", "8", "9" // some short stuff at the end
-        )
+        ]
         // Filter all available charsets that can be encoded
         val charsets: List<Charset> = Charset.availableCharsets().values.filter { charset ->
             try {
@@ -99,7 +99,7 @@ class ConsoleTest {
             }
         }
         // Run the test
-        for (separator in listOf(linuxLineSeparator, windowsLineSeparator)) {
+        for (separator in [linuxLineSeparator, windowsLineSeparator]) {
             val text = lines.joinToString(separator)
             for (charset in charsets) {
                 val reference = readLinesReference(text, charset)
@@ -140,9 +140,9 @@ class ConsoleTest {
             }
         }
         // test all standard unicode encoding that should be able to represent all code points
-        for (separator in listOf(linuxLineSeparator, windowsLineSeparator)) {
+        for (separator in [linuxLineSeparator, windowsLineSeparator]) {
             val text = lines.joinToString(separator)
-            for (charset in listOf(Charsets.UTF_8, Charsets.UTF_16BE, Charsets.UTF_16LE, Charsets.UTF_32BE, Charsets.UTF_32LE)) {
+            for (charset in [Charsets.UTF_8, Charsets.UTF_16BE, Charsets.UTF_16LE, Charsets.UTF_32BE, Charsets.UTF_32LE]) {
                 testReadLine(text, lines, charset)
             }
         }
@@ -151,11 +151,11 @@ class ConsoleTest {
     @Test
     fun readSurrogatePairs() {
         val c = "\uD83D\uDC4D" // thumb-up emoji
-        testReadLine("$c$linuxLineSeparator", listOf(c))
-        testReadLine("e $c$linuxLineSeparator", listOf("e $c"))
-        testReadLine("$c$windowsLineSeparator", listOf(c))
-        testReadLine("e $c$c", listOf("e $c$c"))
-        testReadLine("e $c$linuxLineSeparator$c", listOf("e $c", c))
+        testReadLine("$c$linuxLineSeparator", [c])
+        testReadLine("e $c$linuxLineSeparator", ["e $c"])
+        testReadLine("$c$windowsLineSeparator", [c])
+        testReadLine("e $c$c", ["e $c$c"])
+        testReadLine("e $c$linuxLineSeparator$c", ["e $c", c])
     }
 
     private fun testReadLine(text: String, expected: List<String>, charset: Charset = Charsets.UTF_8) {

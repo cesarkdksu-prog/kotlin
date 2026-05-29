@@ -10,7 +10,7 @@ import org.jetbrains.kotlin.resolve.DefaultImportsProvider
 import org.jetbrains.kotlin.resolve.ImportPath
 
 object NativeDefaultImportsProvider : DefaultImportsProvider() {
-    override val platformSpecificDefaultImports: List<ImportPath> = listOf(ImportPath.fromString("kotlin.native.*"))
+    override val platformSpecificDefaultImports: List<ImportPath> = [ImportPath.fromString("kotlin.native.*")]
 
     override val excludedImports: List<FqName> = listOf("identityHashCode").map {
         FqName("kotlin.native.$it")

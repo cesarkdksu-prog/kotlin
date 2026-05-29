@@ -45,7 +45,7 @@ class AbstractMutableCollectionTest {
     @Test fun addAllSuccess() {
         val collection = TestCollection(IntArray(3))
         assertTrue(collection.addAll(listOf(1, 2, 3)))
-        compare(listOf(1, 2, 3), collection) {
+        compare([1, 2, 3], collection) {
             collectionBehavior()
         }
     }
@@ -54,7 +54,7 @@ class AbstractMutableCollectionTest {
         val collection = TestCollection(IntArray(3))
         assertTrue(collection.addAll(listOf(1, 2, 3)))
         assertFalse(collection.addAll(listOf(4, 5)))
-        compare(listOf(1, 2, 3), collection) {
+        compare([1, 2, 3], collection) {
             collectionBehavior()
         }
     }
@@ -63,7 +63,7 @@ class AbstractMutableCollectionTest {
         val collection = TestCollection(IntArray(7))
         assertTrue(collection.addAll(listOf(1, 2, 3, 2, 4, 5, 4)))
         assertTrue(collection.removeAll(listOf(1, 2)))
-        compare(listOf(3, 4, 5, 4), collection) {
+        compare([3, 4, 5, 4], collection) {
             collectionBehavior()
         }
     }
@@ -72,7 +72,7 @@ class AbstractMutableCollectionTest {
         val collection = TestCollection(IntArray(7))
         assertTrue(collection.addAll(listOf(1, 2, 4, 3, 5, 2, 4)))
         assertTrue(collection.retainAll(listOf(4, 5)))
-        compare(listOf(4, 5, 4), collection) {
+        compare([4, 5, 4], collection) {
             collectionBehavior()
         }
     }
@@ -81,7 +81,7 @@ class AbstractMutableCollectionTest {
         val collection = TestCollection(IntArray(3))
         assertTrue(collection.addAll(listOf(1, 2, 3)))
         assertTrue(collection.remove(2))
-        compare(listOf(1, 3), collection) {
+        compare([1, 3], collection) {
             collectionBehavior()
         }
     }
@@ -90,7 +90,7 @@ class AbstractMutableCollectionTest {
         val collection = TestCollection(IntArray(3))
         assertTrue(collection.addAll(listOf(1, 2, 3)))
         collection.clear()
-        compare(emptyList(), collection) {
+        compare([], collection) {
             collectionBehavior()
         }
     }

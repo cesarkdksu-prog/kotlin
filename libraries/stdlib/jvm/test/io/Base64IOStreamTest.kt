@@ -83,7 +83,7 @@ class Base64IOStreamTest {
     @Test
     fun readDifferentOffsetAndLengthMime() {
         val repeat = 10_000
-        for ([codec, lineLength] in listOf(Base64.Mime to 76, Base64.Pem to 64)) {
+        for ([codec, lineLength] in [Base64.Mime to 76, Base64.Pem to 64]) {
             val symbols = ("Zm9vYmFy".repeat(repeat) + "Zm8=").chunked(lineLength).joinToString(separator = "\r\n")
             val expected = "foobar".repeat(repeat) + "fo"
 
@@ -141,7 +141,7 @@ class Base64IOStreamTest {
     @Test
     fun writeDifferentOffsetAndLengthMime() {
         val repeat = 10_000
-        for ([codec, lineLength] in listOf(Base64.Mime to 76, Base64.Pem to 64)) {
+        for ([codec, lineLength] in [Base64.Mime to 76, Base64.Pem to 64]) {
             val bytes = ("foobar".repeat(repeat) + "fo").encodeToByteArray()
             val expected = ("Zm9vYmFy".repeat(repeat) + "Zm8=").chunked(lineLength).joinToString(separator = "\r\n")
 
@@ -286,7 +286,7 @@ class Base64IOStreamTest {
 
     @Test
     fun incorrectPadding() {
-        for (base64 in listOf(Base64, Base64.Mime)) {
+        for (base64 in [Base64, Base64.Mime]) {
             val inputStream = "Zm9vZm=9v".byteInputStream()
             val wrapper = inputStream.decodingWith(base64)
 
@@ -310,7 +310,7 @@ class Base64IOStreamTest {
 
     @Test
     fun withoutPadding() {
-        for (base64 in listOf(Base64, Base64.Mime)) {
+        for (base64 in [Base64, Base64.Mime]) {
             for (paddingOption in Base64.PaddingOption.entries) {
                 val configuredBase64 = base64.withPadding(paddingOption)
 
@@ -341,7 +341,7 @@ class Base64IOStreamTest {
 
     @Test
     fun nonZeroPadBits() {
-        for (base64 in listOf(Base64, Base64.Mime)) {
+        for (base64 in [Base64, Base64.Mime]) {
             val inputStream = "Zm9=".byteInputStream()
             val wrapper = inputStream.decodingWith(base64)
 

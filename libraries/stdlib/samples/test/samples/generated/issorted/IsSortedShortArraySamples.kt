@@ -21,10 +21,10 @@ class IsSortedShortArraySamples {
         assertPrints(shortArrayOf().isSorted(), "true")
         assertPrints(shortArrayOf(1).isSorted(), "true")
 
-        val sorted = shortArrayOf(1, 2, 3, 4, 5)
+        val sorted: ShortArray = [1, 2, 3, 4, 5]
         assertPrints(sorted.isSorted(), "true")
 
-        val unsorted = shortArrayOf(2, 1, 3, 4, 5)
+        val unsorted: ShortArray = [2, 1, 3, 4, 5]
         assertPrints(unsorted.isSorted(), "false")
     }
 
@@ -33,10 +33,10 @@ class IsSortedShortArraySamples {
         assertPrints(shortArrayOf().isSortedDescending(), "true")
         assertPrints(shortArrayOf(5).isSortedDescending(), "true")
 
-        val sorted = shortArrayOf(5, 4, 3, 2, 1)
+        val sorted: ShortArray = [5, 4, 3, 2, 1]
         assertPrints(sorted.isSortedDescending(), "true")
 
-        val unsorted = shortArrayOf(4, 5, 3, 2, 1)
+        val unsorted: ShortArray = [4, 5, 3, 2, 1]
         assertPrints(unsorted.isSortedDescending(), "false")
     }
 
@@ -45,11 +45,11 @@ class IsSortedShortArraySamples {
         assertPrints(shortArrayOf().isSortedWith(naturalOrder()), "true")
         assertPrints(shortArrayOf(1).isSortedWith(naturalOrder()), "true")
 
-        val sorted = shortArrayOf(1, 2, 3, 4, 5)
+        val sorted: ShortArray = [1, 2, 3, 4, 5]
         assertPrints(sorted.isSortedWith(naturalOrder()), "true")
         assertPrints(sorted.isSortedWith(reverseOrder()), "false")
 
-        val reversed = shortArrayOf(5, 4, 3, 2, 1)
+        val reversed: ShortArray = [5, 4, 3, 2, 1]
         assertPrints(reversed.isSortedWith(reverseOrder()), "true")
     }
 
@@ -58,7 +58,7 @@ class IsSortedShortArraySamples {
         assertPrints(shortArrayOf().isSortedBy { it * it }, "true")
         assertPrints(shortArrayOf(1).isSortedBy { it * it }, "true")
 
-        val values = shortArrayOf(1, -2, 3, -4, 5)
+        val values: ShortArray = [1, -2, 3, -4, 5]
         assertPrints(values.isSortedBy { it * it }, "true")
         assertPrints(values.isSortedBy { abs(it.toInt()) }, "true")
         assertPrints(values.isSortedBy { it }, "false")
@@ -70,7 +70,7 @@ class IsSortedShortArraySamples {
         assertPrints(shortArrayOf().isSortedByDescending { it * it }, "true")
         assertPrints(shortArrayOf(5).isSortedByDescending { it * it }, "true")
 
-        val values = shortArrayOf(5, -4, 3, -2, 1)
+        val values: ShortArray = [5, -4, 3, -2, 1]
         assertPrints(values.isSortedByDescending { it * it }, "true")
         assertPrints(values.isSortedByDescending { abs(it.toInt()) }, "true")
         assertPrints(values.isSortedByDescending { it }, "false")

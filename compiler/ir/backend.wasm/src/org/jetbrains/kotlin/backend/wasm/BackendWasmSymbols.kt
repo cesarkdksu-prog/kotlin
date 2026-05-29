@@ -238,11 +238,11 @@ class BackendWasmSymbols(
         val startCoroutineUninterceptedOrReturnIntrinsics1 by CallableIds.startCoroutineUninterceptedOrReturnIntrinsics1.functionSymbol()
         val startCoroutineUninterceptedOrReturnIntrinsics2 by CallableIds.startCoroutineUninterceptedOrReturnIntrinsics2.functionSymbol()
         lazyOf(
-            listOf(
+            [
                 startCoroutineUninterceptedOrReturnIntrinsics0,
                 startCoroutineUninterceptedOrReturnIntrinsics1,
                 startCoroutineUninterceptedOrReturnIntrinsics2,
-            )
+            ]
         )
     }
 

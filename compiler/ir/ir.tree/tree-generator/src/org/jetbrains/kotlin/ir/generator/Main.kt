@@ -46,7 +46,7 @@ private fun TreeGenerator.printIrTree(model: Model<Element>, generationPath: Fil
     printElementImplementations(implementations, ::ImplementationPrinter)
     printVisitors(
         model,
-        listOf(
+        [
             irVisitorType to ::VisitorPrinter,
             irVisitorVoidType to ::VisitorVoidPrinter,
             irTransformerType to ::TransformerPrinter.bind(model.rootElement),
@@ -57,7 +57,7 @@ private fun TreeGenerator.printIrTree(model: Model<Element>, generationPath: Fil
             irTreeSymbolsVisitorType to ::IrTreeSymbolsVisitorPrinter.bind(model.rootElement),
             typeTransformerType to ::TypeTransformerPrinter.bind(model.rootElement),
             typeTransformerVoidType to ::TypeTransformerVoidPrinter.bind(model.rootElement),
-        )
+        ]
     )
 }
 
@@ -89,7 +89,7 @@ private fun TreeGenerator.printIrSymbolTree(generationPath: File, model: Model<E
         treeGeneratorReadme,
         Packages.symbolsImpl,
         "IrSymbolImpl",
-        fileSuppressions = listOf("DuplicatedCode"),
+        fileSuppressions = ["DuplicatedCode"],
         makeTypePrinter = ::SymbolImplementationPrinter,
         printType = AbstractImplementationPrinter<SymbolImplementation, Symbol, SymbolField>::printImplementation,
     )

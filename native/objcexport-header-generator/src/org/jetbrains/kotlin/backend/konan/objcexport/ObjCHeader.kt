@@ -90,7 +90,7 @@ private fun MutableList<String>.addImports(imports: Iterable<String>) {
     }
 }
 
-private val foundationImports = listOf(
+private val foundationImports = [
     "Foundation/NSArray.h",
     "Foundation/NSDictionary.h",
     "Foundation/NSError.h",
@@ -98,4 +98,4 @@ private val foundationImports = listOf(
     "Foundation/NSSet.h",
     "Foundation/NSString.h",
     "Foundation/NSValue.h"
-)
+]

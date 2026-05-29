@@ -131,12 +131,12 @@ class DefaultLambda(
             if (isReference)
                 info.capturedArgs.singleOrNull()?.let {
                     // See `InlinedLambdaRemapper`
-                    listOf(capturedParamDesc(AsmUtil.RECEIVER_PARAMETER_NAME, OBJECT_TYPE, isSuspend = false))
-                } ?: emptyList()
+                    [capturedParamDesc(AsmUtil.RECEIVER_PARAMETER_NAME, OBJECT_TYPE, isSuspend = false)]
+                } ?: []
             else
                 constructor?.findCapturedFieldAssignmentInstructions()?.map { fieldNode ->
                     capturedParamDesc(fieldNode.name, Type.getType(fieldNode.desc), isSuspend = false)
-                }?.toList() ?: emptyList()
+                }?.toList() ?: []
         isBoundCallableReference = isReference && capturedVars.isNotEmpty()
         (val originNode = node, val classSmap = classSMAP) = loadDefaultLambdaBody(classBytes, lambdaClassType, isPropertyReference)
         node = SMAPAndMethodNode(createNodeWithFakeVariables(originNode), classSmap)

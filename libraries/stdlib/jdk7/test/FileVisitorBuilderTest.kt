@@ -63,7 +63,7 @@ class FileVisitorBuilderTest : AbstractPathTest() {
         basedir.visitFileTree(visitor)
 
         assertEquals(preVisit, postVisit)
-        val referenceDirectoryNames = listOf("", "1", "1/2", "1/3", "6", "8")
+        val referenceDirectoryNames = ["", "1", "1/2", "1/3", "6", "8"]
         testVisitedFiles(referenceDirectoryNames, preVisit.asSequence(), basedir)
         testVisitedFiles(referenceFilesOnly, files.asSequence(), basedir)
     }
@@ -119,7 +119,7 @@ class FileVisitorBuilderTest : AbstractPathTest() {
     fun skipDirectory() {
         val basedir = createTestFiles().cleanupRecursively()
         val dirToSkip = basedir.resolve("1/3")
-        val visitedFiles = mutableListOf<Path>()
+        val visitedFiles: MutableList<Path> = []
 
         basedir.visitFileTree {
             onPreVisitDirectory { directory, _ ->
@@ -138,7 +138,7 @@ class FileVisitorBuilderTest : AbstractPathTest() {
             }
         }
 
-        testVisitedFiles(listOf("7.txt", "8/9.txt"), visitedFiles.asSequence(), basedir)
+        testVisitedFiles(["7.txt", "8/9.txt"], visitedFiles.asSequence(), basedir)
     }
 
     @Test
@@ -211,9 +211,9 @@ class FileVisitorBuilderTest : AbstractPathTest() {
         }
 
         val dstWalk = dstRoot.walk(PathWalkOption.INCLUDE_DIRECTORIES)
-        testVisitedFiles(referenceFilenames + listOf(""), dstWalk, dstRoot)
+        testVisitedFiles(referenceFilenames + [""], dstWalk, dstRoot)
         val srcWalk = srcRoot.walk(PathWalkOption.INCLUDE_DIRECTORIES)
-        testVisitedFiles(referenceFilenames + listOf("", "1/2/.dir", "1/3/.file"), srcWalk, srcRoot)
+        testVisitedFiles(referenceFilenames + ["", "1/2/.dir", "1/3/.file"], srcWalk, srcRoot)
     }
 
     @Test
@@ -275,7 +275,7 @@ class FileVisitorBuilderTest : AbstractPathTest() {
         }
         basedir.visitFileTree(visitor)
 
-        val expected = listOf("", "1", "1/3", "1/3/image2.png", "8", "8/9.txt", "image1.png")
+        val expected = ["", "1", "1/3", "1/3/image2.png", "8", "8/9.txt", "image1.png"]
         testVisitedFiles(expected, basedir.walk(PathWalkOption.INCLUDE_DIRECTORIES), basedir)
     }
 

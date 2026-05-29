@@ -26,7 +26,7 @@ class HexFormats {
                     groupSeparator = "."
                 }
             }
-            val macAddressBytes = byteArrayOf(0x00, 0x1b, 0x63, 0x84.toByte(), 0x45, 0xe6.toByte())
+            val macAddressBytes: ByteArray = [0x00, 0x1b, 0x63, 0x84.toByte(), 0x45, 0xe6.toByte()]
             assertPrints(macAddressBytes.toHexString(macAddressFormat), "001B.6384.45E6")
             assertTrue("001B.6384.45E6".hexToByteArray(macAddressFormat).contentEquals(macAddressBytes))
 
@@ -70,7 +70,7 @@ class HexFormats {
 
             // The upperCase option does not affect parsing; parsing is always case-insensitive.
             assertPrints("0x0000003a".hexToInt(format), "58")
-            assertTrue("1BE6".hexToByteArray(format).contentEquals(byteArrayOf(0x1b, 0xe6.toByte())))
+            assertTrue("1BE6".hexToByteArray(format).contentEquals([0x1b, 0xe6.toByte()]))
         }
     }
 
@@ -364,7 +364,7 @@ class HexFormats {
     class Extensions {
         @Sample
         fun byteArrayToHexString() {
-            val data = byteArrayOf(0xDE.toByte(), 0x2D, 0x02, 0xC0.toByte(), 0x5C, 0x0E)
+            val data: ByteArray = [0xDE.toByte(), 0x2D, 0x02, 0xC0.toByte(), 0x5C, 0x0E]
 
             // Using the default format
             assertPrints(data.toHexString(), "de2d02c05c0e")
@@ -390,7 +390,7 @@ class HexFormats {
 
         @Sample
         fun hexToByteArray() {
-            val expectedData = byteArrayOf(0xDE.toByte(), 0x2D, 0x02, 0xC0.toByte(), 0x5C, 0x0E)
+            val expectedData: ByteArray = [0xDE.toByte(), 0x2D, 0x02, 0xC0.toByte(), 0x5C, 0x0E]
 
             // Using the default format
             assertPrints("de2d02c05c0e".hexToByteArray().contentEquals(expectedData), "true")

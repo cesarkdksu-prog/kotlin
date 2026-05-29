@@ -16,7 +16,7 @@ class MapJVMTest {
         assertEquals(1, map["a"])
         assertEquals(2, map["b"])
         assertEquals(3, map["c"])
-        assertEquals(listOf("a", "b", "c"), map.keys.toList())
+        assertEquals(["a", "b", "c"], map.keys.toList())
     }
 
     @Test fun createSortedMapWithComparator() {
@@ -25,7 +25,7 @@ class MapJVMTest {
         assertEquals(2, map["bc"])
         assertEquals(3, map["c"])
         assertEquals(4, map["bd"])
-        assertEquals(listOf("c", "bc", "bd", "abc"), map.keys.toList())
+        assertEquals(["c", "bc", "bd", "abc"], map.keys.toList())
     }
 
     @Test fun toSortedMap() {
@@ -34,13 +34,13 @@ class MapJVMTest {
         assertEquals(1, sorted["a"])
         assertEquals(2, sorted["b"])
         assertEquals(3, sorted["c"])
-        assertEquals(listOf("a", "b", "c"), sorted.keys.toList())
+        assertEquals(["a", "b", "c"], sorted.keys.toList())
     }
 
     @Test fun toSortedMapWithComparator() {
         val map = mapOf(Pair("c", 3), Pair("bc", 2), Pair("bd", 4), Pair("abc", 1))
         val sorted = map.toSortedMap(compareBy<String> { it.length }.thenBy { it })
-        assertEquals(listOf("c", "bc", "bd", "abc"), sorted.keys.toList())
+        assertEquals(["c", "bc", "bd", "abc"], sorted.keys.toList())
         assertEquals(1, sorted["abc"])
         assertEquals(2, sorted["bc"])
         assertEquals(3, sorted["c"])
@@ -61,8 +61,8 @@ class MapJVMTest {
             if (iterator.next().key % 2 == 0)
                 iterator.remove()
         }
-        assertEquals(listOf(1, 3, 5), map.keys.toList())
-        assertEquals(listOf('b', 'd', 'f'), map.values.toList())
+        assertEquals([1, 3, 5], map.keys.toList())
+        assertEquals(['b', 'd', 'f'], map.values.toList())
     }
 
     @Test
@@ -108,10 +108,10 @@ class MapJVMTest {
             map.getOrPut(null) { null }
         }
 
-        val expected = setOf(
+        val expected: Set<Pair<String, String>> = [
             "k1" to "v1",
             "k2" to "v2"
-        )
+        ]
         assertEquals(expected, map.entries.map { it.toPair() }.toSet())
     }
 
@@ -133,11 +133,11 @@ class MapJVMTest {
         assertEquals("v3", map.getOrPut(null) { "newV3" })
         assertEquals("v3", map.getOrPut(null) { null })
 
-        val expected = listOf(
+        val expected = [
             "k1" to "v1",
             "k2" to null, // incorrect, see KT-67339
             null to "v3"
-        )
+        ]
         assertContentEquals(expected, map.entries.map { it.toPair() })
     }
 
@@ -159,11 +159,11 @@ class MapJVMTest {
         assertEquals("v3", map.getOrPutIfNull(null) { "newV3" })
         assertEquals("v3", map.getOrPutIfNull(null) { null })
 
-        val expected = listOf(
+        val expected = [
             "k1" to "v1",
             "k2" to "v2",
             null to "v3"
-        )
+        ]
         assertContentEquals(expected, map.entries.map { it.toPair() })
     }
 
@@ -183,11 +183,11 @@ class MapJVMTest {
         assertEquals("v3", map.getOrPutIfMissing(null) { "newV3" })
         assertEquals("v3", map.getOrPutIfMissing(null) { null })
 
-        val expected = listOf(
+        val expected = [
             "k1" to "v1",
             "k2" to null,
             null to "v3"
-        )
+        ]
         assertContentEquals(expected, map.entries.map { it.toPair() })
     }
 }

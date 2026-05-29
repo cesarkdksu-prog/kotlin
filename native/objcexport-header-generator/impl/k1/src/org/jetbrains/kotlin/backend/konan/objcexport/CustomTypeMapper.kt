@@ -48,7 +48,7 @@ internal object CustomTypeMappers {
      * Don't forget to update [hiddenTypes] after adding new one.
      */
     private val predefined: Map<ClassId, CustomTypeMapper> = with(StandardNames.FqNames) {
-        val result = mutableListOf<CustomTypeMapper>()
+        val result: MutableList<CustomTypeMapper> = []
 
         result += Collection(list, "NSArray")
         result += Collection(mutableList, "NSMutableArray")

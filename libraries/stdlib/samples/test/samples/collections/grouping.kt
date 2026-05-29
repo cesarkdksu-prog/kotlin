@@ -24,7 +24,7 @@ class Grouping {
 
     @Sample
     fun aggregateByRadix() {
-        val numbers = listOf(3, 4, 5, 6, 7, 8, 9)
+        val numbers = [3, 4, 5, 6, 7, 8, 9]
 
         val aggregated = numbers.groupingBy { it % 3 }.aggregate { key, accumulator: StringBuilder?, element, first ->
             if (first) // first element
@@ -38,7 +38,7 @@ class Grouping {
 
     @Sample
     fun aggregateByRadixTo() {
-        val numbers = listOf(3, 4, 5, 6, 7, 8, 9)
+        val numbers = [3, 4, 5, 6, 7, 8, 9]
 
         val aggregated = numbers.groupingBy { it % 3 }.aggregateTo(mutableMapOf()) { key, accumulator: StringBuilder?, element, first ->
             if (first) // first element
@@ -55,10 +55,10 @@ class Grouping {
 
     @Sample
     fun foldByEvenLengthWithComputedInitialValue() {
-        val fruits = listOf("cherry", "blueberry", "citrus", "apple", "apricot", "banana", "coconut")
+        val fruits = ["cherry", "blueberry", "citrus", "apple", "apricot", "banana", "coconut"]
 
         val evenFruits = fruits.groupingBy { it.first() }
-            .fold({ key, _ -> key to mutableListOf<String>() },
+            .fold({ key, _ -> key to [] },
                   { _, accumulator, element ->
                       accumulator.also { [_, list] -> if (element.length % 2 == 0) list.add(element) }
                   })
@@ -69,10 +69,10 @@ class Grouping {
 
     @Sample
     fun foldByEvenLengthWithComputedInitialValueTo() {
-        val fruits = listOf("cherry", "blueberry", "citrus", "apple", "apricot", "banana", "coconut")
+        val fruits = ["cherry", "blueberry", "citrus", "apple", "apricot", "banana", "coconut"]
 
         val evenFruits = fruits.groupingBy { it.first() }
-            .foldTo(mutableMapOf(), { key, _: String -> key to mutableListOf<String>() },
+            .foldTo(mutableMapOf(), { key, _: String -> key to [] },
                     { _, accumulator, element ->
                         if (element.length % 2 == 0) accumulator.second.add(element)
                         accumulator
@@ -86,7 +86,7 @@ class Grouping {
 
     @Sample
     fun foldByEvenLengthWithConstantInitialValue() {
-        val fruits = listOf("apple", "apricot", "banana", "blueberry", "cherry", "coconut")
+        val fruits = ["apple", "apricot", "banana", "blueberry", "cherry", "coconut"]
 
         // collect only even length Strings
         val evenFruits = fruits.groupingBy { it.first() }
@@ -97,7 +97,7 @@ class Grouping {
 
     @Sample
     fun foldByEvenLengthWithConstantInitialValueTo() {
-        val fruits = listOf("apple", "apricot", "banana", "blueberry", "cherry", "coconut")
+        val fruits = ["apple", "apricot", "banana", "blueberry", "cherry", "coconut"]
 
         // collect only even length Strings
         val evenFruits = fruits.groupingBy { it.first() }
@@ -110,7 +110,7 @@ class Grouping {
 
     @Sample
     fun reduceByMaxVowels() {
-        val animals = listOf("raccoon", "reindeer", "cow", "camel", "giraffe", "goat")
+        val animals = ["raccoon", "reindeer", "cow", "camel", "giraffe", "goat"]
 
         // grouping by first char and collect only max of contains vowels
         val compareByVowelCount = compareBy { s: String -> s.count { it in "aeiou" } }
@@ -122,7 +122,7 @@ class Grouping {
 
     @Sample
     fun reduceByMaxVowelsTo() {
-        val animals = listOf("raccoon", "reindeer", "cow", "camel", "giraffe", "goat")
+        val animals = ["raccoon", "reindeer", "cow", "camel", "giraffe", "goat"]
         val maxVowels = mutableMapOf<Char, String>()
 
         // grouping by first char and collect only max of contains vowels
@@ -132,7 +132,7 @@ class Grouping {
 
         assertPrints(maxVowels, "{r=reindeer, c=camel, g=giraffe}")
 
-        val moreAnimals = listOf("capybara", "rat")
+        val moreAnimals = ["capybara", "rat"]
         moreAnimals.groupingBy { it.first() }.reduceTo(maxVowels) { _, a, b -> maxOf(a, b, compareByVowelCount) }
 
         assertPrints(maxVowels, "{r=reindeer, c=capybara, g=giraffe}")

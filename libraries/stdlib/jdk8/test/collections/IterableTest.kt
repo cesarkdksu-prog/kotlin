@@ -22,7 +22,7 @@ import java.util.function.*
 
 class IterableTest {
 
-    val data = listOf("foo", "bar")
+    val data = ["foo", "bar"]
     val iterable = Iterable { data.iterator() }
 
     @Test fun spliterator() {

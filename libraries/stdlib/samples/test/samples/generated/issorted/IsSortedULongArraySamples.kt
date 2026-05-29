@@ -20,10 +20,10 @@ class IsSortedULongArraySamples {
         assertPrints(ulongArrayOf().isSorted(), "true")
         assertPrints(ulongArrayOf(1uL).isSorted(), "true")
 
-        val sorted = ulongArrayOf(1uL, 2uL, 3uL, 4uL, 5uL)
+        val sorted: ULongArray = [1uL, 2uL, 3uL, 4uL, 5uL]
         assertPrints(sorted.isSorted(), "true")
 
-        val unsorted = ulongArrayOf(2uL, 1uL, 3uL, 4uL, 5uL)
+        val unsorted: ULongArray = [2uL, 1uL, 3uL, 4uL, 5uL]
         assertPrints(unsorted.isSorted(), "false")
     }
 
@@ -32,10 +32,10 @@ class IsSortedULongArraySamples {
         assertPrints(ulongArrayOf().isSortedDescending(), "true")
         assertPrints(ulongArrayOf(5uL).isSortedDescending(), "true")
 
-        val sorted = ulongArrayOf(5uL, 4uL, 3uL, 2uL, 1uL)
+        val sorted: ULongArray = [5uL, 4uL, 3uL, 2uL, 1uL]
         assertPrints(sorted.isSortedDescending(), "true")
 
-        val unsorted = ulongArrayOf(4uL, 5uL, 3uL, 2uL, 1uL)
+        val unsorted: ULongArray = [4uL, 5uL, 3uL, 2uL, 1uL]
         assertPrints(unsorted.isSortedDescending(), "false")
     }
 
@@ -44,11 +44,11 @@ class IsSortedULongArraySamples {
         assertPrints(ulongArrayOf().isSortedWith(naturalOrder()), "true")
         assertPrints(ulongArrayOf(1uL).isSortedWith(naturalOrder()), "true")
 
-        val sorted = ulongArrayOf(1uL, 2uL, 3uL, 4uL, 5uL)
+        val sorted: ULongArray = [1uL, 2uL, 3uL, 4uL, 5uL]
         assertPrints(sorted.isSortedWith(naturalOrder()), "true")
         assertPrints(sorted.isSortedWith(reverseOrder()), "false")
 
-        val reversed = ulongArrayOf(5uL, 4uL, 3uL, 2uL, 1uL)
+        val reversed: ULongArray = [5uL, 4uL, 3uL, 2uL, 1uL]
         assertPrints(reversed.isSortedWith(reverseOrder()), "true")
     }
 
@@ -57,7 +57,7 @@ class IsSortedULongArraySamples {
         assertPrints(ulongArrayOf().isSortedBy { it % 3uL }, "true")
         assertPrints(ulongArrayOf(3uL).isSortedBy { it % 3uL }, "true")
 
-        val values = ulongArrayOf(3uL, 1uL, 4uL, 2uL)
+        val values: ULongArray = [3uL, 1uL, 4uL, 2uL]
         assertPrints(values.isSortedBy { it % 3uL }, "true")
         assertPrints(values.isSortedBy { it }, "false")
         assertPrints(ulongArrayOf(1uL, 2uL).isSortedBy { if (it == 1uL) null else it }, "true")
@@ -68,7 +68,7 @@ class IsSortedULongArraySamples {
         assertPrints(ulongArrayOf().isSortedByDescending { it % 3uL }, "true")
         assertPrints(ulongArrayOf(2uL).isSortedByDescending { it % 3uL }, "true")
 
-        val values = ulongArrayOf(2uL, 4uL, 1uL, 3uL)
+        val values: ULongArray = [2uL, 4uL, 1uL, 3uL]
         assertPrints(values.isSortedByDescending { it % 3uL }, "true")
         assertPrints(values.isSortedByDescending { it }, "false")
         assertPrints(ulongArrayOf(2uL, 1uL).isSortedByDescending { if (it == 1uL) null else it }, "true")

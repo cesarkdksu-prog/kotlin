@@ -24,18 +24,18 @@ import kotlin.test.*
 class StreamsTest {
 
     @Test fun toList() {
-        val data = arrayOf<Any?>(1, 2L, 1.23, null)
+        val data: Array<Any?> = [1, 2L, 1.23, null]
         val streamBuilder = { Stream.of(*data) }
 
         assertEquals(data.asList(), streamBuilder().toList())
-        assertEquals(listOf(1),     streamBuilder().filter { it is Int }.mapToInt { it as Int }.toList())
-        assertEquals(listOf(2L),    streamBuilder().filter { it is Long }.mapToLong { it as Long }.toList())
-        assertEquals(listOf(1.23),  streamBuilder().filter { it is Double }.mapToDouble { it as Double }.toList())
+        assertEquals([1], streamBuilder().filter { it is Int }.mapToInt { it as Int }.toList())
+        assertEquals([2L], streamBuilder().filter { it is Long }.mapToLong { it as Long }.toList())
+        assertEquals([1.23], streamBuilder().filter { it is Double }.mapToDouble { it as Double }.toList())
     }
 
 
     @Test fun asSequence() {
-        val data = arrayOf<Any?>(1, 2L, 1.23, null)
+        val data: Array<Any?> = [1, 2L, 1.23, null]
 
         fun<T> assertSequenceContent(expected: List<T>, actual: Sequence<T>) {
             assertEquals(expected, actual.toList())
@@ -44,9 +44,9 @@ class StreamsTest {
         }
 
         assertSequenceContent(data.asList(),    Stream.of(*data).asSequence())
-        assertSequenceContent(listOf(1, 2),     IntStream.of(1, 2).asSequence())
-        assertSequenceContent(listOf(1L, 2L),   LongStream.of(1L, 2L).asSequence())
-        assertSequenceContent(listOf(1.0, 2.0), DoubleStream.of(1.0, 2.0).asSequence())
+        assertSequenceContent([1, 2], IntStream.of(1, 2).asSequence())
+        assertSequenceContent([1L, 2L], LongStream.of(1L, 2L).asSequence())
+        assertSequenceContent([1.0, 2.0], DoubleStream.of(1.0, 2.0).asSequence())
     }
 
     @Test fun asStream() {

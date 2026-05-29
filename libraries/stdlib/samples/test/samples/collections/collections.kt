@@ -17,18 +17,18 @@ class Collections {
 
         @Sample
         fun indicesOfCollection() {
-            val empty = emptyList<Any>()
+            val empty: List<Any> = []
             assertTrue(empty.indices.isEmpty())
-            val collection = listOf('a', 'b', 'c')
+            val collection = ['a', 'b', 'c']
             assertPrints(collection.indices, "0..2")
         }
 
         @Sample
         fun collectionIsNotEmpty() {
-            val empty = emptyList<Any>()
+            val empty: List<Any> = []
             assertFalse(empty.isNotEmpty())
 
-            val collection = listOf('a', 'b', 'c')
+            val collection = ['a', 'b', 'c']
             assertTrue(collection.isNotEmpty())
         }
 
@@ -37,7 +37,7 @@ class Collections {
             val nullCollection: Collection<Any>? = null
             assertPrints(nullCollection.orEmpty(), "[]")
 
-            val collection: Collection<Char>? = listOf('a', 'b', 'c')
+            val collection: Collection<Char>? = ['a', 'b', 'c']
             assertPrints(collection.orEmpty(), "[a, b, c]")
         }
 
@@ -46,32 +46,32 @@ class Collections {
             val nullList: List<Any>? = null
             assertTrue(nullList.isNullOrEmpty())
 
-            val empty: List<Any>? = emptyList<Any>()
+            val empty: List<Any>? = []
             assertTrue(empty.isNullOrEmpty())
 
-            val collection: List<Char>? = listOf('a', 'b', 'c')
+            val collection: List<Char>? = ['a', 'b', 'c']
             assertFalse(collection.isNullOrEmpty())
         }
 
         @Sample
         fun collectionIfEmpty() {
-            val empty: List<Int> = emptyList()
+            val empty: List<Int> = []
 
             val emptyOrNull: List<Int>? = empty.ifEmpty { null }
             assertPrints(emptyOrNull, "null")
 
-            val emptyOrDefault: List<Any> = empty.ifEmpty { listOf("default") }
+            val emptyOrDefault: List<Any> = empty.ifEmpty { ["default"] }
             assertPrints(emptyOrDefault, "[default]")
 
-            val nonEmpty = listOf("x")
-            val sameList: List<String> = nonEmpty.ifEmpty { listOf("empty") }
+            val nonEmpty = ["x"]
+            val sameList: List<String> = nonEmpty.ifEmpty { ["empty"] }
             assertTrue(nonEmpty === sameList)
         }
 
         @Sample
         fun collectionContainsAll() {
-            val collection = mutableListOf('a', 'b')
-            val test = listOf('a', 'b', 'c')
+            val collection: MutableList<Char> = ['a', 'b']
+            val test = ['a', 'b', 'c']
             assertFalse(collection.containsAll(test))
 
             collection.add('c')
@@ -80,7 +80,7 @@ class Collections {
 
         @Sample
         fun collectionToTypedArray() {
-            val collection = listOf(1, 2, 3)
+            val collection = [1, 2, 3]
             val array = collection.toTypedArray()
             assertPrints(array.contentToString(), "[1, 2, 3]")
         }
@@ -106,7 +106,7 @@ class Collections {
 
         @Sample
         fun collectionContains() {
-            val collection: Collection<Int> = listOf(1, 2, 3)
+            val collection: Collection<Int> = [1, 2, 3]
 
             assertTrue(1 in collection)
             assertFalse(4 in collection)
@@ -115,7 +115,7 @@ class Collections {
             class Ref<T>(val value: T)
 
             val r0 = Ref(42)
-            val refCollection: Collection<Ref<Int>> = listOf(r0)
+            val refCollection: Collection<Ref<Int>> = [r0]
 
             assertTrue(r0 in refCollection)
             // Ref(42) is a new instance
@@ -127,10 +127,10 @@ class Collections {
             val collection: MutableCollection<Char> = mutableSetOf('a', 'b', 'c')
 
             // Nothing was removed
-            assertFalse(collection.retainAll(listOf('a', 'b', 'c')))
+            assertFalse(collection.retainAll(['a', 'b', 'c']))
             assertPrints(collection, "[a, b, c]")
 
-            assertTrue(collection.retainAll(listOf('a', 'e', 'i', 'o')))
+            assertTrue(collection.retainAll(['a', 'e', 'i', 'o']))
             assertPrints(collection, "[a]")
         }
 
@@ -148,12 +148,12 @@ class Collections {
 
         @Sample
         fun emptyReadOnlyList() {
-            val list = listOf<String>()
+            val list: List<String> = []
             assertTrue(list.isEmpty())
 
             // another way to create an empty list,
             // type parameter is inferred from the expected type
-            val other: List<Int> = emptyList()
+            val other: List<Int> = []
 
             assertTrue(list == other, "Empty lists are equal")
             assertPrints(list, "[]")
@@ -162,7 +162,7 @@ class Collections {
 
         @Sample
         fun readOnlyList() {
-            val list = listOf('a', 'b', 'c')
+            val list = ['a', 'b', 'c']
             assertPrints(list.size, "3")
             assertTrue(list.contains('a'))
             assertPrints(list.indexOf('b'), "1")
@@ -171,17 +171,17 @@ class Collections {
 
         @Sample
         fun singletonReadOnlyList() {
-            val list = listOf('a')
+            val list = ['a']
             assertPrints(list, "[a]")
             assertPrints(list.size, "1")
         }
 
         @Sample
         fun emptyMutableList() {
-            val list = mutableListOf<Int>()
+            val list: MutableList<Int> = []
             assertTrue(list.isEmpty())
 
-            list.addAll(listOf(1, 2, 3))
+            list.addAll([1, 2, 3])
             assertPrints(list, "[1, 2, 3]")
         }
 
@@ -190,16 +190,16 @@ class Collections {
             val list = arrayListOf<Int>()
             assertTrue(list.isEmpty())
 
-            list.addAll(listOf(1, 2, 3))
+            list.addAll([1, 2, 3])
             assertPrints(list, "[1, 2, 3]")
         }
 
         @Sample
         fun mutableList() {
-            val list = mutableListOf(1, 2, 3)
+            val list: MutableList<Int> = [1, 2, 3]
             assertPrints(list, "[1, 2, 3]")
 
-            list += listOf(4, 5)
+            list += [4, 5]
             assertPrints(list, "[1, 2, 3, 4, 5]")
         }
 
@@ -208,7 +208,7 @@ class Collections {
             val list = arrayListOf(1, 2, 3)
             assertPrints(list, "[1, 2, 3]")
 
-            list += listOf(4, 5)
+            list += [4, 5]
             assertPrints(list, "[1, 2, 3, 4, 5]")
         }
 
@@ -242,7 +242,7 @@ class Collections {
         @Sample
         fun lastIndexOfList() {
             assertPrints(emptyList<Any>().lastIndex, "-1")
-            val list = listOf("a", "x", "y")
+            val list = ["a", "x", "y"]
             assertPrints(list.lastIndex, "2")
             assertPrints(list[list.lastIndex], "y")
         }
@@ -252,7 +252,7 @@ class Collections {
             val nullList: List<Any>? = null
             assertPrints(nullList.orEmpty(), "[]")
 
-            val list: List<Char>? = listOf('a', 'b', 'c')
+            val list: List<Char>? = ['a', 'b', 'c']
             assertPrints(list.orEmpty(), "[a, b, c]")
         }
 
@@ -273,7 +273,7 @@ class Collections {
 
         @Sample
         fun binarySearchOnComparable() {
-            val list = mutableListOf('a', 'b', 'c', 'd', 'e')
+            val list: MutableList<Char> = ['a', 'b', 'c', 'd', 'e']
             assertPrints(list.binarySearch('d'), "3")
 
             list.remove('d')
@@ -288,7 +288,7 @@ class Collections {
 
         @Sample
         fun binarySearchWithBoundaries() {
-            val list = listOf('a', 'b', 'c', 'd', 'e')
+            val list = ['a', 'b', 'c', 'd', 'e']
             assertPrints(list.binarySearch('d'), "3")
 
             // element is out of range from the left
@@ -300,7 +300,7 @@ class Collections {
 
         @Sample
         fun binarySearchWithComparator() {
-            val colors = listOf("Blue", "green", "ORANGE", "Red", "yellow")
+            val colors = ["Blue", "green", "ORANGE", "Red", "yellow"]
             assertPrints(colors.binarySearch("RED", String.CASE_INSENSITIVE_ORDER), "3")
         }
 
@@ -308,7 +308,7 @@ class Collections {
         fun binarySearchByKey() {
             data class Box(val value: Int)
 
-            val numbers = listOf(1, 3, 7, 10, 12)
+            val numbers = [1, 3, 7, 10, 12]
             val boxes = numbers.map { Box(it) }
             assertPrints(boxes.binarySearchBy(10) { it.value }, "3")
         }
@@ -317,7 +317,7 @@ class Collections {
         fun binarySearchWithComparisonFunction() {
             data class Box(val value: String)
 
-            val values = listOf("A", "ant", "binding", "Box", "cell")
+            val values = ["A", "ant", "binding", "Box", "cell"]
             val boxes = values.map { Box(it) }
 
             val valueToFind = "box"
@@ -333,14 +333,14 @@ class Collections {
 
         @Sample
         fun add() {
-            val list = mutableListOf('a', 'b', 'c')
+            val list: MutableList<Char> = ['a', 'b', 'c']
             assertTrue(list.add('c'))
             assertPrints(list, "[a, b, c, c]")
         }
 
         @Sample
         fun addAt() {
-            val list = mutableListOf('a', 'b', 'c')
+            val list: MutableList<Char> = ['a', 'b', 'c']
 
             list.add(1, 'c')
             assertPrints(list, "[a, c, b, c]")
@@ -353,27 +353,27 @@ class Collections {
 
         @Sample
         fun addAll() {
-            val list = mutableListOf('a', 'b', 'c')
-            assertTrue(list.addAll(listOf('a', 'b', 'c')))
+            val list: MutableList<Char> = ['a', 'b', 'c']
+            assertTrue(list.addAll(['a', 'b', 'c']))
             assertPrints(list, "[a, b, c, a, b, c]")
         }
 
         @Sample
         fun addAllAt() {
-            val list = mutableListOf('a', 'b', 'c')
+            val list: MutableList<Char> = ['a', 'b', 'c']
 
-            list.addAll(1, listOf('x', 'y', 'z'))
+            list.addAll(1, ['x', 'y', 'z'])
             assertPrints(list, "[a, x, y, z, b, c]")
 
-            list.addAll(6, listOf('h', 'i'))
+            list.addAll(6, ['h', 'i'])
             assertPrints(list, "[a, x, y, z, b, c, h, i]")
 
-            assertFailsWith<IndexOutOfBoundsException> { list.addAll(100500, listOf('z')) }
+            assertFailsWith<IndexOutOfBoundsException> { list.addAll(100500, ['z']) }
         }
 
         @Sample
         fun remove() {
-            val list = mutableListOf('a', 'b', 'c')
+            val list: MutableList<Char> = ['a', 'b', 'c']
 
             assertTrue(list.remove('a'))
             assertPrints(list, "[b, c]")
@@ -385,19 +385,19 @@ class Collections {
 
         @Sample
         fun removeAll() {
-            val list = mutableListOf('a', 'b', 'c')
+            val list: MutableList<Char> = ['a', 'b', 'c']
 
-            assertTrue(list.removeAll(listOf('a', 'c')))
+            assertTrue(list.removeAll(['a', 'c']))
             assertPrints(list, "[b]")
 
             // There are no more 'a's and 'c's to remove
-            assertFalse(list.removeAll(listOf('a', 'c')))
+            assertFalse(list.removeAll(['a', 'c']))
             assertPrints(list, "[b]")
         }
 
         @Sample
         fun removeAt() {
-            val list = mutableListOf('a', 'b', 'c')
+            val list: MutableList<Char> = ['a', 'b', 'c']
 
             list.removeAt(1)
             assertPrints(list, "[a, c]")
@@ -410,7 +410,7 @@ class Collections {
 
         @Sample
         fun get() {
-            val list = listOf(1, 2, 3)
+            val list = [1, 2, 3]
 
             assertPrints(list[0], "1")
             assertPrints(list[2], "3")
@@ -419,7 +419,7 @@ class Collections {
 
         @Sample
         fun set() {
-            val list = mutableListOf(1, 2, 3)
+            val list: MutableList<Int> = [1, 2, 3]
 
             list[1] = 42
             assertPrints(list, "[1, 42, 3]")
@@ -429,10 +429,10 @@ class Collections {
 
         @Sample
         fun subList() {
-            val list = listOf(1, 2, 3, 4, 5)
+            val list = [1, 2, 3, 4, 5]
             assertPrints(list.subList(2, 4), "[3, 4]")
 
-            val mutableList = mutableListOf(1, 2, 3, 4, 5)
+            val mutableList: MutableList<Int> = [1, 2, 3, 4, 5]
             val subList = mutableList.subList(2, 4)
             assertPrints(subList, "[3, 4]")
 
@@ -444,7 +444,7 @@ class Collections {
 
         @Sample
         fun indexOf() {
-            val list = listOf('a', 'b', 'c', 'a')
+            val list = ['a', 'b', 'c', 'a']
             assertPrints(list.indexOf('a'), "0")
             assertPrints(list.indexOf('b'), "1")
             assertPrints(list.indexOf('e'), "-1")
@@ -452,7 +452,7 @@ class Collections {
 
         @Sample
         fun lastIndexOf() {
-            val list = listOf('a', 'b', 'c', 'a')
+            val list = ['a', 'b', 'c', 'a']
             assertPrints(list.lastIndexOf('a'), "3")
             assertPrints(list.lastIndexOf('b'), "1")
             assertPrints(list.lastIndexOf('e'), "-1")
@@ -460,7 +460,7 @@ class Collections {
 
         @Sample
         fun listIterator() {
-            val list = listOf('a', 'b')
+            val list = ['a', 'b']
             val iterator = list.listIterator()
 
             // "Cursor" is at the beginning of the list,
@@ -492,7 +492,7 @@ class Collections {
 
         @Sample
         fun listIteratorWithIndex() {
-            val list = listOf('a', 'b', 'c')
+            val list = ['a', 'b', 'c']
 
             // The iterator will scan elements starting from 'c' (the element at the index = 2)
             val sublistIterator = list.listIterator(index = 2)
@@ -524,7 +524,7 @@ class Collections {
             fun trimToSize() {
                 val list = ArrayList<Int>(1000)
                 // Add only a few elements
-                list.addAll(listOf(1, 2, 3))
+                list.addAll([1, 2, 3])
                 assertPrints(list, "[1, 2, 3]")
 
                 // The list has capacity for 1000 elements, but only 3 are used.
@@ -564,12 +564,12 @@ class Collections {
 
         @Sample
         fun emptyReadOnlySet() {
-            val set = setOf<String>()
+            val set: Set<String> = []
             assertTrue(set.isEmpty())
 
             // another way to create an empty set,
             // type parameter is inferred from the expected type
-            val other: Set<Int> = emptySet()
+            val other: Set<Int> = []
 
             assertTrue(set == other, "Empty sets are equal")
             assertPrints(set, "[]")
@@ -577,8 +577,8 @@ class Collections {
 
         @Sample
         fun readOnlySet() {
-            val set1 = setOf(1, 2, 3)
-            val set2 = setOf(3, 2, 1)
+            val set1: Set<Int> = [1, 2, 3]
+            val set2: Set<Int> = [3, 2, 1]
 
             // setOf preserves the iteration order of elements
             assertPrints(set1, "[1, 2, 3]")
@@ -590,14 +590,14 @@ class Collections {
 
         @Sample
         fun singletonReadOnlySet() {
-            val set = setOf('a')
+            val set: Set<Char> = ['a']
             assertPrints(set, "[a]")
             assertPrints(set.size, "1")
         }
 
         @Sample
         fun emptyMutableSet() {
-            val set = mutableSetOf<Int>()
+            val set: MutableSet<Int> = []
             assertTrue(set.isEmpty())
 
             set.add(1)
@@ -612,17 +612,17 @@ class Collections {
             val nullSet: Set<Any>? = null
             assertPrints(nullSet.orEmpty(), "[]")
 
-            val set: Set<Char>? = setOf('a', 'b', 'c')
+            val set: Set<Char>? = ['a', 'b', 'c']
             assertPrints(set.orEmpty(), "[a, b, c]")
         }
 
         @Sample
         fun mutableSet() {
-            val set = mutableSetOf(1, 2, 3)
+            val set: MutableSet<Int> = [1, 2, 3]
             assertPrints(set, "[1, 2, 3]")
 
             set.remove(3)
-            set += listOf(4, 5)
+            set += [4, 5]
             assertPrints(set, "[1, 2, 4, 5]")
         }
 
@@ -656,13 +656,13 @@ class Collections {
             assertPrints(set, "[1, 3, 2]")
 
             set.remove(3)
-            set += listOf(5, 4)
+            set += [5, 4]
             assertPrints(set, "[1, 2, 5, 4]")
         }
 
         @Sample
         fun add() {
-            val set = mutableSetOf('a', 'b', 'c')
+            val set: MutableSet<Char> = ['a', 'b', 'c']
             // Sets do not support duplicates, so there is no way to add yet another 'c'
             assertFalse(set.add('c'))
             assertPrints(set, "[a, b, c]")
@@ -670,17 +670,17 @@ class Collections {
 
         @Sample
         fun addAll() {
-            val set = mutableSetOf('a', 'b', 'c')
+            val set: MutableSet<Char> = ['a', 'b', 'c']
             // All three elements are in set, nothing will be added
-            assertFalse(set.addAll(listOf('a', 'b', 'c')))
+            assertFalse(set.addAll(['a', 'b', 'c']))
             // At least one element will be added, 'd'
-            assertTrue(set.addAll(listOf('a', 'b', 'c', 'd')))
+            assertTrue(set.addAll(['a', 'b', 'c', 'd']))
             assertPrints(set, "[a, b, c, d]")
         }
 
         @Sample
         fun remove() {
-            val set = mutableSetOf('a', 'b', 'c')
+            val set: MutableSet<Char> = ['a', 'b', 'c']
 
             assertTrue(set.remove('a'))
             assertPrints(set, "[b, c]")
@@ -692,13 +692,13 @@ class Collections {
 
         @Sample
         fun removeAll() {
-            val set = mutableSetOf('a', 'b', 'c')
+            val set: MutableSet<Char> = ['a', 'b', 'c']
 
-            assertTrue(set.removeAll(listOf('a', 'c')))
+            assertTrue(set.removeAll(['a', 'c']))
             assertPrints(set, "[b]")
 
             // There are no more 'a's and 'c's to remove
-            assertFalse(set.removeAll(listOf('a', 'c')))
+            assertFalse(set.removeAll(['a', 'c']))
             assertPrints(set, "[b]")
         }
     }
@@ -707,7 +707,7 @@ class Collections {
 
         @Sample
         fun associate() {
-            val names = listOf("Grace Hopper", "Jacob Bernoulli", "Johann Bernoulli")
+            val names = ["Grace Hopper", "Jacob Bernoulli", "Johann Bernoulli"]
 
             val byLastName = names.associate { it.split(" ").let { [firstName, lastName] -> lastName to firstName } }
 
@@ -721,7 +721,7 @@ class Collections {
                 override fun toString(): String = "$firstName $lastName"
             }
 
-            val scientists = listOf(Person("Grace", "Hopper"), Person("Jacob", "Bernoulli"), Person("Johann", "Bernoulli"))
+            val scientists = [Person("Grace", "Hopper"), Person("Jacob", "Bernoulli"), Person("Johann", "Bernoulli")]
 
             val byLastName = scientists.associateBy { it.lastName }
 
@@ -733,7 +733,7 @@ class Collections {
         fun associateByWithValueTransform() {
             data class Person(val firstName: String, val lastName: String)
 
-            val scientists = listOf(Person("Grace", "Hopper"), Person("Jacob", "Bernoulli"), Person("Johann", "Bernoulli"))
+            val scientists = [Person("Grace", "Hopper"), Person("Jacob", "Bernoulli"), Person("Johann", "Bernoulli")]
 
             val byLastName = scientists.associateBy({ it.lastName }, { it.firstName })
 
@@ -747,7 +747,7 @@ class Collections {
                 override fun toString(): String = "$firstName $lastName"
             }
 
-            val scientists = listOf(Person("Grace", "Hopper"), Person("Jacob", "Bernoulli"), Person("Johann", "Bernoulli"))
+            val scientists = [Person("Grace", "Hopper"), Person("Jacob", "Bernoulli"), Person("Johann", "Bernoulli")]
 
             val byLastName = mutableMapOf<String, Person>()
             assertTrue(byLastName.isEmpty())
@@ -763,7 +763,7 @@ class Collections {
         fun associateByToWithValueTransform() {
             data class Person(val firstName: String, val lastName: String)
 
-            val scientists = listOf(Person("Grace", "Hopper"), Person("Jacob", "Bernoulli"), Person("Johann", "Bernoulli"))
+            val scientists = [Person("Grace", "Hopper"), Person("Jacob", "Bernoulli"), Person("Johann", "Bernoulli")]
 
             val byLastName = mutableMapOf<String, String>()
             assertTrue(byLastName.isEmpty())
@@ -779,7 +779,7 @@ class Collections {
         fun associateTo() {
             data class Person(val firstName: String, val lastName: String)
 
-            val scientists = listOf(Person("Grace", "Hopper"), Person("Jacob", "Bernoulli"), Person("Johann", "Bernoulli"))
+            val scientists = [Person("Grace", "Hopper"), Person("Jacob", "Bernoulli"), Person("Johann", "Bernoulli")]
 
             val byLastName = mutableMapOf<String, String>()
             assertTrue(byLastName.isEmpty())
@@ -793,7 +793,7 @@ class Collections {
 
         @Sample
         fun associateWith() {
-            val words = listOf("a", "abc", "ab", "def", "abcd")
+            val words = ["a", "abc", "ab", "def", "abcd"]
             val withLength = words.associateWith { it.length }
             assertPrints(withLength.keys, "[a, abc, ab, def, abcd]")
             assertPrints(withLength.values, "[1, 3, 2, 3, 4]")
@@ -805,7 +805,7 @@ class Collections {
                 override fun toString(): String = "$firstName $lastName"
             }
 
-            val scientists = listOf(Person("Grace", "Hopper"), Person("Jacob", "Bernoulli"), Person("Jacob", "Bernoulli"))
+            val scientists = [Person("Grace", "Hopper"), Person("Jacob", "Bernoulli"), Person("Jacob", "Bernoulli")]
             val withLengthOfNames = mutableMapOf<Person, Int>()
             assertTrue(withLengthOfNames.isEmpty())
 
@@ -818,14 +818,14 @@ class Collections {
 
         @Sample
         fun distinctAndDistinctBy() {
-            val list = listOf('a', 'A', 'b', 'B', 'A', 'a')
+            val list = ['a', 'A', 'b', 'B', 'A', 'a']
             assertPrints(list.distinct(), "[a, A, b, B]")
             assertPrints(list.distinctBy { it.uppercaseChar() }, "[a, b]")
         }
 
         @Sample
         fun groupBy() {
-            val words = listOf("a", "abc", "ab", "def", "abcd")
+            val words = ["a", "abc", "ab", "def", "abcd"]
             val byLength = words.groupBy { it.length }
 
             assertPrints(byLength.keys, "[1, 3, 2, 4]")
@@ -838,7 +838,7 @@ class Collections {
 
         @Sample
         fun groupByKeysAndValues() {
-            val nameToTeam = listOf("Alice" to "Marketing", "Bob" to "Sales", "Carol" to "Marketing")
+            val nameToTeam = ["Alice" to "Marketing", "Bob" to "Sales", "Carol" to "Marketing"]
             val namesByTeam = nameToTeam.groupBy({ it.second }, { it.first })
             assertPrints(namesByTeam, "{Marketing=[Alice, Carol], Sales=[Bob]}")
 
@@ -852,7 +852,7 @@ class Collections {
         @Sample
         fun joinTo() {
             val sb = StringBuilder("An existing string and a list: ")
-            val numbers = listOf(1, 2, 3)
+            val numbers = [1, 2, 3]
             assertPrints(numbers.joinTo(sb, prefix = "[", postfix = "]").toString(), "An existing string and a list: [1, 2, 3]")
 
             val lotOfNumbers: Iterable<Int> = 1..100
@@ -866,12 +866,12 @@ class Collections {
 
         @Sample
         fun joinToString() {
-            val numbers = listOf(1, 2, 3, 4, 5, 6)
+            val numbers = [1, 2, 3, 4, 5, 6]
             assertPrints(numbers.joinToString(), "1, 2, 3, 4, 5, 6")
             assertPrints(numbers.joinToString(prefix = "[", postfix = "]"), "[1, 2, 3, 4, 5, 6]")
             assertPrints(numbers.joinToString(prefix = "<", postfix = ">", separator = "•"), "<1•2•3•4•5•6>")
 
-            val chars = charArrayOf('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q')
+            val chars: CharArray = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q']
             assertPrints(chars.joinToString(limit = 5, truncated = "...!") { it.uppercaseChar().toString() }, "A, B, C, D, E, ...!")
 
             // If the receiver is empty, the result only contains prefix and postfix
@@ -881,13 +881,13 @@ class Collections {
 
         @Sample
         fun map() {
-            val numbers = listOf(1, 2, 3)
+            val numbers = [1, 2, 3]
             assertPrints(numbers.map { it * it }, "[1, 4, 9]")
         }
 
         @Sample
         fun mapNotNull() {
-            val strings: List<String> = listOf("12a", "45", "", "3")
+            val strings: List<String> = ["12a", "45", "", "3"]
             val ints: List<Int> = strings.mapNotNull { it.toIntOrNull() }
 
             assertPrints(ints, "[45, 3]")
@@ -896,15 +896,15 @@ class Collections {
 
         @Sample
         fun flatMap() {
-            val list = listOf("123", "45")
+            val list = ["123", "45"]
             assertPrints(list.flatMap { it.toList() }, "[1, 2, 3, 4, 5]")
         }
 
         @Sample
         fun flatMapIndexed() {
-            val data: List<String> = listOf("Abcd", "efgh", "Klmn")
+            val data: List<String> = ["Abcd", "efgh", "Klmn"]
             val selected: List<Boolean> = data.map { it.any { c -> c.isUpperCase() } }
-            val result = data.flatMapIndexed { index, s -> if (selected[index]) s.toList() else emptyList() }
+            val result = data.flatMapIndexed { index, s -> if (selected[index]) s.toList() else [] }
             assertPrints(result, "[A, b, c, d, K, l, m, n]")
         }
 
@@ -945,7 +945,7 @@ class Collections {
 
         @Sample
         fun zipWithNextToFindDeltas() {
-            val values = listOf(1, 4, 9, 16, 25, 36)
+            val values = [1, 4, 9, 16, 25, 36]
             val deltas = values.zipWithNext { a, b -> b - a }
 
             assertPrints(deltas, "[3, 5, 7, 9, 11]")
@@ -958,13 +958,13 @@ class Collections {
                 val area: Int get() = height * width
             }
 
-            val rectangles = listOf(
+            val rectangles = [
                 Rectangle(3, 4),
                 Rectangle(1, 8),
                 Rectangle(6, 3),
                 Rectangle(4, 3),
                 Rectangle(5, 7)
-            )
+            ]
 
             val largeArea = rectangles.firstNotNullOf { it.area.takeIf { area -> area >= 15 } }
             val largeAreaOrNull = rectangles.firstNotNullOfOrNull { it.area.takeIf { area -> area >= 15 } }
@@ -990,16 +990,16 @@ class Collections {
             val evens = zeroToTen.map { it * 2 }
             assertTrue(evens.all { isEven(it) })
 
-            val emptyList = emptyList<Int>()
+            val emptyList: List<Int> = []
             assertTrue(emptyList.all { false })
         }
 
         @Sample
         fun none() {
-            val emptyList = emptyList<Int>()
+            val emptyList: List<Int> = []
             assertTrue(emptyList.none())
 
-            val nonEmptyList = listOf("one", "two", "three")
+            val nonEmptyList = ["one", "two", "three"]
             assertFalse(nonEmptyList.none())
         }
 
@@ -1013,16 +1013,16 @@ class Collections {
             val odds = zeroToTen.map { it * 2 + 1 }
             assertTrue(odds.none { isEven(it) })
 
-            val emptyList = emptyList<Int>()
+            val emptyList: List<Int> = []
             assertTrue(emptyList.none { true })
         }
 
         @Sample
         fun any() {
-            val emptyList = emptyList<Int>()
+            val emptyList: List<Int> = []
             assertFalse(emptyList.any())
 
-            val nonEmptyList = listOf(1, 2, 3)
+            val nonEmptyList = [1, 2, 3]
             assertTrue(nonEmptyList.any())
         }
 
@@ -1036,18 +1036,18 @@ class Collections {
             val odds = zeroToTen.map { it * 2 + 1 }
             assertFalse(odds.any { isEven(it) })
 
-            val emptyList = emptyList<Int>()
+            val emptyList: List<Int> = []
             assertFalse(emptyList.any { true })
         }
 
         @Sample
         fun maxMinPrimitive() {
             // The largest and smallest elements in the array
-            val numbers = intArrayOf(3, 7, 2, 6)
+            val numbers: IntArray = [3, 7, 2, 6]
             assertPrints(numbers.max(), "7")
             assertPrints(numbers.min(), "2")
 
-            val emptyArray = intArrayOf()
+            val emptyArray: IntArray = []
 
             // max() and min() throw if the array is empty
             assertFailsWith<NoSuchElementException> { emptyArray.max() }
@@ -1061,16 +1061,16 @@ class Collections {
         @Sample
         fun maxMinFloating() {
             // The largest and smallest elements in the array
-            val numbers = doubleArrayOf(3.0, 7.2, 2.4, 6.5)
+            val numbers: DoubleArray = [3.0, 7.2, 2.4, 6.5]
             assertPrints(numbers.max(), "7.2")
             assertPrints(numbers.min(), "2.4")
 
             // max() and min() return `NaN` if any of elements is `NaN`
-            val numbersWithNaN = doubleArrayOf(3.0, Double.NaN, 7.2, 2.4, 6.5)
+            val numbersWithNaN: DoubleArray = [3.0, Double.NaN, 7.2, 2.4, 6.5]
             assertPrints(numbersWithNaN.max(), "NaN")
             assertPrints(numbersWithNaN.min(), "NaN")
 
-            val emptyArray = doubleArrayOf()
+            val emptyArray: DoubleArray = []
 
             // max() and min() throw if the array is empty
             assertFailsWith<NoSuchElementException> { emptyArray.max() }
@@ -1084,11 +1084,11 @@ class Collections {
         @Sample
         fun maxMinGeneric() {
             // The largest and smallest elements according to String.compareTo
-            val names = listOf("Alice", "Bob", "Carol")
+            val names = ["Alice", "Bob", "Carol"]
             assertPrints(names.max(), "Carol")
             assertPrints(names.min(), "Alice")
 
-            val emptyList = emptyList<Int>()
+            val emptyList: List<Int> = []
 
             // max() and min() throw if the collection is empty
             assertFailsWith<NoSuchElementException> { emptyList.max() }
@@ -1102,11 +1102,11 @@ class Collections {
         @Sample
         fun maxOfMinOfPrimitive() {
             // The largest and smallest last digits in the array
-            val numbers = intArrayOf(13, 7, 22, 64)
+            val numbers: IntArray = [13, 7, 22, 64]
             assertPrints(numbers.maxOf { it % 10 }, "7")
             assertPrints(numbers.minOf { it % 10 }, "2")
 
-            val emptyArray = intArrayOf()
+            val emptyArray: IntArray = []
 
             // maxOf() and minOf() throw if the array is empty
             assertFailsWith<NoSuchElementException> { emptyArray.maxOf { it % 10 } }
@@ -1120,11 +1120,11 @@ class Collections {
         @Sample
         fun maxOfMinOfGeneric() {
             // The length of the longest and shortest names
-            val names = listOf("Alice", "Bob", "Carol")
+            val names = ["Alice", "Bob", "Carol"]
             assertPrints(names.maxOf { it.length }, "5")
             assertPrints(names.minOf { it.length }, "3")
 
-            val emptyList = emptyList<String>()
+            val emptyList: List<String> = []
 
             // maxOf() and minOf() throw if the collection is empty
             assertFailsWith<NoSuchElementException> { emptyList.maxOf { it.length } }
@@ -1142,11 +1142,11 @@ class Collections {
             }
 
             // The largest and smallest width-to-height ratios
-            val rectangles = listOf(
+            val rectangles = [
                 Rectangle(15.0, 10.0),
                 Rectangle(25.0, 20.0),
                 Rectangle(40.0, 30.0),
-            )
+            ]
             assertPrints(rectangles.maxOf { it.aspectRatio }, "1.5")
             assertPrints(rectangles.minOf { it.aspectRatio }, "1.25")
 
@@ -1155,7 +1155,7 @@ class Collections {
             assertPrints(rectanglesAndPoint.maxOf { it.aspectRatio }, "NaN")
             assertPrints(rectanglesAndPoint.minOf { it.aspectRatio }, "NaN")
 
-            val emptyList = emptyList<Rectangle>()
+            val emptyList: List<Rectangle> = []
 
             // maxOf() and minOf() throw if the collection is empty
             assertFailsWith<NoSuchElementException> { emptyList.maxOf { it.aspectRatio } }
@@ -1172,11 +1172,11 @@ class Collections {
             val absComparator = compareBy<Int> { it.absoluteValue }
 
             // The largest and smallest cubic values when compared by absolute value
-            val numbers = intArrayOf(-2, 3, -4, 1)
+            val numbers: IntArray = [-2, 3, -4, 1]
             assertPrints(numbers.maxOfWith(absComparator) { it * it * it }, "-64")
             assertPrints(numbers.minOfWith(absComparator) { it * it * it }, "1")
 
-            val emptyArray = intArrayOf()
+            val emptyArray: IntArray = []
 
             // maxOfWith() and minOfWith() throw if the array is empty
             assertFailsWith<NoSuchElementException> { emptyArray.maxOfWith(absComparator) { it * it * it } }
@@ -1195,16 +1195,16 @@ class Collections {
             val lengthComparator = compareBy<String> { it.length }
 
             // The longest and shortest book titles
-            val books = listOf(
+            val books = [
                 Book("Red Sand", 2004, 3.5),
                 Book("Silver Bullet", 2009, 4.4),
                 Book("Clear Water", 2018, 4.1),
                 Book("Night Sky", 2023, 3.8)
-            )
+            ]
             assertPrints(books.maxOfWith(lengthComparator) { it.title }, "Silver Bullet")
             assertPrints(books.minOfWith(lengthComparator) { it.title }, "Red Sand")
 
-            val emptyList = listOf<Book>()
+            val emptyList: List<Book> = []
 
             // maxOfWith() and minOfWith() throw if the collection is empty
             assertFailsWith<NoSuchElementException> { emptyList.maxOfWith(lengthComparator) { it.title } }
@@ -1217,7 +1217,7 @@ class Collections {
 
         @Sample
         fun minMaxByOrNull() {
-            val strings = listOf("abcd", "abc", "ab", "de", "abcde")
+            val strings = ["abcd", "abc", "ab", "de", "abcde"]
 
             val longestString = strings.maxBy { it.length }
             assertPrints(longestString, "abcde")
@@ -1225,7 +1225,7 @@ class Collections {
             val shortestString = strings.minBy { it.length }
             assertPrints(shortestString, "ab")
 
-            val emptyList = emptyList<String>()
+            val emptyList: List<String> = []
             // maxBy() and minBy() throw if the collection is empty
             assertFailsWith<NoSuchElementException> { emptyList.maxBy { it.length } }
             assertFailsWith<NoSuchElementException> { emptyList.minBy { it.length } }
@@ -1236,7 +1236,7 @@ class Collections {
 
         @Sample
         fun reduce() {
-            val strings = listOf("a", "b", "c", "d")
+            val strings = ["a", "b", "c", "d"]
             assertPrints(strings.reduce { acc, string -> acc + string }, "abcd")
             assertPrints(strings.reduceIndexed { index, acc, string -> acc + string + index }, "ab1c2d3")
 
@@ -1245,7 +1245,7 @@ class Collections {
 
         @Sample
         fun reduceRight() {
-            val strings = listOf("a", "b", "c", "d")
+            val strings = ["a", "b", "c", "d"]
             assertPrints(strings.reduceRight { string, acc -> acc + string }, "dcba")
             assertPrints(strings.reduceRightIndexed { index, string, acc -> acc + string + index }, "dc2b1a0")
 
@@ -1254,7 +1254,7 @@ class Collections {
 
         @Sample
         fun reduceOrNull() {
-            val strings = listOf("a", "b", "c", "d")
+            val strings = ["a", "b", "c", "d"]
             assertPrints(strings.reduceOrNull { acc, string -> acc + string }, "abcd")
             assertPrints(strings.reduceIndexedOrNull { index, acc, string -> acc + string + index }, "ab1c2d3")
 
@@ -1263,7 +1263,7 @@ class Collections {
 
         @Sample
         fun reduceRightOrNull() {
-            val strings = listOf("a", "b", "c", "d")
+            val strings = ["a", "b", "c", "d"]
             assertPrints(strings.reduceRightOrNull { string, acc -> acc + string }, "dcba")
             assertPrints(strings.reduceRightIndexedOrNull { index, string, acc -> acc + string + index }, "dc2b1a0")
 
@@ -1272,7 +1272,7 @@ class Collections {
 
         @Sample
         fun scan() {
-            val strings = listOf("a", "b", "c", "d")
+            val strings = ["a", "b", "c", "d"]
             assertPrints(strings.scan("s") { acc, string -> acc + string }, "[s, sa, sab, sabc, sabcd]")
             assertPrints(strings.scanIndexed("s") { index, acc, string -> acc + string + index }, "[s, sa0, sa0b1, sa0b1c2, sa0b1c2d3]")
 
@@ -1281,7 +1281,7 @@ class Collections {
 
         @Sample
         fun runningFold() {
-            val strings = listOf("a", "b", "c", "d")
+            val strings = ["a", "b", "c", "d"]
             assertPrints(strings.runningFold("s") { acc, string -> acc + string }, "[s, sa, sab, sabc, sabcd]")
             assertPrints(strings.runningFoldIndexed("s") { index, acc, string -> acc + string + index }, "[s, sa0, sa0b1, sa0b1c2, sa0b1c2d3]")
 
@@ -1290,7 +1290,7 @@ class Collections {
 
         @Sample
         fun runningReduce() {
-            val strings = listOf("a", "b", "c", "d")
+            val strings = ["a", "b", "c", "d"]
             assertPrints(strings.runningReduce { acc, string -> acc + string }, "[a, ab, abc, abcd]")
             assertPrints(strings.runningReduceIndexed { index, acc, string -> acc + string + index }, "[a, ab1, ab1c2, ab1c2d3]")
 
@@ -1301,40 +1301,40 @@ class Collections {
     class Elements {
         @Sample
         fun elementAt() {
-            val list = listOf(1, 2, 3)
+            val list = [1, 2, 3]
             assertPrints(list.elementAt(0), "1")
             assertPrints(list.elementAt(2), "3")
             assertFailsWith<IndexOutOfBoundsException> { list.elementAt(3) }
 
-            val emptyList = emptyList<Int>()
+            val emptyList: List<Int> = []
             assertFailsWith<IndexOutOfBoundsException> { emptyList.elementAt(0) }
         }
 
         @Sample
         fun elementAtOrNull() {
-            val list = listOf(1, 2, 3)
+            val list = [1, 2, 3]
             assertPrints(list.elementAtOrNull(0), "1")
             assertPrints(list.elementAtOrNull(2), "3")
             assertPrints(list.elementAtOrNull(3), "null")
 
-            val emptyList = emptyList<Int>()
+            val emptyList: List<Int> = []
             assertPrints(emptyList.elementAtOrNull(0), "null")
         }
 
         @Sample
         fun elementAtOrElse() {
-            val list = listOf(1, 2, 3)
+            val list = [1, 2, 3]
             assertPrints(list.elementAtOrElse(0) { 42 }, "1")
             assertPrints(list.elementAtOrElse(2) { 42 }, "3")
             assertPrints(list.elementAtOrElse(3) { 42 }, "42")
 
-            val emptyList = emptyList<Int>()
+            val emptyList: List<Int> = []
             assertPrints(emptyList.elementAtOrElse(0) { "no int" }, "no int")
         }
 
         @Sample
         fun find() {
-            val numbers = listOf(1, 2, 3, 4, 5, 6, 7)
+            val numbers = [1, 2, 3, 4, 5, 6, 7]
             val firstOdd = numbers.find { it % 2 != 0 }
             val lastEven = numbers.findLast { it % 2 == 0 }
 
@@ -1344,36 +1344,36 @@ class Collections {
 
         @Sample
         fun getOrElse() {
-            val list = listOf(1, 2, 3)
+            val list = [1, 2, 3]
             assertPrints(list.getOrElse(0) { 42 }, "1")
             assertPrints(list.getOrElse(2) { 42 }, "3")
             assertPrints(list.getOrElse(3) { 42 }, "42")
             assertPrints(list.getOrElse(-1) { 42 }, "42")
 
-            val emptyList = emptyList<Int>()
+            val emptyList: List<Int> = []
             assertPrints(emptyList.getOrElse(0) { "no int" }, "no int")
         }
 
         @Sample
         fun getOrNull() {
-            val list = listOf(1, 2, 3)
+            val list = [1, 2, 3]
             assertPrints(list.getOrNull(0), "1")
             assertPrints(list.getOrNull(2), "3")
             assertPrints(list.getOrNull(3), "null")
 
-            val emptyList = emptyList<Int>()
+            val emptyList: List<Int> = []
             assertPrints(emptyList.getOrNull(0), "null")
         }
 
         @Sample
         fun last() {
-            val list = listOf(1, 2, 3, 4)
+            val list = [1, 2, 3, 4]
             assertPrints(list.last(), "4")
             assertPrints(list.last { it % 2 == 1 }, "3")
             assertPrints(list.lastOrNull { it < 0 }, "null")
             assertFails { list.last { it < 0 } }
 
-            val emptyList = emptyList<Int>()
+            val emptyList: List<Int> = []
             assertPrints(emptyList.lastOrNull(), "null")
             assertFails { emptyList.last() }
         }
@@ -1383,7 +1383,7 @@ class Collections {
 
         @Sample
         fun sortMutableList() {
-            val mutableList = mutableListOf(4, 3, 2, 1)
+            val mutableList: MutableList<Int> = [4, 3, 2, 1]
 
             // before sorting
             assertPrints(mutableList.joinToString(), "4, 3, 2, 1")
@@ -1401,11 +1401,11 @@ class Collections {
                 override fun toString(): String = "$firstName $lastName"
             }
 
-            val people = mutableListOf(
+            val people: MutableList<Person> = [
                 Person("Ragnar", "Lodbrok"),
                 Person("Bjorn", "Ironside"),
                 Person("Sweyn", "Forkbeard")
-            )
+            ]
 
             people.sortWith(compareByDescending { it.firstName })
 
@@ -1419,11 +1419,11 @@ class Collections {
                 override fun toString(): String = "Dish($name: $calories cal, taste $tasteRate/5)"
             }
 
-            val fridgeContent = mutableListOf(
+            val fridgeContent: MutableList<Dish> = [
                 Dish("🍨", 207, 4.7f),
                 Dish("🥦", 34, 2.3f),
                 Dish("🧃", 34, 4.9f)
-            )
+            ]
 
             // original order
             assertPrints(fridgeContent, "[Dish(🍨: 207 cal, taste 4.7/5), Dish(🥦: 34 cal, taste 2.3/5), Dish(🧃: 34 cal, taste 4.9/5)]")
@@ -1432,11 +1432,11 @@ class Collections {
             fridgeContent.sortBy { it.tasteRate }
             assertPrints(fridgeContent, "[Dish(🥦: 34 cal, taste 2.3/5), Dish(🍨: 207 cal, taste 4.7/5), Dish(🧃: 34 cal, taste 4.9/5)]")
 
-            val breadBoxContent = mutableListOf(
+            val breadBoxContent: MutableList<Dish> = [
                 Dish("🥯", 245, 4.8f),
                 Dish("🥨", 100, 5.0f),
                 Dish("🥐", 245, 4.9f)
-            )
+            ]
 
             // original order
             assertPrints(breadBoxContent, "[Dish(🥯: 245 cal, taste 4.8/5), Dish(🥨: 100 cal, taste 5.0/5), Dish(🥐: 245 cal, taste 4.9/5)]")
@@ -1453,11 +1453,11 @@ class Collections {
                 override fun toString(): String = "Dish($name: $calories cal, taste $tasteRate/5)"
             }
 
-            val fridgeContent = mutableListOf(
+            val fridgeContent: MutableList<Dish> = [
                 Dish("🍨", 207, 4.7f),
                 Dish("🥦", 34, 2.3f),
                 Dish("🧃", 34, 4.9f)
-            )
+            ]
 
             // original order
             assertPrints(fridgeContent, "[Dish(🍨: 207 cal, taste 4.7/5), Dish(🥦: 34 cal, taste 2.3/5), Dish(🧃: 34 cal, taste 4.9/5)]")
@@ -1466,11 +1466,11 @@ class Collections {
             fridgeContent.sortByDescending { it.tasteRate }
             assertPrints(fridgeContent, "[Dish(🧃: 34 cal, taste 4.9/5), Dish(🍨: 207 cal, taste 4.7/5), Dish(🥦: 34 cal, taste 2.3/5)]")
 
-            val breadBoxContent = mutableListOf(
+            val breadBoxContent: MutableList<Dish> = [
                 Dish("🥯", 245, 4.8f),
                 Dish("🥨", 100, 5.0f),
                 Dish("🥐", 245, 4.9f)
-            )
+            ]
 
             // original order
             assertPrints(breadBoxContent, "[Dish(🥯: 245 cal, taste 4.8/5), Dish(🥨: 100 cal, taste 5.0/5), Dish(🥐: 245 cal, taste 4.9/5)]")
@@ -1487,7 +1487,7 @@ class Collections {
                 override fun toString(): String = "Dish($name: $calories cal, taste $tasteRate/5)"
             }
 
-            val fridgeContent = listOf(Dish("🍨", 207, 4.7f), Dish("🥦", 34, 2.3f), Dish("🧃", 34, 4.9f))
+            val fridgeContent = [Dish("🍨", 207, 4.7f), Dish("🥦", 34, 2.3f), Dish("🧃", 34, 4.9f)]
 
             val dullDishes = fridgeContent.sortedBy { it.tasteRate }
             assertPrints(dullDishes, "[Dish(🥦: 34 cal, taste 2.3/5), Dish(🍨: 207 cal, taste 4.7/5), Dish(🧃: 34 cal, taste 4.9/5)]")
@@ -1502,7 +1502,7 @@ class Collections {
 
         @Sample
         fun sortedPrimitiveArrayBy() {
-            val unsorted = intArrayOf(3, 1, 2, 4)
+            val unsorted: IntArray = [3, 1, 2, 4]
 
             val sortedByRemainder = unsorted.sortedBy { it % 3 }
             // the sorting is stable: the order of 1 (1 % 3 == 1) and 4 (4 % 3 == 1) was preserved
@@ -1526,7 +1526,7 @@ class Collections {
                 override fun toString(): String = "Dish($name: $calories cal, taste $tasteRate/5)"
             }
 
-            val fridgeContent = listOf(Dish("🥦", 34, 2.3f), Dish("🧃", 34, 4.9f), Dish("🍨", 207, 4.7f))
+            val fridgeContent = [Dish("🥦", 34, 2.3f), Dish("🧃", 34, 4.9f), Dish("🍨", 207, 4.7f)]
 
             val tastyDishes = fridgeContent.sortedByDescending { it.tasteRate }
             assertPrints(tastyDishes,"[Dish(🧃: 34 cal, taste 4.9/5), Dish(🍨: 207 cal, taste 4.7/5), Dish(🥦: 34 cal, taste 2.3/5)]")
@@ -1541,7 +1541,7 @@ class Collections {
 
         @Sample
         fun sortedPrimitiveArrayByDescending() {
-            val unsorted = intArrayOf(3, 1, 2, 4)
+            val unsorted: IntArray = [3, 1, 2, 4]
 
             val sortedByValue = unsorted.sortedByDescending { it % 3 }
             // the sorting is stable: the order of 1 (1 % 3 == 1) and 4 (4 % 3 == 1) was preserved
@@ -1564,7 +1564,7 @@ class Collections {
 
         @Sample
         fun filter() {
-            val numbers: List<Int> = listOf(1, 2, 3, 4, 5, 6, 7)
+            val numbers: List<Int> = [1, 2, 3, 4, 5, 6, 7]
             val evenNumbers = numbers.filter { it % 2 == 0 }
             val notMultiplesOf3 = numbers.filterNot { number -> number % 3 == 0 }
 
@@ -1574,9 +1574,9 @@ class Collections {
 
         @Sample
         fun filterTo() {
-            val numbers: List<Int> = listOf(1, 2, 3, 4, 5, 6, 7)
-            val evenNumbers = mutableListOf<Int>()
-            val notMultiplesOf3 = mutableListOf<Int>()
+            val numbers: List<Int> = [1, 2, 3, 4, 5, 6, 7]
+            val evenNumbers: MutableList<Int> = []
+            val notMultiplesOf3: MutableList<Int> = []
 
             assertPrints(evenNumbers, "[]")
 
@@ -1589,7 +1589,7 @@ class Collections {
 
         @Sample
         fun filterNotNull() {
-            val numbers: List<Int?> = listOf(1, 2, null, 4)
+            val numbers: List<Int?> = [1, 2, null, 4]
             val nonNullNumbers = numbers.filterNotNull()
 
             assertPrints(nonNullNumbers, "[1, 2, 4]")
@@ -1597,8 +1597,8 @@ class Collections {
 
         @Sample
         fun filterNotNullTo() {
-            val numbers: List<Int?> = listOf(1, 2, null, 4)
-            val nonNullNumbers = mutableListOf<Int>()
+            val numbers: List<Int?> = [1, 2, null, 4]
+            val nonNullNumbers: MutableList<Int> = []
 
             assertPrints(nonNullNumbers, "[]")
 
@@ -1609,7 +1609,7 @@ class Collections {
 
         @Sample
         fun filterIndexed() {
-            val numbers: List<Int> = listOf(0, 1, 2, 3, 4, 8, 6)
+            val numbers: List<Int> = [0, 1, 2, 3, 4, 8, 6]
             val numbersOnSameIndexAsValue = numbers.filterIndexed { index, i -> index == i }
 
             assertPrints(numbersOnSameIndexAsValue, "[0, 1, 2, 3, 4, 6]")
@@ -1617,8 +1617,8 @@ class Collections {
 
         @Sample
         fun filterIndexedTo() {
-            val numbers: List<Int> = listOf(0, 1, 2, 3, 4, 8, 6)
-            val numbersOnSameIndexAsValue = mutableListOf<Int>()
+            val numbers: List<Int> = [0, 1, 2, 3, 4, 8, 6]
+            val numbersOnSameIndexAsValue: MutableList<Int> = []
 
             assertPrints(numbersOnSameIndexAsValue, "[]")
 
@@ -1637,7 +1637,7 @@ class Collections {
             class Dog(name: String): Animal(name)
             class Cat(name: String): Animal(name)
 
-            val animals: List<Animal> = listOf(Cat("Scratchy"), Dog("Poochie"))
+            val animals: List<Animal> = [Cat("Scratchy"), Dog("Poochie")]
             val cats = animals.filterIsInstance<Cat>()
 
             assertPrints(cats, "[Scratchy]")
@@ -1653,7 +1653,7 @@ class Collections {
             class Dog(name: String): Animal(name)
             class Cat(name: String): Animal(name)
 
-            val animals: List<Animal> = listOf(Cat("Scratchy"), Dog("Poochie"))
+            val animals: List<Animal> = [Cat("Scratchy"), Dog("Poochie")]
             val cats = animals.filterIsInstance(Cat::class.java)
 
             assertPrints(cats, "[Scratchy]")
@@ -1669,8 +1669,8 @@ class Collections {
             class Dog(name: String): Animal(name)
             class Cat(name: String): Animal(name)
 
-            val animals: List<Animal> = listOf(Cat("Scratchy"), Dog("Poochie"))
-            val cats = mutableListOf<Cat>()
+            val animals: List<Animal> = [Cat("Scratchy"), Dog("Poochie")]
+            val cats: MutableList<Cat> = []
 
             assertPrints(cats, "[]")
 
@@ -1689,8 +1689,8 @@ class Collections {
             class Dog(name: String): Animal(name)
             class Cat(name: String): Animal(name)
 
-            val animals: List<Animal> = listOf(Cat("Scratchy"), Dog("Poochie"))
-            val cats = mutableListOf<Cat>()
+            val animals: List<Animal> = [Cat("Scratchy"), Dog("Poochie")]
+            val cats: MutableList<Cat> = []
 
             assertPrints(cats, "[]")
 

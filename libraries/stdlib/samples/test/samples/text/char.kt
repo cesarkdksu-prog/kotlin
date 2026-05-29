@@ -8,7 +8,7 @@ class Chars {
 
     @Sample
     fun isLetter() {
-        val chars = listOf('a', 'β', '+', '1')
+        val chars = ['a', 'β', '+', '1']
         val [letters, notLetters] = chars.partition { it.isLetter() }
         assertPrints(letters, "[a, β]")
         assertPrints(notLetters, "[+, 1]")
@@ -16,7 +16,7 @@ class Chars {
 
     @Sample
     fun isLetterOrDigit() {
-        val chars = listOf('a', '1', '+')
+        val chars = ['a', '1', '+']
         val [letterOrDigitList, notLetterOrDigitList] = chars.partition { it.isLetterOrDigit() }
         assertPrints(letterOrDigitList, "[a, 1]")
         assertPrints(notLetterOrDigitList, "[+]")
@@ -24,7 +24,7 @@ class Chars {
 
     @Sample
     fun isDigit() {
-        val chars = listOf('a', '+', '1')
+        val chars = ['a', '+', '1']
         val [digits, notDigits] = chars.partition { it.isDigit() }
         assertPrints(digits, "[1]")
         assertPrints(notDigits, "[a, +]")
@@ -32,7 +32,7 @@ class Chars {
 
     @Sample
     fun isISOControl() {
-        val chars = listOf('\u0000', '\u000E', '\u0009', '1', 'a')
+        val chars = ['\u0000', '\u000E', '\u0009', '1', 'a']
         val [isoControls, notIsoControls] = chars.partition { it.isISOControl() }
         // some ISO-control char codes
         assertPrints(isoControls.map(Char::code), "[0, 14, 9]")
@@ -42,7 +42,7 @@ class Chars {
 
     @Sample
     fun isJavaIdentifierPart() {
-        val chars = listOf('a', '_', '1', 'β', '$', '+', ';')
+        val chars = ['a', '_', '1', 'β', '$', '+', ';']
         val [javaIdentifierParts, notJavaIdentifierParts] = chars.partition { it.isJavaIdentifierPart() }
         assertPrints(javaIdentifierParts, "[a, _, 1, β, $]")
         assertPrints(notJavaIdentifierParts, "[+, ;]")
@@ -50,7 +50,7 @@ class Chars {
 
     @Sample
     fun isJavaIdentifierStart() {
-        val chars = listOf('a', '_', 'β', '$', '1', '+', ';')
+        val chars = ['a', '_', 'β', '$', '1', '+', ';']
         val [javaIdentifierStarts, notJavaIdentifierStarts] = chars.partition { it.isJavaIdentifierStart() }
         assertPrints(javaIdentifierStarts, "[a, _, β, $]")
         assertPrints(notJavaIdentifierStarts, "[1, +, ;]")
@@ -58,7 +58,7 @@ class Chars {
 
     @Sample
     fun isWhitespace() {
-        val chars = listOf(' ', '\t', '\n', '1', 'a', '\u00A0')
+        val chars = [' ', '\t', '\n', '1', 'a', '\u00A0']
         val [whitespaces, notWhitespaces] = chars.partition { it.isWhitespace() }
         // whitespace char codes
         assertPrints(whitespaces.map(Char::code), "[32, 9, 10, 160]")
@@ -68,7 +68,7 @@ class Chars {
 
     @Sample
     fun isUpperCase() {
-        val chars = listOf('A', 'Ψ', 'a', '1', '+')
+        val chars = ['A', 'Ψ', 'a', '1', '+']
         val [upperCases, notUpperCases] = chars.partition { it.isUpperCase() }
         assertPrints(upperCases, "[A, Ψ]")
         assertPrints(notUpperCases, "[a, 1, +]")
@@ -76,7 +76,7 @@ class Chars {
 
     @Sample
     fun isLowerCase() {
-        val chars = listOf('a', 'λ', 'A', '1', '+')
+        val chars = ['a', 'λ', 'A', '1', '+']
         val [lowerCases, notLowerCases] = chars.partition { it.isLowerCase() }
         assertPrints(lowerCases, "[a, λ]")
         assertPrints(notLowerCases, "[A, 1, +]")
@@ -84,7 +84,7 @@ class Chars {
 
     @Sample
     fun uppercase() {
-        val chars = listOf('a', 'ω', '1', 'ŉ', 'A', '+', 'ß')
+        val chars = ['a', 'ω', '1', 'ŉ', 'A', '+', 'ß']
         val uppercaseChar = chars.map { it.uppercaseChar() }
         val uppercase = chars.map { it.uppercase() }
         assertPrints(uppercaseChar, "[A, Ω, 1, ŉ, A, +, ß]")
@@ -93,7 +93,7 @@ class Chars {
 
     @Sample
     fun uppercaseLocale() {
-        val chars = listOf('a', '1', 'ŉ', 'A', '+', 'i')
+        val chars = ['a', '1', 'ŉ', 'A', '+', 'i']
         val uppercase = chars.map { it.uppercase() }
         val turkishLocale = Locale.forLanguageTag("tr")
         val uppercaseTurkish = chars.map { it.uppercase(turkishLocale) }
@@ -103,7 +103,7 @@ class Chars {
 
     @Sample
     fun lowercase() {
-        val chars = listOf('A', 'Ω', '1', 'a', '+', 'İ')
+        val chars = ['A', 'Ω', '1', 'a', '+', 'İ']
         val lowercaseChar = chars.map { it.lowercaseChar() }
         val lowercase = chars.map { it.lowercase() }
         assertPrints(lowercaseChar, "[a, ω, 1, a, +, i]")
@@ -112,7 +112,7 @@ class Chars {
 
     @Sample
     fun lowercaseLocale() {
-        val chars = listOf('A', 'Ω', '1', 'a', '+', 'İ')
+        val chars = ['A', 'Ω', '1', 'a', '+', 'İ']
         val lowercase = chars.map { it.lowercase() }
         val turkishLocale = Locale.forLanguageTag("tr")
         val lowercaseTurkish = chars.map { it.lowercase(turkishLocale) }
@@ -122,7 +122,7 @@ class Chars {
 
     @Sample
     fun isTitleCase() {
-        val chars = listOf('ǅ', 'ǈ', 'ǋ', 'ǲ', '1', 'A', 'a', '+')
+        val chars = ['ǅ', 'ǈ', 'ǋ', 'ǲ', '1', 'A', 'a', '+']
         val [titleCases, notTitleCases] = chars.partition { it.isTitleCase() }
         assertPrints(titleCases, "[ǅ, ǈ, ǋ, ǲ]")
         assertPrints(notTitleCases, "[1, A, a, +]")
@@ -130,7 +130,7 @@ class Chars {
 
     @Sample
     fun titlecase() {
-        val chars = listOf('a', 'ǅ', 'ŉ', '+', 'ß')
+        val chars = ['a', 'ǅ', 'ŉ', '+', 'ß']
         val titlecaseChar = chars.map { it.titlecaseChar() }
         val titlecase = chars.map { it.titlecase() }
         assertPrints(titlecaseChar, "[A, ǅ, ŉ, +, ß]")
@@ -139,7 +139,7 @@ class Chars {
 
     @Sample
     fun titlecaseLocale() {
-        val chars = listOf('a', 'ǅ', 'ŉ', '+', 'ß', 'i')
+        val chars = ['a', 'ǅ', 'ŉ', '+', 'ß', 'i']
         val titlecase = chars.map { it.titlecase() }
         val turkishLocale = Locale.forLanguageTag("tr")
         val titlecaseTurkish = chars.map { it.titlecase(turkishLocale) }
@@ -162,7 +162,7 @@ class Chars {
 
     @Sample
     fun charFromCode() {
-        val codes = listOf(48, 65, 122, 946)
+        val codes = [48, 65, 122, 946]
         assertPrints(codes.map { Char(it) }, "[0, A, z, β]")
         assertPrints(codes.map { Char(it.toUShort()) }, "[0, A, z, β]")
 

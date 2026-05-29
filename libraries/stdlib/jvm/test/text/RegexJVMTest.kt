@@ -44,12 +44,12 @@ class RegexJVMTest {
 
         val matches = pattern.findAll(input)
         val values = matches.map { it.value }
-        val expected = listOf("123_", "456", "789")
+        val expected = ["123_", "456", "789"]
         assertEquals(expected, values.toList())
         assertEquals(expected, values.toList(), "running match sequence second time")
         assertEquals(expected.drop(1), pattern.findAll(input, startIndex = 3).map { it.value }.toList())
 
-        assertEquals(listOf(0..3, 8..10, 12..14), matches.map { it.range }.toList())
+        assertEquals([0..3, 8..10, 12..14], matches.map { it.range }.toList())
     }
 
     private fun compareRegex(expected: Regex, actual: Regex) = compare(expected, actual) {
@@ -64,7 +64,7 @@ class RegexJVMTest {
         equivalentAfterDeserialization(Regex(""))
         equivalentAfterDeserialization(Regex("\\w+"))
         equivalentAfterDeserialization(Regex("\\w+", RegexOption.IGNORE_CASE))
-        equivalentAfterDeserialization(Regex("\\w+", setOf(RegexOption.LITERAL, RegexOption.MULTILINE)))
+        equivalentAfterDeserialization(Regex("\\w+", [RegexOption.LITERAL, RegexOption.MULTILINE]))
         equivalentAfterDeserialization(Pattern.compile("\\w+", Pattern.UNICODE_CASE).toRegex())
     }
 

@@ -133,7 +133,7 @@ class AtomicStressTest {
             // Try to publish our own data, until successful, in a tight loop.
             while (!common.compareAndSet(null, Data(index))) {}
         }
-        val seen = mutableListOf<Int>()
+        val seen: MutableList<Int> = []
         futures.forEach {
             while(true) {
                 val current = common.value ?: continue
@@ -158,7 +158,7 @@ class AtomicStressTest {
         }
         writers.forEach { it.result }
 
-        val seen = mutableSetOf<Int>()
+        val seen: MutableSet<Int> = []
         while(!stack.isEmpty()) {
             val value = stack.pop()
             assertNotNull(value)

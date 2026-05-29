@@ -55,25 +55,25 @@ class Sequences {
 
         @Sample
         fun sequenceOfValues() {
-            val sequence = sequenceOf("first", "second", "last")
+            val sequence: Sequence<String> = ["first", "second", "last"]
             sequence.forEach(::println)
         }
 
         @Sample
         fun sequenceOfSingleValue() {
-            val sequence = sequenceOf("single")
+            val sequence: Sequence<String> = ["single"]
             assertPrints(sequence.toList(), "[single]")
         }
 
         @Sample
         fun sequenceOfEmpty() {
-            val sequence = sequenceOf<String>()
+            val sequence: Sequence<String> = []
             assertPrints(sequence.toList(), "[]")
         }
 
         @Sample
         fun sequenceFromCollection() {
-            val collection = listOf('a', 'b', 'c')
+            val collection = ['a', 'b', 'c']
             val sequence = collection.asSequence()
 
             assertPrints(sequence.joinToString(), "a, b, c")
@@ -81,7 +81,7 @@ class Sequences {
 
         @Sample
         fun sequenceFromArray() {
-            val array = arrayOf('a', 'b', 'c')
+            val array: Array<Char> = ['a', 'b', 'c']
             val sequence = array.asSequence()
 
             assertPrints(sequence.joinToString(), "a, b, c")
@@ -97,7 +97,7 @@ class Sequences {
 
         @Sample
         fun sequenceFromIterator() {
-            val array = arrayOf(1, 2, 3)
+            val array: Array<Int> = [1, 2, 3]
 
             // create a sequence with a function, returning an iterator
             val sequence1 = Sequence { array.iterator() }
@@ -161,7 +161,7 @@ class Sequences {
 
         @Sample
         fun buildIterator() {
-            val collection = listOf(1, 2, 3)
+            val collection = [1, 2, 3]
             val wrappedCollection = object : AbstractCollection<Any>() {
                 override val size: Int = collection.size + 2
 
@@ -184,20 +184,20 @@ class Sequences {
             val nullSequence: Sequence<Int>? = null
             assertPrints(nullSequence.orEmpty().toList(), "[]")
 
-            val sequence: Sequence<Int>? = sequenceOf(1, 2, 3)
+            val sequence: Sequence<Int>? = [1, 2, 3]
             assertPrints(sequence.orEmpty().toList(), "[1, 2, 3]")
         }
 
         @Sample
         fun sequenceIfEmpty() {
-            val empty = emptySequence<Int>()
+            val empty: Sequence<Int> = []
 
             val emptyOrDefault = empty.ifEmpty { sequenceOf("default") }
             assertPrints(emptyOrDefault.toList(), "[default]")
 
-            val nonEmpty = sequenceOf("value")
+            val nonEmpty: Sequence<String> = ["value"]
 
-            val nonEmptyOrDefault = nonEmpty.ifEmpty { sequenceOf("default") }
+            val nonEmptyOrDefault = nonEmpty.ifEmpty { ["default"] }
             assertPrints(nonEmptyOrDefault.toList(), "[value]")
         }
     }
@@ -223,7 +223,7 @@ class Sequences {
 
         @Sample
         fun averageWindows() {
-            val dataPoints = sequenceOf(10, 15, 18, 25, 19, 21, 14, 8, 5)
+            val dataPoints: Sequence<Int> = [10, 15, 18, 25, 19, 21, 14, 8, 5]
 
             val averaged = dataPoints.windowed(size = 4, step = 1, partialWindows = true) { window -> window.average() }
             assertPrints(averaged.toList(), "[17.0, 19.25, 20.75, 19.75, 15.5, 12.0, 9.0, 6.5, 5.0]")
@@ -275,7 +275,7 @@ class Sequences {
 
         @Sample
         fun flattenSequenceOfLists() {
-            val sequence: Sequence<String> = sequenceOf("123", "45")
+            val sequence: Sequence<String> = ["123", "45"]
             val sequenceOfLists: Sequence<List<Char>> = sequence.map { it.toList() }
 
             assertPrints(sequenceOfLists.flatten().toList(), "[1, 2, 3, 4, 5]")
@@ -297,7 +297,7 @@ class Sequences {
                 override fun toString(): String = "Dish($name: $calories cal, taste $tasteRate/5)"
             }
 
-            val fridgeContent = sequenceOf(Dish("🍨", 207, 4.7f), Dish("🥦", 34, 2.3f), Dish("🧃", 34, 4.9f))
+            val fridgeContent: Sequence<Dish> = [Dish("🍨", 207, 4.7f), Dish("🥦", 34, 2.3f), Dish("🧃", 34, 4.9f)]
 
             val dullDishes = fridgeContent.sortedBy { it.tasteRate }
             assertPrints(dullDishes.toList(), "[Dish(🥦: 34 cal, taste 2.3/5), Dish(🍨: 207 cal, taste 4.7/5), Dish(🧃: 34 cal, taste 4.9/5)]")
@@ -316,7 +316,7 @@ class Sequences {
                 override fun toString(): String = "Dish($name: $calories cal, taste $tasteRate/5)"
             }
 
-            val fridgeContent = sequenceOf(Dish("🥦", 34, 2.3f), Dish("🧃", 34, 4.9f), Dish("🍨", 207, 4.7f))
+            val fridgeContent: Sequence<Dish> = [Dish("🥦", 34, 2.3f), Dish("🧃", 34, 4.9f), Dish("🍨", 207, 4.7f)]
 
             val tastyDishes = fridgeContent.sortedByDescending { it.tasteRate }
             assertPrints(tastyDishes.toList(),"[Dish(🧃: 34 cal, taste 4.9/5), Dish(🍨: 207 cal, taste 4.7/5), Dish(🥦: 34 cal, taste 2.3/5)]")

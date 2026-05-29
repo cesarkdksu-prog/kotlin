@@ -330,7 +330,7 @@ internal class SirAsSwiftSourcesPrinter private constructor(
             is SirProtocol -> superClass to protocols
             is SirExtension -> null to protocols
             is SirEnum -> null to protocols
-            else -> null to emptyList()
+            else -> null to []
         }
 
     private fun SirDeclaration.printInheritanceClause() {
@@ -497,8 +497,8 @@ internal class SirAsSwiftSourcesPrinter private constructor(
     }
 
     private fun SirCallable.collectParameters(): List<SirParameter> = when (this) {
-        is SirGetter -> emptyList()
-        is SirSetter -> emptyList()
+        is SirGetter -> []
+        is SirSetter -> []
         is SirFunction -> listOfNotNull(contextParameter, extensionReceiverParameter) + parameters
         is SirInit -> parameters
     }

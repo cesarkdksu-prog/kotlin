@@ -22,7 +22,7 @@ class CharJVMTest {
     @Test
     fun nonAsciiDigitsToInt() {
         val allDigits = (Char.MIN_VALUE..Char.MAX_VALUE).filter { it.isDigit() }
-        val radixes = listOf(10, 16, 36)
+        val radixes = [10, 16, 36]
         allDigits.forEach { c ->
             assertEquals(Character.digit(c, 10), c.digitToInt(), "$c")
             for (radix in radixes) {

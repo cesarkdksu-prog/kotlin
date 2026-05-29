@@ -603,7 +603,7 @@ fun ConeTypeContext.captureArguments(type: ConeKotlinType, status: CaptureStatus
             if (intersectedUpperBounds is ConeIntersectionType) {
                 intersectedUpperBounds.intersectedTypes.toList()
             } else {
-                listOf(intersectedUpperBounds)
+                [intersectedUpperBounds]
             }
         } else {
             @Suppress("UNCHECKED_CAST")
@@ -624,7 +624,7 @@ internal fun ConeTypeContext.captureFromExpressionInternal(type: ConeKotlinType)
      *        Example: MutableList<*>..List<*>? -> MutableList<Captured1(*)>..List<Captured2(*)>?, Captured1(*) and Captured2(*) are the same.
      *  2) Secondly, we replace type arguments with captured arguments by given a type constructor and type arguments.
      */
-    var capturedArgumentsByComponents: List<CapturedArguments> = emptyList()
+    var capturedArgumentsByComponents: List<CapturedArguments> = []
 
     // We reuse `TypeToCapture` for some types, suitability to reuse defines by `isSuitableForType`
     fun findCorrespondingCapturedArgumentsForType(type: ConeKotlinType) =
@@ -640,7 +640,7 @@ internal fun ConeTypeContext.captureFromExpressionInternal(type: ConeKotlinType)
         } else {
             val capturedArguments = findCorrespondingCapturedArgumentsForType(typeToReplace)
                 ?: return null
-            listOf(typeToReplace.withArguments(capturedArguments))
+            [typeToReplace.withArguments(capturedArguments)]
         }
     }
 
@@ -735,7 +735,7 @@ private fun ConeTypeContext.captureCapturedType(type: ConeCapturedType): ConeCap
 private fun ConeTypeContext.captureArgumentsForIntersectionType(type: ConeKotlinType): List<CapturedArguments>? {
     // It's possible to have one of the bounds as non-intersection type
     fun getTypesToCapture(type: ConeKotlinType) =
-        if (type is ConeIntersectionType) type.intersectedTypes else listOf(type)
+        if (type is ConeIntersectionType) type.intersectedTypes else [type]
 
     val filteredTypesToCapture =
         when (type) {
@@ -1022,7 +1022,7 @@ fun ConeKotlinType.convertToNonRawVersion(): ConeKotlinType {
 fun ConeKotlinType.canBeNull(
     session: FirSession,
     considerTypeVariableBounds: Boolean = true,
-    visited: MutableSet<ConeKotlinType> = mutableSetOf(),
+    visited: MutableSet<ConeKotlinType> = [],
 ): Boolean {
     if (!visited.add(this)) return false
     return when (this) {

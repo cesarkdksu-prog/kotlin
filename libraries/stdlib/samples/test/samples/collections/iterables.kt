@@ -47,27 +47,27 @@ class Iterables {
 
         @Sample
         fun flattenIterable() {
-            val deepList = listOf(listOf(1), listOf(2, 3), listOf(4, 5, 6))
+            val deepList = [[1], [2, 3], [4, 5, 6]]
             assertPrints(deepList.flatten(), "[1, 2, 3, 4, 5, 6]")
         }
 
         @Sample
         fun unzipIterable() {
-            val list = listOf(1 to 'a', 2 to 'b', 3 to 'c')
+            val list = [1 to 'a', 2 to 'b', 3 to 'c']
             assertPrints(list.unzip(), "([1, 2, 3], [a, b, c])")
         }
 
         @Sample
         fun zipIterable() {
-            val listA = listOf("a", "b", "c")
-            val listB = listOf(1, 2, 3, 4)
+            val listA = ["a", "b", "c"]
+            val listB = [1, 2, 3, 4]
             assertPrints(listA zip listB, "[(a, 1), (b, 2), (c, 3)]")
         }
 
         @Sample
         fun zipIterableWithTransform() {
-            val listA = listOf("a", "b", "c")
-            val listB = listOf(1, 2, 3, 4)
+            val listA = ["a", "b", "c"]
+            val listB = [1, 2, 3, 4]
             val result = listA.zip(listB) { a, b -> "$a$b" }
             assertPrints(result, "[a1, b2, c3]")
         }
@@ -80,7 +80,7 @@ class Iterables {
                 }
             }
 
-            val list = listOf(Person("Tom", 18), Person("Andy", 32), Person("Sarah", 22))
+            val list = [Person("Tom", 18), Person("Andy", 32), Person("Sarah", 22)]
             val result = list.partition { it.age < 30 }
             assertPrints(result, "([Tom - 18, Sarah - 22], [Andy - 32])")
         }

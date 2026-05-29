@@ -13,8 +13,8 @@ import kotlin.test.*
 class PathTreeWalkTest : AbstractPathTest() {
 
     companion object {
-        val referenceFilenames = listOf("1", "1/2", "1/3", "1/3/4.txt", "1/3/5.txt", "6", "7.txt", "8", "8/9.txt")
-        val referenceFilesOnly = listOf("1/3/4.txt", "1/3/5.txt", "7.txt", "8/9.txt")
+        val referenceFilenames = ["1", "1/2", "1/3", "1/3/4.txt", "1/3/5.txt", "6", "7.txt", "8", "8/9.txt"]
+        val referenceFilesOnly = ["1/3/4.txt", "1/3/5.txt", "7.txt", "8/9.txt"]
 
         fun createTestFiles(): Path {
             val basedir = createTempDirectory()
@@ -39,7 +39,7 @@ class PathTreeWalkTest : AbstractPathTest() {
         val basedir = createTestFiles().cleanupRecursively()
         testVisitedFiles(referenceFilesOnly, basedir.walk(), basedir)
 
-        val expected = listOf("") + referenceFilenames
+        val expected = [""] + referenceFilenames
         testVisitedFiles(expected, basedir.walk(PathWalkOption.INCLUDE_DIRECTORIES), basedir)
     }
 
@@ -82,7 +82,7 @@ class PathTreeWalkTest : AbstractPathTest() {
 
         val basedir = createTestFiles().cleanupRecursively()
         val walk = basedir.walk(PathWalkOption.INCLUDE_DIRECTORIES).onEach { visit(it) }
-        val expected = listOf("", "1", "1/2", "1/3", "6", "8")
+        val expected = ["", "1", "1/2", "1/3", "6", "8"]
         testVisitedFiles(expected, walk, basedir)
     }
 
@@ -95,7 +95,7 @@ class PathTreeWalkTest : AbstractPathTest() {
             }
         }
 
-        val expected = listOf("", "1", "6", "7.txt", "8", "8/9.txt")
+        val expected = ["", "1", "6", "7.txt", "8", "8/9.txt"]
         testVisitedFiles(expected, walk, basedir)
     }
 
@@ -108,7 +108,7 @@ class PathTreeWalkTest : AbstractPathTest() {
             }
         }
 
-        val expected = referenceFilenames + listOf("", "a.txt", "1/a.txt", "1/2/a.txt", "1/3/a.txt", "6/a.txt", "8/a.txt")
+        val expected = referenceFilenames + ["", "a.txt", "1/a.txt", "1/2/a.txt", "1/3/a.txt", "6/a.txt", "8/a.txt"]
         testVisitedFiles(expected, walk, basedir)
     }
 
@@ -159,7 +159,7 @@ class PathTreeWalkTest : AbstractPathTest() {
 
         val walk = basedir.walk(PathWalkOption.INCLUDE_DIRECTORIES).onEach(::visit)
 
-        val expected = referenceFilenames + listOf("")
+        val expected = referenceFilenames + [""]
         testVisitedFiles(expected, walk, basedir)
         assertEquals(expected.sorted(), visited.map { it.relativeToOrSelf(basedir).invariantSeparatorsPathString }.sorted())
     }
@@ -176,7 +176,7 @@ class PathTreeWalkTest : AbstractPathTest() {
         // added siblings do not appear during iteration
         testVisitedFiles(referenceFilesOnly, basedir.walk().onEach(::makeBackup), basedir)
 
-        val expected = referenceFilenames + referenceFilesOnly.map { "$it.bak" } + listOf("")
+        val expected = referenceFilenames + referenceFilesOnly.map { "$it.bak" } + [""]
         testVisitedFiles(expected, basedir.walk(PathWalkOption.INCLUDE_DIRECTORIES), basedir)
     }
 
@@ -194,15 +194,15 @@ class PathTreeWalkTest : AbstractPathTest() {
         val original = basedir.resolve("8/9.txt")
         basedir.resolve("1/3/link").tryCreateSymbolicLinkTo(original) ?: return
 
-        for (followLinks in listOf(emptyArray(), arrayOf(PathWalkOption.FOLLOW_LINKS))) {
+        for (followLinks in [[], [PathWalkOption.FOLLOW_LINKS]]) {
             val walk = basedir.walk(*followLinks)
-            testVisitedFiles(referenceFilesOnly + listOf("1/3/link"), walk, basedir)
+            testVisitedFiles(referenceFilesOnly + ["1/3/link"], walk, basedir)
         }
 
         original.deleteExisting()
-        for (followLinks in listOf(emptyArray(), arrayOf(PathWalkOption.FOLLOW_LINKS))) {
+        for (followLinks in [[], [PathWalkOption.FOLLOW_LINKS]]) {
             val walk = basedir.walk(*followLinks)
-            testVisitedFiles(referenceFilesOnly - listOf("8/9.txt") + listOf("1/3/link"), walk, basedir)
+            testVisitedFiles(referenceFilesOnly - ["8/9.txt"] + ["1/3/link"], walk, basedir)
         }
     }
 
@@ -214,15 +214,15 @@ class PathTreeWalkTest : AbstractPathTest() {
 
         // directory "8" contains "9.txt" file
         val followWalk = basedir.walk(PathWalkOption.INCLUDE_DIRECTORIES, PathWalkOption.FOLLOW_LINKS)
-        testVisitedFiles(referenceFilenames + listOf("", "1/3/link", "1/3/link/9.txt"), followWalk, basedir)
+        testVisitedFiles(referenceFilenames + ["", "1/3/link", "1/3/link/9.txt"], followWalk, basedir)
 
         val nofollowWalk = basedir.walk(PathWalkOption.INCLUDE_DIRECTORIES)
-        testVisitedFiles(referenceFilenames + listOf("", "1/3/link"), nofollowWalk, basedir)
+        testVisitedFiles(referenceFilenames + ["", "1/3/link"], nofollowWalk, basedir)
 
         original.toFile().deleteRecursively()
-        for (followLinks in listOf(emptyArray(), arrayOf(PathWalkOption.FOLLOW_LINKS))) {
+        for (followLinks in [[], [PathWalkOption.FOLLOW_LINKS]]) {
             val walk = basedir.walk(PathWalkOption.INCLUDE_DIRECTORIES, *followLinks)
-            testVisitedFiles(referenceFilenames - listOf("8", "8/9.txt") + listOf("", "1/3/link"), walk, basedir)
+            testVisitedFiles(referenceFilenames - ["8", "8/9.txt"] + ["", "1/3/link"], walk, basedir)
         }
     }
 
@@ -235,7 +235,7 @@ class PathTreeWalkTest : AbstractPathTest() {
 
         val walk = basedir.walk(PathWalkOption.FOLLOW_LINKS)
 
-        testVisitedFiles(listOf("link1", "link2"), walk, basedir)
+        testVisitedFiles(["link1", "link2"], walk, basedir)
     }
 
     @Test
@@ -246,7 +246,7 @@ class PathTreeWalkTest : AbstractPathTest() {
 
         val walk = basedir.walk(PathWalkOption.FOLLOW_LINKS)
 
-        testVisitedFiles(listOf("link"), walk, basedir)
+        testVisitedFiles(["link"], walk, basedir)
     }
 
     @Test
@@ -259,11 +259,11 @@ class PathTreeWalkTest : AbstractPathTest() {
         val walk = basedir.walk(PathWalkOption.INCLUDE_DIRECTORIES, PathWalkOption.FOLLOW_LINKS)
 
         val depth2ExpectedNames =
-                listOf("", "1", "1/2", "1/3", "1/linkToLink", "6", "7.txt", "8", "8/9.txt") // linkToLink is visited
+            ["", "1", "1/2", "1/3", "1/linkToLink", "6", "7.txt", "8", "8/9.txt"] // linkToLink is visited
         val depth3ExpectedNames = depth2ExpectedNames +
-                listOf("1/3/4.txt", "1/3/5.txt", "1/3/link", "1/linkToLink/9.txt") // "9.txt" is visited once more through linkToLink
+                ["1/3/4.txt", "1/3/5.txt", "1/3/link", "1/linkToLink/9.txt"] // "9.txt" is visited once more through linkToLink
         val depth4ExpectedNames = depth3ExpectedNames +
-                listOf("1/3/link/9.txt") // "9.txt" is visited once more through link
+                ["1/3/link/9.txt"] // "9.txt" is visited once more through link
         testVisitedFiles(depth4ExpectedNames, walk, basedir) // no depth limit
     }
 
@@ -274,7 +274,7 @@ class PathTreeWalkTest : AbstractPathTest() {
 
         run {
             val followWalk = link.walk(PathWalkOption.INCLUDE_DIRECTORIES, PathWalkOption.FOLLOW_LINKS)
-            testVisitedFiles(referenceFilenames + listOf(""), followWalk, link)
+            testVisitedFiles(referenceFilenames + [""], followWalk, link)
             testVisitedFiles(referenceFilesOnly, link.walk(PathWalkOption.FOLLOW_LINKS), link)
 
             val nofollowWalk = link.walk(PathWalkOption.INCLUDE_DIRECTORIES)
@@ -299,7 +299,7 @@ class PathTreeWalkTest : AbstractPathTest() {
         val original = basedir.resolve("1")
         val link = original.resolve("2/link").tryCreateSymbolicLinkTo(original) ?: return
 
-        for (order in listOf(arrayOf(), arrayOf(PathWalkOption.BREADTH_FIRST))) {
+        for (order in [[], [PathWalkOption.BREADTH_FIRST]]) {
             val walk = basedir.walk(PathWalkOption.FOLLOW_LINKS, *order)
             val error = assertFailsWith<FileSystemLoopException> {
                 walk.toList()
@@ -316,7 +316,7 @@ class PathTreeWalkTest : AbstractPathTest() {
         dir8.resolve("linkTo2").tryCreateSymbolicLinkTo(dir2) ?: return
         dir2.resolve("linkTo8").tryCreateSymbolicLinkTo(dir8) ?: return
 
-        for (order in listOf(arrayOf(), arrayOf(PathWalkOption.BREADTH_FIRST))) {
+        for (order in [[], [PathWalkOption.BREADTH_FIRST]]) {
             val walk = basedir.walk(PathWalkOption.FOLLOW_LINKS, *order)
             assertFailsWith<FileSystemLoopException> {
                 walk.toList()
@@ -328,10 +328,10 @@ class PathTreeWalkTest : AbstractPathTest() {
     fun breadthFirstOrder() {
         val basedir = createTestFiles().cleanupRecursively()
         val walk = basedir.walk(PathWalkOption.BREADTH_FIRST, PathWalkOption.INCLUDE_DIRECTORIES)
-        val depth0 = mutableListOf("")
-        val depth1 = mutableListOf("1", "6", "7.txt", "8")
-        val depth2 = mutableListOf("1/2", "1/3", "8/9.txt")
-        val depth3 = mutableListOf("1/3/4.txt", "1/3/5.txt")
+        val depth0: MutableList<String> = [""]
+        val depth1: MutableList<String> = ["1", "6", "7.txt", "8"]
+        val depth2: MutableList<String> = ["1/2", "1/3", "8/9.txt"]
+        val depth3: MutableList<String> = ["1/3/4.txt", "1/3/5.txt"]
 
         for (file in walk) {
             when (val pathString = file.relativeToOrSelf(basedir).invariantSeparatorsPathString) {
@@ -367,9 +367,9 @@ class PathTreeWalkTest : AbstractPathTest() {
         val basedir = createTestFiles().cleanupRecursively()
         val walk = basedir.walk(PathWalkOption.BREADTH_FIRST)
 
-        val depth1 = mutableListOf("7.txt")
-        val depth2 = mutableListOf("8/9.txt")
-        val depth3 = mutableListOf("1/3/4.txt", "1/3/5.txt")
+        val depth1: MutableList<String> = ["7.txt"]
+        val depth2: MutableList<String> = ["8/9.txt"]
+        val depth3: MutableList<String> = ["1/3/4.txt", "1/3/5.txt"]
 
         for (file in walk) {
             when (val pathString = file.relativeToOrSelf(basedir).invariantSeparatorsPathString) {

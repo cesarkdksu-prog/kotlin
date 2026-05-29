@@ -108,7 +108,7 @@ class StandaloneSessionBuilderTest : AbstractStandaloneTest() {
             }
         }
         val ktFiles = session.modulesWithFiles.getValue(sourceModule)
-        Assertions.assertEquals(listOf("source0.kt", "source1.kt"), ktFiles.map { it.name })
+        Assertions.assertEquals(["source0.kt", "source1.kt"], ktFiles.map { it.name })
     }
 
     @Test
@@ -127,7 +127,7 @@ class StandaloneSessionBuilderTest : AbstractStandaloneTest() {
             }
         }
         val ktFiles = session.modulesWithFiles.getValue(sourceModule)
-        Assertions.assertEquals(listOf("source0.kt"), ktFiles.map { it.name })
+        Assertions.assertEquals(["source0.kt"], ktFiles.map { it.name })
     }
 
     @Test
@@ -352,7 +352,7 @@ class StandaloneSessionBuilderTest : AbstractStandaloneTest() {
                         // addBinaryRoot(compiledJar)
                         // Instead, add [VirtualFile]
                         val virtualFiles =
-                            StandaloneProjectFactory.getVirtualFilesForLibraryRoots(listOf(compiledJar), coreApplicationEnvironment)
+                            StandaloneProjectFactory.getVirtualFilesForLibraryRoots([compiledJar], coreApplicationEnvironment)
                         addBinaryVirtualFiles(virtualFiles)
                         platform = JvmPlatforms.defaultJvmPlatform
                         libraryName = "dependent"
@@ -384,7 +384,7 @@ class StandaloneSessionBuilderTest : AbstractStandaloneTest() {
                         // addBinaryRoot(compiledJar)
                         // Instead, add [VirtualFile]
                         val virtualFiles =
-                            StandaloneProjectFactory.getVirtualFilesForLibraryRoots(listOf(compiledJar), coreApplicationEnvironment)
+                            StandaloneProjectFactory.getVirtualFilesForLibraryRoots([compiledJar], coreApplicationEnvironment)
                         addBinaryVirtualFiles(virtualFiles)
                         platform = JvmPlatforms.defaultJvmPlatform
                         libraryName = "dependent"
@@ -584,7 +584,7 @@ class StandaloneSessionBuilderTest : AbstractStandaloneTest() {
             ktCallExpression,
             CallableId(
                 FqName.ROOT,
-                FqName.fromSegments(listOf("Foo", "Companion")),
+                FqName.fromSegments(["Foo", "Companion"]),
                 Name.identifier("foo")
             ),
             additionalCheck

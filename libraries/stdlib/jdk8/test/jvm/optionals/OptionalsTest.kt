@@ -46,22 +46,22 @@ class OptionalsTest {
 
     @Test
     fun optionalToCollection_presentAddsValue() {
-        val dest = mutableListOf<CharSequence>()
+        val dest: MutableList<CharSequence> = []
         Optional.of("foo").toCollection(dest)
         assertEquals(listOf<CharSequence>("foo"), dest)
     }
 
     @Test
     fun optionalToCollection_emptyAddsNothing() {
-        val dest = mutableListOf<String>()
+        val dest: MutableList<String> = []
         Optional.empty<String>().toCollection(dest)
         assertEquals(emptyList(), dest)
     }
 
     @Test
     fun optionalToList() {
-        assertEquals(listOf("foo"), Optional.of("foo").toList())
-        assertEquals(emptyList(), Optional.empty<String>().toList())
+        assertEquals(["foo"], Optional.of("foo").toList())
+        assertEquals([], Optional.empty<String>().toList())
 
         // List element type can be a supertype
         assertEquals(listOf<CharSequence>("foo"), Optional.of("foo").toList<CharSequence>())
@@ -69,8 +69,8 @@ class OptionalsTest {
 
     @Test
     fun optionalToSet() {
-        assertEquals(setOf("foo"), Optional.of("foo").toSet())
-        assertEquals(emptySet(), Optional.empty<String>().toSet())
+        assertEquals(["foo"], Optional.of("foo").toSet())
+        assertEquals([], Optional.empty<String>().toSet())
 
         // List element type can be a supertype
         assertEquals(setOf<CharSequence>("foo"), Optional.of("foo").toSet<CharSequence>())
@@ -78,8 +78,8 @@ class OptionalsTest {
 
     @Test
     fun optionalAsSequence() {
-        assertEquals(listOf("foo"), Optional.of("foo").asSequence().toList())
-        assertEquals(emptyList(), Optional.empty<String>().asSequence().toList())
+        assertEquals(["foo"], Optional.of("foo").asSequence().toList())
+        assertEquals([], Optional.empty<String>().asSequence().toList())
 
         // List element type can be a supertype
         assertEquals(listOf<CharSequence>("foo"), Optional.of("foo").asSequence<CharSequence>().toList())

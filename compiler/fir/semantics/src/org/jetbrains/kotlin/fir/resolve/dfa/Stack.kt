@@ -22,6 +22,10 @@ abstract class Stack<T> {
      * The order is preserved.
      */
     abstract fun <R> createSnapshot(transform: (T) -> R): Stack<R>
+
+    companion object {
+        operator fun <T> of(vararg values: T): Stack<T> = StackImpl(*values)
+    }
 }
 
 fun <T> stackOf(vararg values: T): Stack<T> = StackImpl(*values)

@@ -65,7 +65,7 @@ open class JvmNameResolverBase(
         // Simply "kotlin", but to avoid being renamed by namespace relocation (e.g., Shadow.relocate gradle plugin)
         private val kotlin = listOf('k', 'o', 't', 'l', 'i', 'n').joinToString(separator = "")
 
-        val PREDEFINED_STRINGS = listOf(
+        val PREDEFINED_STRINGS = [
             "$kotlin/Any",
             "$kotlin/Nothing",
             "$kotlin/Unit",
@@ -96,7 +96,7 @@ open class JvmNameResolverBase(
 
             "$kotlin/collections/Iterator", "$kotlin/collections/MutableIterator",
             "$kotlin/collections/ListIterator", "$kotlin/collections/MutableListIterator"
-        )
+        ]
 
         private val PREDEFINED_STRINGS_MAP = PREDEFINED_STRINGS.withIndex().associateBy({ it.value }, { it.index })
 

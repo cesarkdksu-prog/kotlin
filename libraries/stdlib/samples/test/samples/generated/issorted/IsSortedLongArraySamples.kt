@@ -21,10 +21,10 @@ class IsSortedLongArraySamples {
         assertPrints(longArrayOf().isSorted(), "true")
         assertPrints(longArrayOf(1L).isSorted(), "true")
 
-        val sorted = longArrayOf(1L, 2L, 3L, 4L, 5L)
+        val sorted: LongArray = [1L, 2L, 3L, 4L, 5L]
         assertPrints(sorted.isSorted(), "true")
 
-        val unsorted = longArrayOf(2L, 1L, 3L, 4L, 5L)
+        val unsorted: LongArray = [2L, 1L, 3L, 4L, 5L]
         assertPrints(unsorted.isSorted(), "false")
     }
 
@@ -33,10 +33,10 @@ class IsSortedLongArraySamples {
         assertPrints(longArrayOf().isSortedDescending(), "true")
         assertPrints(longArrayOf(5L).isSortedDescending(), "true")
 
-        val sorted = longArrayOf(5L, 4L, 3L, 2L, 1L)
+        val sorted: LongArray = [5L, 4L, 3L, 2L, 1L]
         assertPrints(sorted.isSortedDescending(), "true")
 
-        val unsorted = longArrayOf(4L, 5L, 3L, 2L, 1L)
+        val unsorted: LongArray = [4L, 5L, 3L, 2L, 1L]
         assertPrints(unsorted.isSortedDescending(), "false")
     }
 
@@ -45,11 +45,11 @@ class IsSortedLongArraySamples {
         assertPrints(longArrayOf().isSortedWith(naturalOrder()), "true")
         assertPrints(longArrayOf(1L).isSortedWith(naturalOrder()), "true")
 
-        val sorted = longArrayOf(1L, 2L, 3L, 4L, 5L)
+        val sorted: LongArray = [1L, 2L, 3L, 4L, 5L]
         assertPrints(sorted.isSortedWith(naturalOrder()), "true")
         assertPrints(sorted.isSortedWith(reverseOrder()), "false")
 
-        val reversed = longArrayOf(5L, 4L, 3L, 2L, 1L)
+        val reversed: LongArray = [5L, 4L, 3L, 2L, 1L]
         assertPrints(reversed.isSortedWith(reverseOrder()), "true")
     }
 
@@ -58,7 +58,7 @@ class IsSortedLongArraySamples {
         assertPrints(longArrayOf().isSortedBy { it * it }, "true")
         assertPrints(longArrayOf(1L).isSortedBy { it * it }, "true")
 
-        val values = longArrayOf(1L, -2L, 3L, -4L, 5L)
+        val values: LongArray = [1L, -2L, 3L, -4L, 5L]
         assertPrints(values.isSortedBy { it * it }, "true")
         assertPrints(values.isSortedBy { abs(it) }, "true")
         assertPrints(values.isSortedBy { it }, "false")
@@ -70,7 +70,7 @@ class IsSortedLongArraySamples {
         assertPrints(longArrayOf().isSortedByDescending { it * it }, "true")
         assertPrints(longArrayOf(5L).isSortedByDescending { it * it }, "true")
 
-        val values = longArrayOf(5L, -4L, 3L, -2L, 1L)
+        val values: LongArray = [5L, -4L, 3L, -2L, 1L]
         assertPrints(values.isSortedByDescending { it * it }, "true")
         assertPrints(values.isSortedByDescending { abs(it) }, "true")
         assertPrints(values.isSortedByDescending { it }, "false")

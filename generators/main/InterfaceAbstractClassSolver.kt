@@ -79,7 +79,7 @@ private fun solve2sat(elements: Collection<Node>, elementsToVar: ElementMapping)
     val [g, gt] = buildGraphs(elements, elementsToVar)
 
     val used = g.indices.mapTo(mutableListOf()) { false }
-    val order = mutableListOf<Int>()
+    val order: MutableList<Int> = []
     val comp = g.indices.mapTo(mutableListOf()) { -1 }
     val n = g.size
 
@@ -129,8 +129,8 @@ private fun solve2sat(elements: Collection<Node>, elementsToVar: ElementMapping)
 
 
 private fun buildGraphs(elements: Collection<Node>, elementMapping: ElementMapping): Pair<List<List<Int>>, List<List<Int>>> {
-    val g = (1..elementMapping.size * 2).map { mutableListOf<Int>() }
-    val gt = (1..elementMapping.size * 2).map { mutableListOf<Int>() }
+    val g: List<MutableList<Int>> = (1..elementMapping.size * 2).map { [] }
+    val gt: List<MutableList<Int>> = (1..elementMapping.size * 2).map { [] }
 
     fun Int.direct(): Int = this
     fun Int.invert(): Int = this + 1

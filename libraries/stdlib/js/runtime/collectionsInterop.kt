@@ -117,7 +117,7 @@ internal fun <E> createJsReadonlySetViewFrom(set: Set<E>): JsReadonlySet<E> =
         setClear = ::UNSUPPORTED_OPERATION.asDynamic(),
         setContains = { v -> set.contains(v) },
         valuesIterator = { createJsIteratorFrom(set.iterator()) },
-        entriesIterator = { createJsIteratorFrom(set.iterator()) { arrayOf(it, it) } },
+        entriesIterator = { createJsIteratorFrom(set.iterator()) { [it, it] } },
         forEach = { callback, set, thisArg -> forEach(callback, set, thisArg) }
     )
 
@@ -129,7 +129,7 @@ internal fun <E> createJsSetViewFrom(set: MutableSet<E>): JsSet<E> =
         setClear = { set.clear() },
         setContains = { v -> set.contains(v) },
         valuesIterator = { createJsIteratorFrom(set.iterator()) },
-        entriesIterator = { createJsIteratorFrom(set.iterator()) { arrayOf(it, it) } },
+        entriesIterator = { createJsIteratorFrom(set.iterator()) { [it, it] } },
         forEach = { callback, set, thisArg -> forEach(callback, set, thisArg) }
     )
 
@@ -176,7 +176,7 @@ internal fun <K, V> createJsReadonlyMapViewFrom(map: Map<K, V>): JsReadonlyMap<K
         mapClear = ::UNSUPPORTED_OPERATION.asDynamic(),
         keysIterator = { createJsIteratorFrom(map.keys.iterator()) },
         valuesIterator = { createJsIteratorFrom(map.values.iterator()) },
-        entriesIterator = { createJsIteratorFrom(map.entries.iterator()) { arrayOf(it.key, it.value) } },
+        entriesIterator = { createJsIteratorFrom(map.entries.iterator()) { [it.key, it.value] } },
         forEach = { callback, map, thisArg -> forEach(callback, map, thisArg) }
     )
 
@@ -190,7 +190,7 @@ internal fun <K, V> createJsMapViewFrom(map: MutableMap<K, V>): JsMap<K, V> =
         mapClear = { map.clear() },
         keysIterator = { createJsIteratorFrom(map.keys.iterator()) },
         valuesIterator = { createJsIteratorFrom(map.values.iterator()) },
-        entriesIterator = { createJsIteratorFrom(map.entries.iterator()) { arrayOf(it.key, it.value) } },
+        entriesIterator = { createJsIteratorFrom(map.entries.iterator()) { [it.key, it.value] } },
         forEach = { callback, map, thisArg -> forEach(callback, map, thisArg) }
     )
 

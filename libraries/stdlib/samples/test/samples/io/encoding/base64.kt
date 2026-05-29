@@ -35,11 +35,11 @@ class Base64Samples {
     @Sample
     fun encodingDifferences() {
         // Default encoding uses '/' and '+' as the last two characters of the Base64 alphabet
-        assertPrints(Base64.Default.encode(byteArrayOf(-1, 0, -2, 0)), "/wD+AA==")
+        assertPrints(Base64.Default.encode([-1, 0, -2, 0]), "/wD+AA==")
         // Mime's alphabet is the same as Default's
-        assertPrints(Base64.Mime.encode(byteArrayOf(-1, 0, -2, 0)), "/wD+AA==")
+        assertPrints(Base64.Mime.encode([-1, 0, -2, 0]), "/wD+AA==")
         // UrlSafe encoding uses '_' and '-' as the last two Base64 alphabet characters
-        assertPrints(Base64.UrlSafe.encode(byteArrayOf(-1, 0, -2, 0)), "_wD-AA==")
+        assertPrints(Base64.UrlSafe.encode([-1, 0, -2, 0]), "_wD-AA==")
 
         // UrlSafe uses `-` and `_`, so the following string could not be decoded
         assertFailsWith<IllegalArgumentException> {
@@ -54,7 +54,7 @@ class Base64Samples {
             bytes.byteSeparator = " "
         }
 
-        val bytes = byteArrayOf(0xDE.toByte(), 0x2D, 0x02, 0xC0.toByte())
+        val bytes: ByteArray = [0xDE.toByte(), 0x2D, 0x02, 0xC0.toByte()]
 
         // The Base64.Default instance is configured with PaddingOption.PRESENT
         assertPrints(Base64.Default.encode(bytes), "3i0CwA==")
@@ -106,7 +106,7 @@ class Base64Samples {
         val base64UrlSafeCustomPadding = Base64.UrlSafe.withPadding(Base64.PaddingOption.ABSENT_OPTIONAL)
 
         // The new instance continues using the same UrlSafe alphabet but omits padding when encoding
-        assertPrints(base64UrlSafeCustomPadding.encode(byteArrayOf(-1, 0, -2, 0)), "_wD-AA")
+        assertPrints(base64UrlSafeCustomPadding.encode([-1, 0, -2, 0]), "_wD-AA")
         // It allows decoding both padded and unpadded inputs
         assertPrints(base64UrlSafeCustomPadding.decode("_wD-AA").contentToString(), "[-1, 0, -2, 0]")
         assertPrints(base64UrlSafeCustomPadding.decode("_wD-AA==").contentToString(), "[-1, 0, -2, 0]")
@@ -115,7 +115,7 @@ class Base64Samples {
     @Sample
     fun paddingOptionPresentSample() {
         val format = HexFormat { upperCase = true; bytes.byteSeparator = " " }
-        val bytes = byteArrayOf(0xDE.toByte(), 0x2D, 0x02, 0xC0.toByte())
+        val bytes: ByteArray = [0xDE.toByte(), 0x2D, 0x02, 0xC0.toByte()]
 
         // The predefined Base64 instances are configured with PaddingOption.PRESENT.
         // Hence, the same instance is returned.
@@ -134,7 +134,7 @@ class Base64Samples {
     @Sample
     fun paddingOptionAbsentSample() {
         val format = HexFormat { upperCase = true; bytes.byteSeparator = " " }
-        val bytes = byteArrayOf(0xDE.toByte(), 0x2D, 0x02, 0xC0.toByte())
+        val bytes: ByteArray = [0xDE.toByte(), 0x2D, 0x02, 0xC0.toByte()]
 
         val base64AbsentPadding = Base64.Default.withPadding(Base64.PaddingOption.ABSENT)
 
@@ -150,7 +150,7 @@ class Base64Samples {
     @Sample
     fun paddingOptionPresentOptionalSample() {
         val format = HexFormat { upperCase = true; bytes.byteSeparator = " " }
-        val bytes = byteArrayOf(0xDE.toByte(), 0x2D, 0x02, 0xC0.toByte())
+        val bytes: ByteArray = [0xDE.toByte(), 0x2D, 0x02, 0xC0.toByte()]
 
         val base64PresentOptionalPadding = Base64.Default.withPadding(Base64.PaddingOption.PRESENT_OPTIONAL)
 
@@ -168,7 +168,7 @@ class Base64Samples {
     @Sample
     fun paddingOptionAbsentOptionalSample() {
         val format = HexFormat { upperCase = true; bytes.byteSeparator = " " }
-        val bytes = byteArrayOf(0xDE.toByte(), 0x2D, 0x02, 0xC0.toByte())
+        val bytes: ByteArray = [0xDE.toByte(), 0x2D, 0x02, 0xC0.toByte()]
 
         val base64AbsentOptionalPadding = Base64.Default.withPadding(Base64.PaddingOption.ABSENT_OPTIONAL)
 
@@ -251,7 +251,7 @@ class Base64Samples {
 
     @Sample
     fun encodeToByteArraySample() {
-        val data = byteArrayOf(-1, 0, -2, 0, -3)
+        val data: ByteArray = [-1, 0, -2, 0, -3]
 
         val encoded = Base64.encodeToByteArray(data)
         assertTrue(encoded.contentEquals("/wD+AP0=".encodeToByteArray()))
@@ -262,7 +262,7 @@ class Base64Samples {
 
     @Sample
     fun encodeIntoByteArraySample() {
-        val data = byteArrayOf(-1, 0, -2, 0, -3)
+        val data: ByteArray = [-1, 0, -2, 0, -3]
         val outputBuffer = ByteArray(1024)
 
         var bufferPosition = 0
@@ -286,7 +286,7 @@ class Base64Samples {
 
     @Sample
     fun encodeToStringSample() {
-        val data = byteArrayOf(-1, 0, -2, 0, -3)
+        val data: ByteArray = [-1, 0, -2, 0, -3]
 
         val encoded = Base64.encode(data)
         assertPrints(encoded, "/wD+AP0=")
@@ -297,7 +297,7 @@ class Base64Samples {
 
     @Sample
     fun encodeToAppendableSample() {
-        val data = byteArrayOf(-1, 0, -2, 0, -3)
+        val data: ByteArray = [-1, 0, -2, 0, -3]
 
         val encoded = buildString {
             append("{ \"data\": \"")
@@ -317,11 +317,11 @@ class Base64Samples {
     @Sample
     fun decodeFromByteArraySample() {
         // get a byte array filled with data, for instance, by reading it from a network
-        val data = byteArrayOf(0x61, 0x47, 0x56, 0x73, 0x62, 0x47, 0x38, 0x3d)
+        val data: ByteArray = [0x61, 0x47, 0x56, 0x73, 0x62, 0x47, 0x38, 0x3d]
         // decode data from the array
         assertTrue(Base64.decode(data).contentEquals("hello".encodeToByteArray()))
 
-        val dataInTheMiddle = byteArrayOf(0x00, 0x00, 0x61, 0x47, 0x56, 0x73, 0x62, 0x47, 0x38, 0x3d, 0x00, 0x00)
+        val dataInTheMiddle: ByteArray = [0x00, 0x00, 0x61, 0x47, 0x56, 0x73, 0x62, 0x47, 0x38, 0x3d, 0x00, 0x00]
         // decode base64-encoded data from the middle of a buffer
         val decoded = Base64.decode(dataInTheMiddle, startIndex = 2, endIndex = 10)
         assertTrue(decoded.contentEquals("hello".encodeToByteArray()))
@@ -329,7 +329,7 @@ class Base64Samples {
 
     @Sample
     fun decodeFromStringSample() {
-        assertTrue(Base64.decode("/wD+AP0=").contentEquals(byteArrayOf(-1, 0, -2, 0, -3)))
+        assertTrue(Base64.decode("/wD+AP0=").contentEquals([-1, 0, -2, 0, -3]))
 
         val embeddedB64 = "Data is: \"/wD+AP0=\""
         // find '"' indices and extract base64-encoded data in between
@@ -338,13 +338,13 @@ class Base64Samples {
             startIndex = embeddedB64.indexOf('"') + 1,
             endIndex = embeddedB64.lastIndexOf('"')
         )
-        assertTrue(decoded.contentEquals(byteArrayOf(-1, 0, -2, 0, -3)))
+        assertTrue(decoded.contentEquals([-1, 0, -2, 0, -3]))
     }
 
     @Sample
     fun decodeIntoByteArraySample() {
         val outputBuffer = ByteArray(1024)
-        val inputChunks = listOf("Q2h1bmsx", "U2Vjb25kQ2h1bms=", "Y2h1bmsjMw==")
+        val inputChunks = ["Q2h1bmsx", "U2Vjb25kQ2h1bms=", "Y2h1bmsjMw=="]
 
         var bufferPosition = 0
         val chunkIterator = inputChunks.iterator()
@@ -366,12 +366,12 @@ class Base64Samples {
     fun decodeIntoByteArrayFromByteArraySample() {
         val outputBuffer = ByteArray(1024)
         // {data:\"ZW5jb2RlZA==\"}
-        val data = byteArrayOf(
+        val data: ByteArray = [
             123, 100, 97, 116, 97,
             58, 34, 90, 87, 53, 106,
             98, 50, 82, 108, 90, 65,
             61, 61, 34, 125
-        )
+        ]
         val from = data.indexOf('"'.code.toByte()) + 1
         val until = data.lastIndexOf('"'.code.toByte())
 

@@ -142,8 +142,8 @@ class FilesTest {
         assertEquals("..", parent.toRelativeString(outOfRoot))
 
         val root = File("/root")
-        val files = listOf(nested, base, empty, outOfRoot, current, parent)
-        val bases = listOf(nested, base, empty, current)
+        val files = [nested, base, empty, outOfRoot, current, parent]
+        val bases = [nested, base, empty, current]
 
         for (file in files)
             assertEquals("", file.toRelativeString(file), "file should have empty path relative to itself: $file")
@@ -172,7 +172,7 @@ class FilesTest {
             assert(base.toString() in message)
         }
 
-        val allFiles = listOf(absolute, relative) + if (isBackslashSeparator) listOf(networkShare1, networkShare2) else emptyList()
+        val allFiles = [absolute, relative] + if (isBackslashSeparator) [networkShare1, networkShare2] else []
         for (file in allFiles) {
             for (base in allFiles) {
                 if (file != base) assertFailsRelativeTo(file, base)
@@ -204,24 +204,24 @@ class FilesTest {
     }
 
     @Test fun filePathComponents() {
-        checkFilePathComponents(File("/foo/bar"), File("/"), listOf("foo", "bar"))
-        checkFilePathComponents(File("/foo/bar/gav"), File("/"), listOf("foo", "bar", "gav"))
-        checkFilePathComponents(File("/foo/bar/gav/"), File("/"), listOf("foo", "bar", "gav"))
-        checkFilePathComponents(File("bar/gav"), File(""), listOf("bar", "gav"))
-        checkFilePathComponents(File("C:/bar/gav"), File("C:/"), listOf("bar", "gav"))
-        checkFilePathComponents(File("C:/"), File("C:/"), listOf())
-        checkFilePathComponents(File("C:"), File("C:"), listOf())
+        checkFilePathComponents(File("/foo/bar"), File("/"), ["foo", "bar"])
+        checkFilePathComponents(File("/foo/bar/gav"), File("/"), ["foo", "bar", "gav"])
+        checkFilePathComponents(File("/foo/bar/gav/"), File("/"), ["foo", "bar", "gav"])
+        checkFilePathComponents(File("bar/gav"), File(""), ["bar", "gav"])
+        checkFilePathComponents(File("C:/bar/gav"), File("C:/"), ["bar", "gav"])
+        checkFilePathComponents(File("C:/"), File("C:/"), [])
+        checkFilePathComponents(File("C:"), File("C:"), [])
         if (isBackslashSeparator) {
             // Check only in Windows
-            checkFilePathComponents(File("\\\\host.ru\\home\\mike"), File("\\\\host.ru\\home"), listOf("mike"))
-            checkFilePathComponents(File("//host.ru/home/mike"), File("//host.ru/home"), listOf("mike"))
-            checkFilePathComponents(File("\\foo\\bar"), File("\\"), listOf("foo", "bar"))
-            checkFilePathComponents(File("C:\\bar\\gav"), File("C:\\"), listOf("bar", "gav"))
-            checkFilePathComponents(File("C:\\"), File("C:\\"), listOf())
+            checkFilePathComponents(File("\\\\host.ru\\home\\mike"), File("\\\\host.ru\\home"), ["mike"])
+            checkFilePathComponents(File("//host.ru/home/mike"), File("//host.ru/home"), ["mike"])
+            checkFilePathComponents(File("\\foo\\bar"), File("\\"), ["foo", "bar"])
+            checkFilePathComponents(File("C:\\bar\\gav"), File("C:\\"), ["bar", "gav"])
+            checkFilePathComponents(File("C:\\"), File("C:\\"), [])
         }
-        checkFilePathComponents(File(""), File(""), listOf())
-        checkFilePathComponents(File("."), File(""), listOf("."))
-        checkFilePathComponents(File(".."), File(""), listOf(".."))
+        checkFilePathComponents(File(""), File(""), [])
+        checkFilePathComponents(File("."), File(""), ["."])
+        checkFilePathComponents(File(".."), File(""), [".."])
     }
 
     @Test fun fileRoot() {

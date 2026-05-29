@@ -21,10 +21,10 @@ class IsSortedDoubleArraySamples {
         assertPrints(doubleArrayOf().isSorted(), "true")
         assertPrints(doubleArrayOf(1.0).isSorted(), "true")
 
-        val sorted = doubleArrayOf(1.0, 2.5, 3.14)
+        val sorted: DoubleArray = [1.0, 2.5, 3.14]
         assertPrints(sorted.isSorted(), "true")
 
-        val unsorted = doubleArrayOf(2.5, 1.0, 3.14)
+        val unsorted: DoubleArray = [2.5, 1.0, 3.14]
         assertPrints(unsorted.isSorted(), "false")
     }
 
@@ -33,10 +33,10 @@ class IsSortedDoubleArraySamples {
         assertPrints(doubleArrayOf().isSortedDescending(), "true")
         assertPrints(doubleArrayOf(3.14).isSortedDescending(), "true")
 
-        val sorted = doubleArrayOf(3.14, 2.5, 1.0)
+        val sorted: DoubleArray = [3.14, 2.5, 1.0]
         assertPrints(sorted.isSortedDescending(), "true")
 
-        val unsorted = doubleArrayOf(2.5, 3.14, 1.0)
+        val unsorted: DoubleArray = [2.5, 3.14, 1.0]
         assertPrints(unsorted.isSortedDescending(), "false")
     }
 
@@ -45,11 +45,11 @@ class IsSortedDoubleArraySamples {
         assertPrints(doubleArrayOf().isSortedWith(naturalOrder()), "true")
         assertPrints(doubleArrayOf(1.0).isSortedWith(naturalOrder()), "true")
 
-        val sorted = doubleArrayOf(1.0, 2.5, 3.14)
+        val sorted: DoubleArray = [1.0, 2.5, 3.14]
         assertPrints(sorted.isSortedWith(naturalOrder()), "true")
         assertPrints(sorted.isSortedWith(reverseOrder()), "false")
 
-        val reversed = doubleArrayOf(3.14, 2.5, 1.0)
+        val reversed: DoubleArray = [3.14, 2.5, 1.0]
         assertPrints(reversed.isSortedWith(reverseOrder()), "true")
     }
 
@@ -58,7 +58,7 @@ class IsSortedDoubleArraySamples {
         assertPrints(doubleArrayOf().isSortedBy { it * it }, "true")
         assertPrints(doubleArrayOf(-0.5).isSortedBy { it * it }, "true")
 
-        val values = doubleArrayOf(-0.5, 1.0, -1.5, 2.0)
+        val values: DoubleArray = [-0.5, 1.0, -1.5, 2.0]
         assertPrints(values.isSortedBy { it * it }, "true")
         assertPrints(values.isSortedBy { abs(it) }, "true")
         assertPrints(values.isSortedBy { it }, "false")
@@ -70,7 +70,7 @@ class IsSortedDoubleArraySamples {
         assertPrints(doubleArrayOf().isSortedByDescending { it * it }, "true")
         assertPrints(doubleArrayOf(2.0).isSortedByDescending { it * it }, "true")
 
-        val values = doubleArrayOf(2.0, -1.5, 1.0, -0.5)
+        val values: DoubleArray = [2.0, -1.5, 1.0, -0.5]
         assertPrints(values.isSortedByDescending { it * it }, "true")
         assertPrints(values.isSortedByDescending { abs(it) }, "true")
         assertPrints(values.isSortedByDescending { it }, "false")

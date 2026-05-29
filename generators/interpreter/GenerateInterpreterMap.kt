@@ -39,11 +39,11 @@ fun generateMap(): String {
 
     val unaryOperations = getOperationMap(1).apply {
         this.addAll(getUnsignedConversionOperationMap())
-        this += Operation(BuiltInOperatorNames.CHECK_NOT_NULL, listOf("T0?"), customExpression = "a!!")
-        this += Operation("toString", listOf("Any?"), customExpression = "a?.toString() ?: \"null\"")
-        this += Operation("code", listOf("Char"), customExpression = "(a as Char).code")
+        this += Operation(BuiltInOperatorNames.CHECK_NOT_NULL, ["T0?"], customExpression = "a!!")
+        this += Operation("toString", ["Any?"], customExpression = "a?.toString() ?: \"null\"")
+        this += Operation("code", ["Char"], customExpression = "(a as Char).code")
         // TODO next operation can be dropped after serialization introduction
-        this += Operation("toString", listOf("Unit"), customExpression = "Unit.toString()")
+        this += Operation("toString", ["Unit"], customExpression = "Unit.toString()")
     }
 
     val binaryOperations = getOperationMap(2) + getBinaryIrOperationMap() + getExtensionOperationMap()
@@ -220,12 +220,12 @@ private data class Operation(
 
 private fun getOperationMap(argumentsCount: Int): MutableList<Operation> {
     val builtIns = DefaultBuiltIns.Instance
-    val operationMap = mutableListOf<Operation>()
+    val operationMap: MutableList<Operation> = []
     val allPrimitiveTypes = PrimitiveType.values().map { builtIns.getBuiltInClassByFqName(it.typeFqName) }
     val arrays = PrimitiveType.values().map { builtIns.getPrimitiveArrayClassDescriptor(it) } + builtIns.array
-    val additionalBuiltIns = listOf(
+    val additionalBuiltIns = [
         builtIns.string, builtIns.any, builtIns.charSequence, builtIns.number, builtIns.comparable, builtIns.throwable
-    )
+    ]
 
     fun CallableDescriptor.isFakeOverride(classDescriptor: ClassDescriptor): Boolean {
         val isPrimitive = KotlinBuiltIns.isPrimitiveClass(classDescriptor) || KotlinBuiltIns.isString(classDescriptor.defaultType)
@@ -242,14 +242,14 @@ private fun getOperationMap(argumentsCount: Int): MutableList<Operation> {
             .filter { it.name !in excludedBinaryOperations }
 
         for (function in compileTimeFunctions) {
-            val parameterTypes = listOf(classDescriptor.defaultType.constructor.toString()) +
+            val parameterTypes = [classDescriptor.defaultType.constructor.toString()] +
                     function.valueParameters.map { it.type.toString() }
             operationMap.add(Operation(function.name.asString(), parameterTypes, function is FunctionDescriptor))
         }
     }
 
-    val unsignedClasses = listOf(UInt::class, ULong::class, UByte::class, UShort::class)
-    val excludedUnsignedOperations = listOf("dec", "hashCode", "inc", "rangeTo", "rangeUntil")
+    val unsignedClasses = [UInt::class, ULong::class, UByte::class, UShort::class]
+    val excludedUnsignedOperations = ["dec", "hashCode", "inc", "rangeTo", "rangeUntil"]
     for (unsignedClass in unsignedClasses) {
         unsignedClass.memberFunctions
             .filter { it.parameters.size == argumentsCount }
@@ -265,7 +265,7 @@ private fun getOperationMap(argumentsCount: Int): MutableList<Operation> {
 }
 
 private fun getUnsignedConversionOperationMap(): List<Operation> {
-    val operationMap = mutableListOf<Operation>()
+    val operationMap: MutableList<Operation> = []
 
     val fullList = with(OperatorNameConventions) {
         listOf(TO_ULONG, TO_UINT, TO_USHORT, TO_UBYTE).map { it.asString() }
@@ -281,7 +281,7 @@ private fun getUnsignedConversionOperationMap(): List<Operation> {
 
     for ([type, extensions] in uintConversionExtensions) {
         for (extension in extensions) {
-            operationMap.add(Operation(extension, listOf(type)))
+            operationMap.add(Operation(extension, [type]))
         }
     }
 
@@ -289,15 +289,15 @@ private fun getUnsignedConversionOperationMap(): List<Operation> {
 }
 
 private fun getBinaryIrOperationMap(): List<Operation> {
-    val operationMap = mutableListOf<Operation>()
+    val operationMap: MutableList<Operation> = []
 
     fun addOperation(function: String, type: String) {
-        operationMap.add(Operation(function, listOf(type, type)))
+        operationMap.add(Operation(function, [type, type]))
     }
 
-    val compareFunction = setOf(
+    val compareFunction: Set<String> = [
         BuiltInOperatorNames.LESS, BuiltInOperatorNames.LESS_OR_EQUAL, BuiltInOperatorNames.GREATER, BuiltInOperatorNames.GREATER_OR_EQUAL
-    )
+    ]
 
     for (function in compareFunction) {
         for (type in numericTypes) {
@@ -321,18 +321,18 @@ private fun getBinaryIrOperationMap(): List<Operation> {
 
 // TODO can be drop after serialization introduction
 private fun getExtensionOperationMap(): List<Operation> {
-    val operationMap = mutableListOf<Operation>()
+    val operationMap: MutableList<Operation> = []
 
     for (type in integerTypes) {
         for (otherType in integerTypes) {
-            operationMap.add(Operation("mod", listOf(type, otherType)))
-            operationMap.add(Operation("floorDiv", listOf(type, otherType)))
+            operationMap.add(Operation("mod", [type, otherType]))
+            operationMap.add(Operation("floorDiv", [type, otherType]))
         }
     }
 
     for (type in fpTypes) {
         for (otherType in fpTypes) {
-            operationMap.add(Operation("mod", listOf(type, otherType)))
+            operationMap.add(Operation("mod", [type, otherType]))
         }
     }
 

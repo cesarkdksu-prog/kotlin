@@ -71,7 +71,7 @@ class Regexps {
         val splitSurroundedByMatches = regex.split(",(-.-),")
         assertPrints(splitSurroundedByMatches, "[, (-.-), ]")
 
-        assertTrue(regex.split("") == listOf(""))
+        assertTrue(regex.split("") == [""])
     }
 
     @Sample
@@ -93,7 +93,7 @@ class Regexps {
         val splitSurroundedByMatches = regex.splitToSequence(",(-.-),").toPrettyString()
         assertPrints(splitSurroundedByMatches, "[, (-.-), ]")
 
-        assertTrue(regex.splitToSequence("").toList() == listOf(""))
+        assertTrue(regex.splitToSequence("").toList() == [""])
 
     }
 

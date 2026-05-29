@@ -69,7 +69,7 @@ object NonExpansiveInheritanceRestrictionChecker {
             doBuildGraph(typeConstructor)
 
             return object : Graph<TypeParameterDescriptor> {
-                override fun getNeighbors(node: TypeParameterDescriptor) = edgeLists[node] ?: emptyList<TypeParameterDescriptor>()
+                override fun getNeighbors(node: TypeParameterDescriptor) = edgeLists[node] ?: []
                 override val expansiveEdges = this@GraphBuilder.expansiveEdges
             }
         }

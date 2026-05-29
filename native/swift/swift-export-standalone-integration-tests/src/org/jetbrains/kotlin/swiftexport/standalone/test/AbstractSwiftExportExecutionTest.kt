@@ -72,11 +72,11 @@ abstract class AbstractSwiftExportExecutionTest : AbstractSwiftExportWithBinaryC
     ): TestExecutable {
         // todo: KT-81344 Swift Export Execution tests uses 2 different xcode installlation
         val swiftExtraOpts = swiftModules.flatMap {
-            listOf(
+            [
                 "-I", it.rootDir.absolutePath,
                 "-L", it.rootDir.absolutePath,
                 "-l${it.moduleName}",
-            )
+            ]
         } + listOfNotNull(
             "-Xcc", "-fmodule-map-file=${Distribution(KotlinNativePaths.homePath.absolutePath).kotlinRuntimeForSwiftModuleMap}",
             "-L", kotlinBinaryLibrary.libraryFile.parentFile.absolutePath,
@@ -91,9 +91,9 @@ abstract class AbstractSwiftExportExecutionTest : AbstractSwiftExportWithBinaryC
 
         val success = SwiftCompilation(
             testRunSettings,
-            testSources + listOf(
+            testSources + [
                 testSuiteDir.resolve("main-testing.swift")
-            ),
+            ],
             TestCompilationArtifact.Executable(buildDir(testName).resolve("swiftTestExecutable")),
             swiftExtraOpts,
             outputFile = { executable -> executable.executableFile },
@@ -102,7 +102,7 @@ abstract class AbstractSwiftExportExecutionTest : AbstractSwiftExportWithBinaryC
         return TestExecutable(
             success.resultingArtifact,
             success.loggedData,
-            listOf(TestName(testName))
+            [TestName(testName)]
         )
     }
 }

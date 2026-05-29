@@ -14,7 +14,7 @@ import org.jetbrains.kotlin.resolve.checkers.OptInNames
 import org.jetbrains.kotlin.resolve.multiplatform.ExpectActualAnnotationsIncompatibilityType as IncompatibilityType
 
 object K1AbstractExpectActualAnnotationMatchChecker {
-    private val SKIPPED_CLASS_IDS = setOf(
+    private val SKIPPED_CLASS_IDS: Set<ClassId> = [
         StandardClassIds.Annotations.Deprecated,
         StandardClassIds.Annotations.DeprecatedSinceKotlin,
         StandardClassIds.Annotations.ImplicitlyActualizedByJvmDeclaration,
@@ -25,7 +25,7 @@ object K1AbstractExpectActualAnnotationMatchChecker {
         StandardClassIds.Annotations.WasExperimental,
         OptInNames.OPT_IN_CLASS_ID,
         OptInNames.SUBCLASS_OPT_IN_REQUIRED_CLASS_ID,
-    )
+    ]
 
     class Incompatibility(
         /**
@@ -191,7 +191,7 @@ object K1AbstractExpectActualAnnotationMatchChecker {
             if (expectAnnotation.isRetentionSource && skipSourceAnnotations) {
                 continue
             }
-            val actualAnnotationsWithSameClassId = actualAnnotationsByName[expectClassId] ?: emptyList()
+            val actualAnnotationsWithSameClassId = actualAnnotationsByName[expectClassId] ?: []
             if (actualAnnotationsWithSameClassId.isEmpty()) {
                 return Incompatibility(
                     expectSymbol,

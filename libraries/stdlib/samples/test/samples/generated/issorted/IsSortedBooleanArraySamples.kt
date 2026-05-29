@@ -20,10 +20,10 @@ class IsSortedBooleanArraySamples {
         assertPrints(booleanArrayOf().isSorted(), "true")
         assertPrints(booleanArrayOf(false).isSorted(), "true")
 
-        val sorted = booleanArrayOf(false, false, true)
+        val sorted: BooleanArray = [false, false, true]
         assertPrints(sorted.isSorted(), "true")
 
-        val unsorted = booleanArrayOf(false, true, false)
+        val unsorted: BooleanArray = [false, true, false]
         assertPrints(unsorted.isSorted(), "false")
     }
 
@@ -32,10 +32,10 @@ class IsSortedBooleanArraySamples {
         assertPrints(booleanArrayOf().isSortedDescending(), "true")
         assertPrints(booleanArrayOf(true).isSortedDescending(), "true")
 
-        val sorted = booleanArrayOf(true, false, false)
+        val sorted: BooleanArray = [true, false, false]
         assertPrints(sorted.isSortedDescending(), "true")
 
-        val unsorted = booleanArrayOf(false, true, false)
+        val unsorted: BooleanArray = [false, true, false]
         assertPrints(unsorted.isSortedDescending(), "false")
     }
 
@@ -44,11 +44,11 @@ class IsSortedBooleanArraySamples {
         assertPrints(booleanArrayOf().isSortedWith(naturalOrder()), "true")
         assertPrints(booleanArrayOf(false).isSortedWith(naturalOrder()), "true")
 
-        val sorted = booleanArrayOf(false, false, true)
+        val sorted: BooleanArray = [false, false, true]
         assertPrints(sorted.isSortedWith(naturalOrder()), "true")
         assertPrints(sorted.isSortedWith(reverseOrder()), "false")
 
-        val reversed = booleanArrayOf(true, false, false)
+        val reversed: BooleanArray = [true, false, false]
         assertPrints(reversed.isSortedWith(reverseOrder()), "true")
     }
 
@@ -57,7 +57,7 @@ class IsSortedBooleanArraySamples {
         assertPrints(booleanArrayOf().isSortedBy { it.compareTo(false) }, "true")
         assertPrints(booleanArrayOf(false).isSortedBy { it.compareTo(false) }, "true")
 
-        val values = booleanArrayOf(false, false, true)
+        val values: BooleanArray = [false, false, true]
         assertPrints(values.isSortedBy { it.compareTo(false) }, "true")
         assertPrints(values.isSortedBy { it }, "true")
         assertPrints(values.isSortedBy { !it }, "false")
@@ -69,7 +69,7 @@ class IsSortedBooleanArraySamples {
         assertPrints(booleanArrayOf().isSortedByDescending { it.compareTo(false) }, "true")
         assertPrints(booleanArrayOf(true).isSortedByDescending { it.compareTo(false) }, "true")
 
-        val values = booleanArrayOf(true, false, false)
+        val values: BooleanArray = [true, false, false]
         assertPrints(values.isSortedByDescending { it.compareTo(false) }, "true")
         assertPrints(values.isSortedByDescending { it }, "true")
         assertPrints(values.isSortedByDescending { !it }, "false")

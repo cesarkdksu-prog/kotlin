@@ -14,7 +14,7 @@ class Tuples {
 
     @Sample
     fun tripleDestructuring() {
-        val [a, b, c] = Triple(2, "x", listOf(null))
+        val [a, b, c] = Triple(2, "x", [null])
         assertPrints(a, "2")
         assertPrints(b, "x")
         assertPrints(c, "[null]")

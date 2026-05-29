@@ -8,4 +8,4 @@ package test.text
 
 internal actual val surrogateCodePointDecoding: String = "�"
 
-internal actual val surrogateCharEncoding: ByteArray = byteArrayOf(0x3F)
+internal actual val surrogateCharEncoding: ByteArray = [0x3F]

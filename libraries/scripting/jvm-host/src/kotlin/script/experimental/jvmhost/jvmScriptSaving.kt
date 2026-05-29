@@ -64,7 +64,7 @@ fun KJvmCompiledScript.saveToJar(outputJar: File) {
         KotlinPaths.Jar.ScriptingLib.baseName, KotlinPaths.Jar.ScriptingJvmLib.baseName,
         classLoader = this::class.java.classLoader,
         wholeClasspath = false
-    ) ?: emptyList()
+    ) ?: []
     // saving only existing files, so the check for the existence in the loadScriptFromJar is meaningful
     val dependencies = (dependenciesFromScript + dependenciesForMain).distinct().filter { it.exists() }
     FileOutputStream(outputJar).use { fileStream ->
@@ -98,7 +98,7 @@ fun File.loadScriptFromJar(checkMissingDependencies: Boolean = true): CompiledSc
     val [className: String?, classPathUrls] = this.inputStream().use { ostr ->
         JarInputStream(ostr).use {
             it.manifest.mainAttributes.getValue("Main-Class") to
-                    (it.manifest.mainAttributes.getValue("Class-Path")?.split(" ") ?: emptyList())
+                    (it.manifest.mainAttributes.getValue("Class-Path")?.split(" ") ?: [])
         }
     }
     if (className == null) return null

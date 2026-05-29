@@ -16,10 +16,10 @@ import kotlin.uuid.*
 typealias JavaUUID = java.util.UUID
 
 class UuidJVMTest {
-    private val uuidByteArray = byteArrayOf(
+    private val uuidByteArray: ByteArray = [
         0x55, 0x0e, 0x84.toByte(), 0x00, 0xe2.toByte(), 0x9b.toByte(), 0x41, 0xd4.toByte(),
         0xa7.toByte(), 0x16, 0x44, 0x66, 0x55, 0x44, 0x00, 0x00
-    )
+    ]
     private val uuidString = "550e8400-e29b-41d4-a716-446655440000"
     private val uuid = Uuid.parse(uuidString)
 
@@ -60,7 +60,7 @@ class UuidJVMTest {
 
     @Test
     fun getUuid() {
-        for (byteOrder in listOf(ByteOrder.BIG_ENDIAN, ByteOrder.LITTLE_ENDIAN)) {
+        for (byteOrder in [ByteOrder.BIG_ENDIAN, ByteOrder.LITTLE_ENDIAN]) {
             ByteBuffer.allocate(32).apply {
                 order(byteOrder) // buffer's byte order does not affect uuid
 
@@ -98,7 +98,7 @@ class UuidJVMTest {
     @Test
     fun putUuid() {
         val uuid2 = Uuid.parse("6ba7b811-9dad-11d1-80b4-00c04fd430c8")
-        for (byteOrder in listOf(ByteOrder.BIG_ENDIAN, ByteOrder.LITTLE_ENDIAN)) {
+        for (byteOrder in [ByteOrder.BIG_ENDIAN, ByteOrder.LITTLE_ENDIAN]) {
             ByteBuffer.allocate(32).apply {
                 order(byteOrder) // buffer's byte order does not affect uuid
 

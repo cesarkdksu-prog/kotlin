@@ -129,7 +129,7 @@ sealed class WasmImmediate {
 enum class WasmOp(
     val mnemonic: String,
     val opcode: Int,
-    val immediates: List<WasmImmediateKind> = emptyList(),
+    val immediates: List<WasmImmediateKind> = [],
     val tailMnemonic: String = "",
 ) {
 

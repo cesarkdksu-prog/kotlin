@@ -17,21 +17,21 @@ class CirPackageNameTest {
     @Test
     fun createAndIntern() {
         listOf(
-            "" to emptyArray(),
-            "foo" to arrayOf("foo"),
-            "foo.bar" to arrayOf("foo", "bar"),
-            "foo.bar.baz" to arrayOf("foo", "bar", "baz")
+            "" to [],
+            "foo" to ["foo"],
+            "foo.bar" to ["foo", "bar"],
+            "foo.bar.baz" to ["foo", "bar", "baz"]
         ).forEach { [rawPackageFqName, segments] ->
             val packageFqName = FqName(rawPackageFqName)
 
-            val packageNames = listOf(
+            val packageNames = [
                 CirPackageName.create(rawPackageFqName),
                 CirPackageName.create(rawPackageFqName),
                 CirPackageName.create(packageFqName),
                 CirPackageName.create(packageFqName),
                 CirPackageName.create(segments),
                 CirPackageName.create(segments)
-            )
+            ]
 
             val first = packageNames.first()
             packageNames.forEach { packageName ->
@@ -43,12 +43,12 @@ class CirPackageNameTest {
 
     @Test
     fun createRoot() {
-        val rootPackageNames = listOf(
+        val rootPackageNames = [
             CirPackageName.create(""),
             CirPackageName.create(FqName("")),
             CirPackageName.create(FqName.ROOT),
-            CirPackageName.create(emptyArray())
-        )
+            CirPackageName.create([])
+        ]
 
         val first = rootPackageNames.first()
         rootPackageNames.forEach { rootPackageName ->
@@ -62,10 +62,10 @@ class CirPackageNameTest {
     @Test
     fun toStringConversion() {
         listOf(
-            "" to emptyArray(),
-            "foo" to arrayOf("foo"),
-            "foo.bar" to arrayOf("foo", "bar"),
-            "foo.bar.baz" to arrayOf("foo", "bar", "baz")
+            "" to [],
+            "foo" to ["foo"],
+            "foo.bar" to ["foo", "bar"],
+            "foo.bar.baz" to ["foo", "bar", "baz"]
         ).forEach { [rawPackageFqName, segments] ->
             assertEquals(rawPackageFqName, CirPackageName.create(segments).toString())
         }

@@ -21,10 +21,10 @@ class IsSortedIntArraySamples {
         assertPrints(intArrayOf().isSorted(), "true")
         assertPrints(intArrayOf(1).isSorted(), "true")
 
-        val sorted = intArrayOf(1, 2, 3, 4, 5)
+        val sorted: IntArray = [1, 2, 3, 4, 5]
         assertPrints(sorted.isSorted(), "true")
 
-        val unsorted = intArrayOf(2, 1, 3, 4, 5)
+        val unsorted: IntArray = [2, 1, 3, 4, 5]
         assertPrints(unsorted.isSorted(), "false")
     }
 
@@ -33,10 +33,10 @@ class IsSortedIntArraySamples {
         assertPrints(intArrayOf().isSortedDescending(), "true")
         assertPrints(intArrayOf(5).isSortedDescending(), "true")
 
-        val sorted = intArrayOf(5, 4, 3, 2, 1)
+        val sorted: IntArray = [5, 4, 3, 2, 1]
         assertPrints(sorted.isSortedDescending(), "true")
 
-        val unsorted = intArrayOf(4, 5, 3, 2, 1)
+        val unsorted: IntArray = [4, 5, 3, 2, 1]
         assertPrints(unsorted.isSortedDescending(), "false")
     }
 
@@ -45,11 +45,11 @@ class IsSortedIntArraySamples {
         assertPrints(intArrayOf().isSortedWith(naturalOrder()), "true")
         assertPrints(intArrayOf(1).isSortedWith(naturalOrder()), "true")
 
-        val sorted = intArrayOf(1, 2, 3, 4, 5)
+        val sorted: IntArray = [1, 2, 3, 4, 5]
         assertPrints(sorted.isSortedWith(naturalOrder()), "true")
         assertPrints(sorted.isSortedWith(reverseOrder()), "false")
 
-        val reversed = intArrayOf(5, 4, 3, 2, 1)
+        val reversed: IntArray = [5, 4, 3, 2, 1]
         assertPrints(reversed.isSortedWith(reverseOrder()), "true")
     }
 
@@ -58,7 +58,7 @@ class IsSortedIntArraySamples {
         assertPrints(intArrayOf().isSortedBy { it * it }, "true")
         assertPrints(intArrayOf(1).isSortedBy { it * it }, "true")
 
-        val values = intArrayOf(1, -2, 3, -4, 5)
+        val values: IntArray = [1, -2, 3, -4, 5]
         assertPrints(values.isSortedBy { it * it }, "true")
         assertPrints(values.isSortedBy { abs(it) }, "true")
         assertPrints(values.isSortedBy { it }, "false")
@@ -70,7 +70,7 @@ class IsSortedIntArraySamples {
         assertPrints(intArrayOf().isSortedByDescending { it * it }, "true")
         assertPrints(intArrayOf(5).isSortedByDescending { it * it }, "true")
 
-        val values = intArrayOf(5, -4, 3, -2, 1)
+        val values: IntArray = [5, -4, 3, -2, 1]
         assertPrints(values.isSortedByDescending { it * it }, "true")
         assertPrints(values.isSortedByDescending { abs(it) }, "true")
         assertPrints(values.isSortedByDescending { it }, "false")

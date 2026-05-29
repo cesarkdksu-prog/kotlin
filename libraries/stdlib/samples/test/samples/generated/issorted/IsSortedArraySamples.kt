@@ -20,10 +20,10 @@ class IsSortedArraySamples {
         assertPrints(arrayOf<String>().isSorted(), "true")
         assertPrints(arrayOf("apple").isSorted(), "true")
 
-        val sorted = arrayOf("apple", "banana", "cherry")
+        val sorted: Array<String> = ["apple", "banana", "cherry"]
         assertPrints(sorted.isSorted(), "true")
 
-        val unsorted = arrayOf("banana", "apple", "cherry")
+        val unsorted: Array<String> = ["banana", "apple", "cherry"]
         assertPrints(unsorted.isSorted(), "false")
     }
 
@@ -32,10 +32,10 @@ class IsSortedArraySamples {
         assertPrints(arrayOf<String>().isSortedDescending(), "true")
         assertPrints(arrayOf("cherry").isSortedDescending(), "true")
 
-        val sorted = arrayOf("cherry", "banana", "apple")
+        val sorted: Array<String> = ["cherry", "banana", "apple"]
         assertPrints(sorted.isSortedDescending(), "true")
 
-        val unsorted = arrayOf("banana", "cherry", "apple")
+        val unsorted: Array<String> = ["banana", "cherry", "apple"]
         assertPrints(unsorted.isSortedDescending(), "false")
     }
 
@@ -44,17 +44,17 @@ class IsSortedArraySamples {
         assertPrints(arrayOf<String>().isSortedWith(naturalOrder()), "true")
         assertPrints(arrayOf("apple").isSortedWith(naturalOrder()), "true")
 
-        val sorted = arrayOf("apple", "banana", "cherry")
+        val sorted: Array<String> = ["apple", "banana", "cherry"]
         assertPrints(sorted.isSortedWith(naturalOrder()), "true")
         assertPrints(sorted.isSortedWith(reverseOrder()), "false")
 
-        val reversed = arrayOf("cherry", "banana", "apple")
+        val reversed: Array<String> = ["cherry", "banana", "apple"]
         assertPrints(reversed.isSortedWith(reverseOrder()), "true")
 
-        val caseInsensitive = arrayOf("Apple", "banana", "Cherry")
+        val caseInsensitive: Array<String> = ["Apple", "banana", "Cherry"]
         assertPrints(caseInsensitive.isSortedWith(String.CASE_INSENSITIVE_ORDER), "true")
 
-        val withNulls = arrayOf(null, "apple", "banana")
+        val withNulls: Array<String?> = [null, "apple", "banana"]
         assertPrints(withNulls.isSortedWith(nullsFirst(naturalOrder())), "true")
         assertPrints(withNulls.isSortedWith(nullsLast(naturalOrder())), "false")
     }
@@ -64,7 +64,7 @@ class IsSortedArraySamples {
         assertPrints(arrayOf<String>().isSortedBy { it.length }, "true")
         assertPrints(arrayOf("c").isSortedBy { it.length }, "true")
 
-        val values = arrayOf("c", "bb", "aaa")
+        val values: Array<String> = ["c", "bb", "aaa"]
         assertPrints(values.isSortedBy { it.length }, "true")
         assertPrints(values.isSortedBy { it }, "false")
         assertPrints(arrayOf("a", "b").isSortedBy { if (it == "a") null else it }, "true")
@@ -77,7 +77,7 @@ class IsSortedArraySamples {
         assertPrints(arrayOf<String>().isSortedByDescending { it.length }, "true")
         assertPrints(arrayOf("aaa").isSortedByDescending { it.length }, "true")
 
-        val values = arrayOf("aaa", "bb", "c")
+        val values: Array<String> = ["aaa", "bb", "c"]
         assertPrints(values.isSortedByDescending { it.length }, "true")
         assertPrints(values.isSortedByDescending { it }, "false")
         assertPrints(arrayOf("b", "a").isSortedByDescending { if (it == "a") null else it }, "true")

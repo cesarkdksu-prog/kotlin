@@ -21,7 +21,7 @@ class AnnotationTest {
         val kAnnotations = AnnotatedClass::class.java.annotations.map { it!!.annotationClass }
         val jAnnotations = AnnotatedClass::class.java.annotations.map { it!!.annotationClass.java }
 
-        assertTrue(kAnnotations.containsAll(listOf(MyAnno::class,       java.lang.Deprecated::class)))
-        assertTrue(jAnnotations.containsAll(listOf(MyAnno::class.java,  java.lang.Deprecated::class.java)))
+        assertTrue(kAnnotations.containsAll([MyAnno::class, java.lang.Deprecated::class]))
+        assertTrue(jAnnotations.containsAll([MyAnno::class.java, java.lang.Deprecated::class.java]))
     }
 }

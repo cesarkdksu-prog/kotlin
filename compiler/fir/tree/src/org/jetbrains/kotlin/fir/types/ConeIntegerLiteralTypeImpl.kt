@@ -40,7 +40,7 @@ class ConeIntegerLiteralConstantTypeImpl(
             isUnsigned: Boolean,
             isTypePresent: (ConeClassLikeType) -> Boolean,
         ): ConeSimpleKotlinType {
-            val possibleTypes = mutableListOf<ConeClassLikeType>()
+            val possibleTypes: MutableList<ConeClassLikeType> = []
 
             fun checkBoundsAndAddPossibleType(classId: ClassId, range: LongRange) {
                 if (value in range) {
@@ -139,15 +139,15 @@ fun ConeKotlinType.approximateIntegerLiteralType(expectedType: ConeKotlinType? =
 private object ConeIntegerLiteralTypeExtensions {
     fun createSupertypeList(type: ConeIntegerLiteralType): List<ConeClassLikeType> {
         val comparableSuperType =
-            ConeClassLikeTypeImpl(StandardClassIds.Comparable.toLookupTag(), arrayOf(ConeKotlinTypeProjectionIn(type)), false)
+            ConeClassLikeTypeImpl(StandardClassIds.Comparable.toLookupTag(), [ConeKotlinTypeProjectionIn(type)], false)
 
         return if (type.possibleTypes.none { it.isUnsignedTypeOrNullableUnsignedType }) {
-            listOf(
+            [
                 createClassLikeType(StandardClassIds.Number),
                 comparableSuperType,
-            )
+            ]
         } else {
-            listOf(comparableSuperType)
+            [comparableSuperType]
         }
     }
 

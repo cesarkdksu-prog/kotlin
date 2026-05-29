@@ -20,10 +20,10 @@ class IsSortedUShortArraySamples {
         assertPrints(ushortArrayOf().isSorted(), "true")
         assertPrints(ushortArrayOf(1u).isSorted(), "true")
 
-        val sorted = ushortArrayOf(1u, 2u, 3u, 4u, 5u)
+        val sorted: UShortArray = [1u, 2u, 3u, 4u, 5u]
         assertPrints(sorted.isSorted(), "true")
 
-        val unsorted = ushortArrayOf(2u, 1u, 3u, 4u, 5u)
+        val unsorted: UShortArray = [2u, 1u, 3u, 4u, 5u]
         assertPrints(unsorted.isSorted(), "false")
     }
 
@@ -32,10 +32,10 @@ class IsSortedUShortArraySamples {
         assertPrints(ushortArrayOf().isSortedDescending(), "true")
         assertPrints(ushortArrayOf(5u).isSortedDescending(), "true")
 
-        val sorted = ushortArrayOf(5u, 4u, 3u, 2u, 1u)
+        val sorted: UShortArray = [5u, 4u, 3u, 2u, 1u]
         assertPrints(sorted.isSortedDescending(), "true")
 
-        val unsorted = ushortArrayOf(4u, 5u, 3u, 2u, 1u)
+        val unsorted: UShortArray = [4u, 5u, 3u, 2u, 1u]
         assertPrints(unsorted.isSortedDescending(), "false")
     }
 
@@ -44,11 +44,11 @@ class IsSortedUShortArraySamples {
         assertPrints(ushortArrayOf().isSortedWith(naturalOrder()), "true")
         assertPrints(ushortArrayOf(1u).isSortedWith(naturalOrder()), "true")
 
-        val sorted = ushortArrayOf(1u, 2u, 3u, 4u, 5u)
+        val sorted: UShortArray = [1u, 2u, 3u, 4u, 5u]
         assertPrints(sorted.isSortedWith(naturalOrder()), "true")
         assertPrints(sorted.isSortedWith(reverseOrder()), "false")
 
-        val reversed = ushortArrayOf(5u, 4u, 3u, 2u, 1u)
+        val reversed: UShortArray = [5u, 4u, 3u, 2u, 1u]
         assertPrints(reversed.isSortedWith(reverseOrder()), "true")
     }
 
@@ -57,7 +57,7 @@ class IsSortedUShortArraySamples {
         assertPrints(ushortArrayOf().isSortedBy { it.toUInt() % 3u }, "true")
         assertPrints(ushortArrayOf(3u).isSortedBy { it.toUInt() % 3u }, "true")
 
-        val values = ushortArrayOf(3u, 1u, 4u, 2u)
+        val values: UShortArray = [3u, 1u, 4u, 2u]
         assertPrints(values.isSortedBy { it.toUInt() % 3u }, "true")
         assertPrints(values.isSortedBy { it }, "false")
         assertPrints(ushortArrayOf(1u, 2u).isSortedBy { if (it.toUInt() == 1u) null else it }, "true")
@@ -68,7 +68,7 @@ class IsSortedUShortArraySamples {
         assertPrints(ushortArrayOf().isSortedByDescending { it.toUInt() % 3u }, "true")
         assertPrints(ushortArrayOf(2u).isSortedByDescending { it.toUInt() % 3u }, "true")
 
-        val values = ushortArrayOf(2u, 4u, 1u, 3u)
+        val values: UShortArray = [2u, 4u, 1u, 3u]
         assertPrints(values.isSortedByDescending { it.toUInt() % 3u }, "true")
         assertPrints(values.isSortedByDescending { it }, "false")
         assertPrints(ushortArrayOf(2u, 1u).isSortedByDescending { if (it.toUInt() == 1u) null else it }, "true")

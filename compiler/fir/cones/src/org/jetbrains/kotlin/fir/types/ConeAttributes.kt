@@ -79,8 +79,8 @@ class ConeAttributes private constructor(attributes: List<ConeAttribute<*>>) : A
             return generateNullableAccessor<ConeAttribute<*>, T>(T::class) as ReadOnlyProperty<ConeAttributes, T?>
         }
 
-        val Empty: ConeAttributes = ConeAttributes(emptyList())
-        val WithExtensionFunctionType: ConeAttributes = ConeAttributes(listOf(CompilerConeAttributes.ExtensionFunctionType))
+        val Empty: ConeAttributes = ConeAttributes([])
+        val WithExtensionFunctionType: ConeAttributes = ConeAttributes([CompilerConeAttributes.ExtensionFunctionType])
 
         fun create(attributes: List<ConeAttribute<*>>): ConeAttributes {
             return if (attributes.isEmpty()) {
@@ -112,7 +112,7 @@ class ConeAttributes private constructor(attributes: List<ConeAttribute<*>>) : A
     }
 
     fun add(attribute: ConeAttribute<*>): ConeAttributes {
-        return add(create(listOf(attribute)))
+        return add(create([attribute]))
     }
 
     operator fun contains(attribute: ConeAttribute<*>): Boolean {
@@ -150,7 +150,7 @@ class ConeAttributes private constructor(attributes: List<ConeAttribute<*>>) : A
 
     private inline fun perform(other: ConeAttributes, op: ConeAttribute<*>.(ConeAttribute<*>?) -> ConeAttribute<*>?): ConeAttributes {
         if (this.isEmpty() && other.isEmpty()) return this
-        val attributes = mutableListOf<ConeAttribute<*>>()
+        val attributes: MutableList<ConeAttribute<*>> = []
         for (index in indices) {
             val a = arrayMap[index]
             val b = other.arrayMap[index]

@@ -183,20 +183,20 @@ class AtomicReferenceTest {
 
     @Test
     fun smoke() {
-        val atomic = AtomicReference<List<Data>>(listOf(Data(1), Data(2), Data(3)))
-        assertEquals(listOf(Data(1), Data(2), Data(3)), atomic.value)
-        atomic.value = listOf(Data(1), Data(2), Data(1))
-        assertEquals(listOf(Data(1), Data(2), Data(1)), atomic.value)
-        assertEquals(listOf(Data(1), Data(2), Data(1)), atomic.getAndSet(listOf(Data(1), Data(1), Data(1))))
-        assertEquals(listOf(Data(1), Data(1), Data(1)), atomic.value)
+        val atomic = AtomicReference<List<Data>>([Data(1), Data(2), Data(3)])
+        assertEquals([Data(1), Data(2), Data(3)], atomic.value)
+        atomic.value = [Data(1), Data(2), Data(1)]
+        assertEquals([Data(1), Data(2), Data(1)], atomic.value)
+        assertEquals([Data(1), Data(2), Data(1)], atomic.getAndSet([Data(1), Data(1), Data(1)]))
+        assertEquals([Data(1), Data(1), Data(1)], atomic.value)
         var cur = atomic.value
-        assertTrue(atomic.compareAndSet(cur, listOf(Data(2), Data(2), Data(2))))
-        assertFalse(atomic.compareAndSet(listOf(Data(1), Data(1), Data(1)), listOf(Data(2), Data(2), Data(2))))
-        assertEquals(listOf(Data(2), Data(2), Data(2)), atomic.value)
+        assertTrue(atomic.compareAndSet(cur, [Data(2), Data(2), Data(2)]))
+        assertFalse(atomic.compareAndSet([Data(1), Data(1), Data(1)], [Data(2), Data(2), Data(2)]))
+        assertEquals([Data(2), Data(2), Data(2)], atomic.value)
         cur = atomic.value
-        assertEquals(listOf(Data(2), Data(2), Data(2)), atomic.compareAndExchange(cur, listOf(Data(3), Data(3), Data(3))))
-        assertEquals(listOf(Data(3), Data(3), Data(3)), atomic.compareAndExchange(cur, listOf(Data(4), Data(4), Data(4))))
-        assertEquals(listOf(Data(3), Data(3), Data(3)), atomic.compareAndExchange(cur, listOf(Data(3), Data(3), Data(3))))
+        assertEquals([Data(2), Data(2), Data(2)], atomic.compareAndExchange(cur, [Data(3), Data(3), Data(3)]))
+        assertEquals([Data(3), Data(3), Data(3)], atomic.compareAndExchange(cur, [Data(4), Data(4), Data(4)]))
+        assertEquals([Data(3), Data(3), Data(3)], atomic.compareAndExchange(cur, [Data(3), Data(3), Data(3)]))
     }
 }
 
