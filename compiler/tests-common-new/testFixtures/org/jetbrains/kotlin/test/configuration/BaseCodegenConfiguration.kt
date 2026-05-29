@@ -61,7 +61,7 @@ fun TestConfigurationBuilder.setupJvmPipelineSteps(parser: FirParser) {
     facadeStep(::Fir2IrCliJvmFacade)
     irHandlersStep { useHandlers(::NoIrCompilationErrorsHandler) }
     facadeStep(::BackendCliJvmFacade)
-    jvmArtifactsHandlersStep { useHandlers(::NoJvmSpecificCompilationErrorsHandler) }
+    jvmArtifactsHandlersStep(init = {})
 }
 
 /**
