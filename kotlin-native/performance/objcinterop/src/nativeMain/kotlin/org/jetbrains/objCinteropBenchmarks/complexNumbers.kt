@@ -14,6 +14,7 @@ import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.random.Random
+import org.jetbrains.benchmarksLauncher.SkipWhenBaseOnly
 import platform.Foundation.*
 import platform.darwin.*
 
