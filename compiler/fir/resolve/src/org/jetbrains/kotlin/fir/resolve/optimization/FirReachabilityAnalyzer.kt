@@ -143,6 +143,7 @@ class FirReachabilityAnalyzer(private val session: FirSession) : FirVisitorVoid(
     }
 
     override fun visitRegularClass(regularClass: FirRegularClass) {
+
         regularClass.annotations.forEach { it.accept(this) }
         regularClass.superTypeRefs.forEach { it.accept(this) }
         regularClass.typeParameters.forEach { it.accept(this) }

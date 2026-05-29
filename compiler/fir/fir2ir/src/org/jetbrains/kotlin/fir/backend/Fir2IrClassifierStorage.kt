@@ -259,7 +259,7 @@ class Fir2IrClassifierStorage(
         }
     }
 
-    private fun getCachedIrClass(klass: FirClass): IrClass? {
+    internal fun getCachedIrClass(klass: FirClass): IrClass? {
         @OptIn(UnsafeDuringIrConstructionAPI::class)
         return getCachedIrLocalClass(klass) ?: classCache[klass]?.owner
     }

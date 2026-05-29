@@ -44,9 +44,21 @@ import kotlin.collections.set
 context(c: Fir2IrComponents)
 fun FirRegularClass.getIrSymbolsForSealedSubclasses(): List<IrClassSymbol> {
     val symbolProvider = c.session.symbolProvider
-    return getSealedClassInheritors(c.session).mapNotNull {
-        symbolProvider.getClassLikeSymbolByClassId(it)?.toIrSymbol()
-    }.filterIsInstance<IrClassSymbol>()
+    val classifierStorage = c.classifierStorage
+    return getSealedClassInheritors(c.session).mapNotNull { inheritorClassId ->
+        val inheritorSymbol = symbolProvider.getClassLikeSymbolByClassId(inheritorClassId) ?: return@mapNotNull null
+        val firClass = inheritorSymbol.fir as? FirClass ?: return@mapNotNull null
+        if (firClass.origin == FirDeclarationOrigin.Source) {
+            val cachedIrClass = classifierStorage.getCachedIrClass(firClass)
+            if (cachedIrClass == null) {
+                // Skip source subclass if it was pruned (dead code) during reachability analysis
+                return@mapNotNull null
+            }
+            cachedIrClass.symbol
+        } else {
+            inheritorSymbol.toIrSymbol() as? IrClassSymbol
+        }
+    }
 }
 
 fun List<IrDeclaration>.extractFirDeclarations(): Set<FirDeclaration> {
