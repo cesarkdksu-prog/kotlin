@@ -18,13 +18,13 @@ enum class CompilerVersionOfApiDeprecation {
 
 /**
  * TL;DL:
- * @DeprecatedCompilerApi - IDE-only warning for us, compiler warning for users (in future).
- * @DeprecatedForRemovalCompilerApi - compiler error for us and for users, may @OptIn though.
+ * @DeprecatedCompilerApi - compiler WARNING for us and for users, may @OptIn though.
+ * @DeprecatedForRemovalCompilerApi - compiler ERROR for us and for users, may @OptIn though.
  */
 
 /**
  * An API that we would like to migrate away from in the compiler, and eventually drop.
- * It produces IDE-only warning.
+ * It produces a compiler warning.
  *
  * Note: We don't simply use @Deprecated annotation because of how our build
  * and infrastructure are configured.
