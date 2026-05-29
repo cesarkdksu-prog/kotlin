@@ -487,41 +487,51 @@ class Switch : SkipWhenBaseOnly() {
     @Benchmark 
     fun testSparseIntSwitch(bh: Blackhole) {
         skipWhenBaseOnly()
+        var result = 0
         for (i in sparseIntData) {
-            bh.consume(sparseIntSwitch(i))
+            result += sparseIntSwitch(i)
         }
+        bh.consume(result)
     }
 
     @Benchmark 
     fun testDenseIntSwitch(bh: Blackhole) {
         skipWhenBaseOnly()
+        var result = 0
         for (i in denseIntData) {
-            bh.consume(denseIntSwitch(i))
+            result += denseIntSwitch(i)
         }
+        bh.consume(result)
     }
 
     @Benchmark 
     fun testConstSwitch(bh: Blackhole) {
         skipWhenBaseOnly()
+        var result = 0
         for (i in denseIntData) {
-            bh.consume(constSwitch(i))
+            result += constSwitch(i)
         }
+        bh.consume(result)
     }
 
     @Benchmark 
     fun testObjConstSwitch(bh: Blackhole) {
         skipWhenBaseOnly()
+        var result = 0
         for (i in denseIntData) {
-            bh.consume(objConstSwitch(i))
+            result += objConstSwitch(i)
         }
+        bh.consume(result)
     }
 
     @Benchmark 
     fun testVarSwitch(bh: Blackhole) {
         skipWhenBaseOnly()
+        var result = 0
         for (i in denseIntData) {
-            bh.consume(varSwitch(i))
+            result += varSwitch(i)
         }
+        bh.consume(result)
     }
 
     var data : Array<String> = arrayOf()
@@ -530,10 +540,12 @@ class Switch : SkipWhenBaseOnly() {
 
     @Benchmark 
     fun testStringsSwitch(bh: Blackhole) {
+        var result = 0
         val n = data.size
         for (s in data) {
-            bh.consume(stringSwitch(s))
+            result += stringSwitch(s)
         }
+        bh.consume(result)
     }
 
     enum class MyEnum {
