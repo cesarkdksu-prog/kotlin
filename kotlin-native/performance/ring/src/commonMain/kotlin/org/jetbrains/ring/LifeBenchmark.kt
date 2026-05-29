@@ -1,12 +1,14 @@
+@file:OptIn(kotlin.native.concurrent.ObsoleteWorkersApi::class)
 package org.jetbrains.ring
 
 import kotlin.concurrent.*
 import kotlin.native.concurrent.*
 import kotlin.random.Random
 import kotlinx.benchmark.Blackhole
+import org.jetbrains.benchmarksLauncher.BENCHMARK_SIZE
 
 // Use the same seed for reproducibility
-val rnd = Random(0)
+val rnd = Random(6581)
 
 data class Pos(val i: Int, val j: Int)
 

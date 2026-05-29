@@ -18,6 +18,7 @@ package org.jetbrains.ring
 
 import kotlin.random.Random
 import kotlinx.benchmark.Blackhole
+import org.jetbrains.benchmarksLauncher.BENCHMARK_SIZE
 
 /**
  * This class emulates matrix behaviour using a hash map as its implementation
@@ -57,7 +58,7 @@ class KMatrix internal constructor(val rows: Int, val columns: Int) {
  */
 open class MatrixMapBenchmark {
     // Use the same seed for reproducibility
-    private val rnd = Random(0)
+    private val rnd = Random(501)
 
     //Benchmark
     fun add(bh: Blackhole) {

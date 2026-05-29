@@ -17,10 +17,11 @@
 package org.jetbrains.ring
 
 import kotlinx.benchmark.Blackhole
+import org.jetbrains.benchmarksLauncher.BENCHMARK_SIZE
 
 open class LoopBenchmark {
-    lateinit var arrayList: List<Value>
-    lateinit var array: Array<Value>
+    var arrayList: List<Value>
+    var array: Array<Value>
 
     init {
         val list = ArrayList<Value>(BENCHMARK_SIZE)
@@ -32,49 +33,63 @@ open class LoopBenchmark {
 
     //Benchmark 
     fun arrayLoop(bh: Blackhole) {
+        var result = 0
         for (x in array) {
-            bh.consume(x)
+            result += x.value
         }
+        bh.consume(result)
     }
 
     //Benchmark 
     fun arrayIndexLoop(bh: Blackhole) {
+        var result = 0
         for (i in array.indices) {
-            bh.consume(array[i])
+            result += array[i].value
         }
+        bh.consume(result)
     }
 
     //Benchmark 
     fun rangeLoop(bh: Blackhole) {
-        for (i in 0..BENCHMARK_SIZE) {
-            bh.consume(i)
+        var result = 0
+        for (i in 0..<array.size) {
+            result += array[i].value
         }
+        bh.consume(result)
     }
 
     //Benchmark 
     fun arrayListLoop(bh: Blackhole) {
+        var result = 0
         for (x in arrayList) {
-            bh.consume(x)
+            result += x.value
         }
+        bh.consume(result)
     }
 
     //Benchmark 
     fun arrayWhileLoop(bh: Blackhole) {
+        var result = 0
         var i = 0
         val s = array.size
         while (i < s) {
-            bh.consume(array[i])
+            result += array[i].value
             i++
         }
+        bh.consume(result)
     }
 
     //Benchmark 
     fun arrayForeachLoop(bh: Blackhole) {
-        array.forEach { bh.consume(it) }
+        var result = 0
+        array.forEach { result += it.value }
+        bh.consume(result)
     }
 
     //Benchmark 
     fun arrayListForeachLoop(bh: Blackhole) {
-        arrayList.forEach { bh.consume(it) }
+        var result = 0
+        arrayList.forEach { result += it.value }
+        bh.consume(result)
     }
 }

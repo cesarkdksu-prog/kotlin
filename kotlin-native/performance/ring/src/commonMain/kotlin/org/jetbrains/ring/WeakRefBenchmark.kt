@@ -11,6 +11,7 @@ import kotlin.native.ref.WeakReference
 import kotlin.random.Random
 import kotlinx.benchmark.Blackhole
 import kotlinx.cinterop.StableRef
+import org.jetbrains.benchmarksLauncher.BENCHMARK_SIZE
 
 private const val REPEAT_COUNT = BENCHMARK_SIZE
 private const val REFERENCES_COUNT = 3
@@ -54,7 +55,7 @@ private fun ReferenceWrapper.stress(): Int {
 @OptIn(kotlin.native.runtime.NativeRuntimeApi::class)
 open class WeakRefBenchmark {
     // Use the same seed for reproducibility
-    private val rnd = Random(0)
+    private val rnd = Random(85140)
 
     private val weight = Array(BENCHMARK_SIZE) { ReferenceWrapper.create(rnd) }
 

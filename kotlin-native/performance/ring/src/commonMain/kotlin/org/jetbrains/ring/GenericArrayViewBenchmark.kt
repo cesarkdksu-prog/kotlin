@@ -29,10 +29,12 @@ class Array2D<T>(val data: MemoryView<T>, val width: Int) where T : Number{
         return data.get(width * ind1 + ind2).toInt()
     }
 
+    @Suppress("NOTHING_TO_INLINE")
     inline fun getGenericInlined(ind1: Int, ind2: Int): Int {
         return data.get(width * ind1 + ind2).toInt()
     }
 
+    @Suppress("NOTHING_TO_INLINE")
     inline fun getSpecializedInlined(ind1: Int, ind2: Int): Int {
         return (data as MemoryViewIntArray).get(width * ind1 + ind2)
     }
@@ -40,7 +42,7 @@ class Array2D<T>(val data: MemoryView<T>, val width: Int) where T : Number{
 
 open class GenericArrayViewBenchmark {
     // Use the same seed for reproducibility
-    private val rnd = Random(0)
+    private val rnd = Random(29)
 
     private val N = 2000
 

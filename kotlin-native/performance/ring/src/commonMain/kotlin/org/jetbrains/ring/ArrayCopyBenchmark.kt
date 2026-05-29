@@ -7,10 +7,12 @@ package org.jetbrains.ring
 
 import kotlin.random.Random
 import kotlinx.benchmark.Blackhole
+import org.jetbrains.benchmarksLauncher.BENCHMARK_SIZE
 
 open class ArrayCopyBenchmark {
     class CustomArray<T>(capacity: Int = 0) {
         private var hashes: IntArray = IntArray(capacity)
+        @Suppress("UNCHECKED_CAST")
         private var values: Array<T?> = arrayOfNulls<Any>(capacity) as Array<T?>
         private var _size: Int = 0
 

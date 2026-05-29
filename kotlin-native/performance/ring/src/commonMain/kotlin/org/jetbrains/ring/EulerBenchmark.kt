@@ -17,6 +17,7 @@
 package org.jetbrains.ring
 
 import kotlinx.benchmark.Blackhole
+import org.jetbrains.benchmarksLauncher.BENCHMARK_SIZE
 
 fun fibonacci(): Sequence<Int> {
     var a = 0
@@ -73,6 +74,7 @@ open class EulerBenchmark {
         val minLimit = (s/10)*(s/10)
         val maxDiv = BENCHMARK_SIZE-1
         val minDiv = BENCHMARK_SIZE/10
+        var result = 0
         for (i in maxLimit downTo minLimit) {
             if (!i.isPalindrome()) continue;
             for (j in minDiv..maxDiv) {
@@ -80,6 +82,7 @@ open class EulerBenchmark {
                     val res = i / j
                     if (res in minDiv.toLong()..maxDiv.toLong()) {
                         bh.consume(i)
+                        return
                     }
                 }
             }
@@ -120,7 +123,7 @@ open class EulerBenchmark {
         val digits: MutableList<Int> = ArrayList()
         for (digit in veryLongNumber) {
             if (digit in '0'..'9') {
-                digits.add(digit.toInt() - '0'.toInt())
+                digits.add(digit.code - '0'.code)
             }
         }
         var largest = 0L
@@ -150,6 +153,7 @@ open class EulerBenchmark {
                 val a2 = a.toLong() * a.toLong()
                 if (c2 == b2 + a2) {
                     bh.consume(a.toLong() * b.toLong() * c.toLong())
+                    return
                 }
             }
         }

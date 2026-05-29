@@ -18,6 +18,7 @@ package org.jetbrains.ring
 
 import kotlin.random.Random
 import kotlinx.benchmark.Blackhole
+import org.jetbrains.benchmarksLauncher.BENCHMARK_SIZE
 
 var globalAddendum = 0
 

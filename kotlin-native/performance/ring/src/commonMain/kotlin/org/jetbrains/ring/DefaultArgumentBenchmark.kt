@@ -29,7 +29,7 @@ open class DefaultArgumentBenchmark {
 
     init {
         // Use the same seed for reproducibility
-        val rnd = Random(0)
+        val rnd = Random(84)
         arg = rnd.nextInt()
     }
 

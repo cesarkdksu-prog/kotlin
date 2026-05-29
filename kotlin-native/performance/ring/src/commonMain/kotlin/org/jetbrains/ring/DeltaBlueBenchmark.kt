@@ -756,8 +756,8 @@ class DeltaBlueBenchmark {
       plan.execute()
       if (last.value != i)
       alert("Chain test failed.")
-      bh.consume(last.value)
     }
+    bh.consume(last.value)
   }
 
   /**
@@ -795,7 +795,7 @@ class DeltaBlueBenchmark {
     for (i in 0 until n - 1) {
       if (dests.at(i).value != i * 5 + 2000)
       alert("Projection 4 failed")
-      bh.consume(dests.at(i))
     }
+    bh.consume(dests)
   }
 }

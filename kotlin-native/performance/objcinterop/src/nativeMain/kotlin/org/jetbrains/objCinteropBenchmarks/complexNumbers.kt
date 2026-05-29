@@ -14,6 +14,7 @@ import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.random.Random
+import org.jetbrains.benchmarksLauncher.BENCHMARK_SIZE
 import platform.Foundation.*
 import platform.darwin.*
 
@@ -21,15 +22,15 @@ actual typealias ComplexNumber = Complex
 
 actual class ComplexNumbersBenchmark actual constructor() {
     // Use the same seed for reproducibility
-    private val rnd = Random(0)
+    private val rnd = Random(94)
 
     val complexNumbersSequence = generateNumbersSequenceImpl()
 
-    fun randomNumber() = rnd.nextDouble(0.0, benchmarkSize.toDouble())
+    fun randomNumber() = rnd.nextDouble(0.0, BENCHMARK_SIZE.toDouble())
 
     private fun generateNumbersSequenceImpl(): List<Complex> {
         val result = mutableListOf<Complex>()
-        for (i in 1..benchmarkSize) {
+        for (i in 1..BENCHMARK_SIZE) {
             result.add(Complex(randomNumber(), randomNumber()))
         }
         return result
@@ -65,7 +66,7 @@ actual class ComplexNumbersBenchmark actual constructor() {
 
         val result = InvertedNumber(0.0)
 
-        for (i in 1..benchmarkSize) {
+        for (i in 1..BENCHMARK_SIZE) {
             result.add(InvertedNumber(randomNumber()))
             result.sub(InvertedNumber(randomNumber()))
         }
@@ -80,7 +81,8 @@ actual class ComplexNumbersBenchmark actual constructor() {
 
     actual fun stringToObjC(bh: Blackhole) {
         complexNumbersSequence.forEach {
-            bh.consume(it.setFormat("%.1lf|%.1lf"))
+            it.setFormat("%.1lf|%.1lf")
+            bh.consume(it)
         }
     }
 

@@ -27,6 +27,7 @@ fun octoTest(bh: Blackhole) {
         x++
     }
 
+    var result = 0
     x = 0
     y = 0
     z = 0
@@ -39,11 +40,13 @@ fun octoTest(bh: Blackhole) {
 
                 val res = tree.get(x, y, z)
 
-                bh.consume(res)
+                if (res == c)
+                    result += 1
                 z++
             }
             y++
         }
         x++
     }
+    bh.consume(result)
 }

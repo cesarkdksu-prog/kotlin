@@ -17,9 +17,11 @@
 package org.jetbrains.ring
 
 import kotlinx.benchmark.Blackhole
+import org.jetbrains.benchmarksLauncher.BENCHMARK_SIZE
 
 fun makeIterable(): Iterable<Int> = (0..BENCHMARK_SIZE)
 
+@Suppress("NOTHING_TO_INLINE")
 internal inline fun sum(iterable: Iterable<Int>): Int {
     var sum = 0
     for (x in iterable) {

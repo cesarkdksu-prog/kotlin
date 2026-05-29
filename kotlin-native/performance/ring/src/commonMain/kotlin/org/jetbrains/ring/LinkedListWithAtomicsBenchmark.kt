@@ -3,20 +3,23 @@
  * that can be found in the LICENSE file.
  */
 
+@file:OptIn(kotlin.concurrent.atomics.ExperimentalAtomicApi::class)
 package org.jetbrains.ring
 
+import kotlin.concurrent.atomics.AtomicReference
 import kotlin.random.Random
 import kotlinx.benchmark.Blackhole
+import org.jetbrains.benchmarksLauncher.BENCHMARK_SIZE
 
 class ChunkBuffer(var readPosition: Int, var writePosition: Int) {
-    private val nextRef: AtomicRef<ChunkBuffer?> = atomic(null)
+    private val nextRef = AtomicReference<ChunkBuffer?>(null)
 
     /**
      * Reference to next buffer view. Useful to chain multiple views.
      * @see appendNext
      * @see cleanNext
      */
-    var next: ChunkBuffer? get() = nextRef.value
+    var next: ChunkBuffer? get() = nextRef.load()
         set(newValue) {
             if (newValue == null) {
                 cleanNext()
@@ -26,7 +29,7 @@ class ChunkBuffer(var readPosition: Int, var writePosition: Int) {
         }
 
     fun cleanNext(): ChunkBuffer? {
-        return nextRef.getAndSet(null)
+        return nextRef.exchange(null)
     }
 
     private fun appendNext(chunk: ChunkBuffer) {
@@ -66,7 +69,7 @@ class LinkedListOfBuffers(var head: ChunkBuffer = ChunkBuffer(0,0),
 
 open class LinkedListWithAtomicsBenchmark {
     // Use the same seed for reproducibility
-    private val rnd = Random(0)
+    private val rnd = Random(8790)
 
     val list: LinkedListOfBuffers
     init {

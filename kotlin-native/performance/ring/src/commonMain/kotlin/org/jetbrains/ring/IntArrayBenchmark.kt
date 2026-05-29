@@ -17,6 +17,7 @@
 package org.jetbrains.ring
 
 import kotlinx.benchmark.Blackhole
+import org.jetbrains.benchmarksLauncher.BENCHMARK_SIZE
 
 open class IntArrayBenchmark {
     private var _data: IntArray? = null
@@ -151,7 +152,6 @@ open class IntArrayBenchmark {
     //Benchmark
     fun countFilteredPrime(bh: Blackhole) {
         val res = data.count { filterPrime(it) }
-        //println(res)
         bh.consume(res)
     }
 

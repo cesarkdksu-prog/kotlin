@@ -20,8 +20,7 @@ import kotlinx.benchmark.Blackhole
 import kotlinx.cinterop.*
 import platform.posix.*
 import kotlin.math.sqrt
-
-const val benchmarkSize = 10000
+import org.jetbrains.benchmarksLauncher.BENCHMARK_SIZE
 
 actual fun structBenchmark(bh: Blackhole) {
     memScoped {
@@ -37,7 +36,7 @@ actual fun structBenchmark(bh: Blackhole) {
         }
         val elementsList = mutableListOf<ElementS>()
         // Fill list.
-        for (i in 1..benchmarkSize) {
+        for (i in 1..BENCHMARK_SIZE) {
             val element = alloc<ElementS>()
             element.floatValue = i + sqrt(i.toDouble()).toFloat()
             element.integer = i.toLong()
@@ -57,7 +56,7 @@ actual fun unionBenchmark(bh: Blackhole) {
     memScoped {
         val elementsList = mutableListOf<ElementU>()
         // Fill list.
-        for (i in 1..benchmarkSize) {
+        for (i in 1..BENCHMARK_SIZE) {
             val element = alloc<ElementU>()
             element.integer = i.toLong()
             elementsList.add(element)
@@ -74,10 +73,9 @@ actual fun unionBenchmark(bh: Blackhole) {
 actual fun enumBenchmark(bh: Blackhole) {
     val days = arrayOf("Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday")
     val enumValues = mutableListOf<WeekDay>()
-    for (i in 1..benchmarkSize) {
+    for (i in 1..BENCHMARK_SIZE) {
         enumValues.add(getWeekDay(days[(0..6).random()]))
     }
-    enumValues.forEach {
-        bh.consume(isWeekEnd(it))
-    }
+    val weekEnds = enumValues.count { isWeekEnd(it) == 1 }
+    bh.consume(weekEnds)
 }

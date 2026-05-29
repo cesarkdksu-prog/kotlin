@@ -1,6 +1,7 @@
 package org.jetbrains.ring
 
 import kotlinx.benchmark.Blackhole
+import org.jetbrains.benchmarksLauncher.BENCHMARK_SIZE
 
 class ForLoopsBenchmark {
 
@@ -57,7 +58,7 @@ class ForLoopsBenchmark {
     fun charArrayLoop(bh: Blackhole) {
         var sum = 0L
         for (e in charArray) {
-            sum += e.toLong()
+            sum += e.code.toLong()
         }
         bh.consume(sum)
     }
@@ -131,7 +132,7 @@ class ForLoopsBenchmark {
     fun charArrayIndicesLoop(bh: Blackhole) {
         var sum = 0L
         for (i in charArray.indices) {
-            sum += charArray[i].toLong()
+            sum += charArray[i].code.toLong()
         }
         bh.consume(sum)
     }

@@ -17,12 +17,14 @@
 package org.jetbrains.ring
 
 import kotlinx.benchmark.Blackhole
+import org.jetbrains.benchmarksLauncher.BENCHMARK_SIZE
 
 open class ClassBaselineBenchmark {
 
     //Benchmark 
     fun consume(bh: Blackhole) {
         for (item in 1..BENCHMARK_SIZE) {
+            // TODO: what does this benchmark measure? `consume` may be too expensive
             bh.consume(Value(item))
         }
     }
@@ -32,6 +34,7 @@ open class ClassBaselineBenchmark {
         val value = Value(0)
         for (item in 1..BENCHMARK_SIZE) {
             value.value = item
+            // TODO: what does this benchmark measure? `consume` may be too expensive
             bh.consume(value)
         }
     }

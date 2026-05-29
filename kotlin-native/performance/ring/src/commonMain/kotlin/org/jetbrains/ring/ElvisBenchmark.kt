@@ -18,10 +18,11 @@ package org.jetbrains.ring
 
 import kotlin.random.Random
 import kotlinx.benchmark.Blackhole
+import org.jetbrains.benchmarksLauncher.BENCHMARK_SIZE
 
 open class ElvisBenchmark {
     // Use the same seed for reproducibility
-    private val rnd = Random(0)
+    private val rnd = Random(785)
 
     class Value(var value: Int)
 
@@ -35,9 +36,11 @@ open class ElvisBenchmark {
 
     //Benchmark
     fun testElvis(bh: Blackhole) {
+        var result = 0
         for (obj in array) {
-            bh.consume(obj?.value ?: 0)
+            result += obj?.value ?: 0
         }
+        bh.consume(result)
     }
 
     class Composite(val x : Int, val y : Composite?)

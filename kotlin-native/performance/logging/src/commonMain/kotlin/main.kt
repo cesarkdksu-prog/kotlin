@@ -15,13 +15,14 @@
  */
 
 import kotlinx.benchmark.*
+import org.jetbrains.benchmarksLauncher.BENCHMARK_SIZE
 
 @State(Scope.Benchmark)
 @Measurement(time = 100, timeUnit = BenchmarkTimeUnit.MILLISECONDS)
 class LoopHideName {
     @Benchmark
     fun Loop(bh: Blackhole) {
-        for (i in 0..10000) {
+        for (i in 0..BENCHMARK_SIZE) {
             bh.consume(i)
         }
     }

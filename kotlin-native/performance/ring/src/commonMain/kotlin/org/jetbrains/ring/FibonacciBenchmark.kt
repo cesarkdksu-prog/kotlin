@@ -17,6 +17,7 @@
 package org.jetbrains.ring
 
 import kotlinx.benchmark.Blackhole
+import org.jetbrains.benchmarksLauncher.BENCHMARK_SIZE
 
 /**
  * This test checks work with long numbers using Fibonacci sequence

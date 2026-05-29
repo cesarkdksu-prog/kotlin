@@ -290,6 +290,7 @@ open class CallsBenchmark {
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
     val g: G<Any> = H() as G<Any>
 
     fun parameterBoxUnboxFolding(bh: Blackhole) {

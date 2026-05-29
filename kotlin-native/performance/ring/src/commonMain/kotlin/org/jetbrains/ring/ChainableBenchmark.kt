@@ -6,6 +6,7 @@
 package org.jetbrains.ring
 
 import kotlinx.benchmark.Blackhole
+import org.jetbrains.benchmarksLauncher.BENCHMARK_SIZE
 
 // Benchmark from KT-46482.
 open class ChainableBenchmark {

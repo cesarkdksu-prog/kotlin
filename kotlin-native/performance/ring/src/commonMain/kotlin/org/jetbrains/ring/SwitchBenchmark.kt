@@ -18,6 +18,7 @@ package org.jetbrains.ring
 
 import kotlin.random.Random
 import kotlinx.benchmark.Blackhole
+import org.jetbrains.benchmarksLauncher.BENCHMARK_SIZE
 
 val SPARSE_SWITCH_CASES = intArrayOf(11, 29, 47, 71, 103,
                                      149, 175, 227, 263, 307,
@@ -451,7 +452,7 @@ open class SwitchBenchmark {
         when(s) {
             "ABCDEFG1" -> return 1
             "ABCDEFG2" -> return 2
-            "ABCDEFG2" -> return 3
+            "ABCDEFH2" -> return 3
             "ABCDEFG3" -> return 4
             "ABCDEFG4" -> return 5
             "ABCDEFG5" -> return 6
@@ -474,8 +475,8 @@ open class SwitchBenchmark {
         }
     }
 
-    lateinit var denseIntData: IntArray
-    lateinit var sparseIntData: IntArray
+    var denseIntData: IntArray
+    var sparseIntData: IntArray
 
 
 
@@ -582,8 +583,8 @@ open class SwitchBenchmark {
         }
     }
 
-    lateinit var enumData : Array<MyEnum>
-    lateinit var denseEnumData : Array<MyEnum>
+    var enumData : Array<MyEnum>
+    var denseEnumData : Array<MyEnum>
 
 
 
@@ -591,18 +592,22 @@ open class SwitchBenchmark {
     fun testEnumsSwitch(bh: Blackhole) {
         val n = enumData.size -1
         val data = enumData
+        var result = 0
         for (i in 0..n) {
-            bh.consume(enumSwitch(data[i]))
+            result += enumSwitch(data[i])
         }
+        bh.consume(result)
     }
 
     //Benchmark 
     fun testDenseEnumsSwitch(bh: Blackhole) {
         val n = denseEnumData.size -1
         val data = denseEnumData
+        var result = 0
         for (i in 0..n) {
-            bh.consume(denseEnumSwitch(data[i]))
+            result += denseEnumSwitch(data[i])
         }
+        bh.consume(result)
     }
 
     sealed class MySealedClass {
@@ -618,11 +623,11 @@ open class SwitchBenchmark {
         class MySealedClass10: MySealedClass()
     }
 
-    lateinit var sealedClassData: Array<MySealedClass>
+    var sealedClassData: Array<MySealedClass>
 
     init {
         // Use the same seed for reproducibility
-        val rnd = Random(0)
+        val rnd = Random(782)
         data = Array(BENCHMARK_SIZE) {
             "ABCDEFG" + rnd.nextInt(22)
         }
@@ -669,8 +674,10 @@ open class SwitchBenchmark {
     //Benchmark 
     fun testSealedWhenSwitch(bh: Blackhole) {
         val n = sealedClassData.size -1
+        var result = 0
         for (i in 0..n) {
-            bh.consume(sealedWhenSwitch(sealedClassData[i]))
+            result += sealedWhenSwitch(sealedClassData[i])
         }
+        bh.consume(result)
     }
 }

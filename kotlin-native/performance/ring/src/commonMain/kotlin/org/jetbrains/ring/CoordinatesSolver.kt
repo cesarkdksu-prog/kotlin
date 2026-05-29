@@ -340,8 +340,11 @@ class CoordinatesSolverBenchmark {
     fun solve(bh: Blackhole) {
         val output = solver.solve()
 
+        var result = 0
         for (c in output.steps) {
-            bh.consume(c)
+            if (c != null)
+                result += c.x + c.y
         }
+        bh.consume(result)
     }
 }

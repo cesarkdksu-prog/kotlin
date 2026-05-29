@@ -18,6 +18,7 @@ package org.jetbrains.ring
 
 import kotlin.random.Random
 import kotlinx.benchmark.Blackhole
+import org.jetbrains.benchmarksLauncher.BENCHMARK_SIZE
 
 open class StringBenchmark {
     private var _data: ArrayList<String>? = null
@@ -27,7 +28,7 @@ open class StringBenchmark {
 
     init {
         // Use the same seed for reproducibility
-        val rnd = Random(0)
+        val rnd = Random(863)
         val list = ArrayList<String>(BENCHMARK_SIZE)
         for (n in stringValues(BENCHMARK_SIZE))
             list.add(n)

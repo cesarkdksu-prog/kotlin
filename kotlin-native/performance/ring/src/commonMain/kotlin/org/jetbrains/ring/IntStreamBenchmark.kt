@@ -17,6 +17,7 @@
 package org.jetbrains.ring
 
 import kotlinx.benchmark.Blackhole
+import org.jetbrains.benchmarksLauncher.BENCHMARK_SIZE
 
 open class IntStreamBenchmark {
     private var _data: Iterable<Int>? = null
@@ -48,32 +49,39 @@ open class IntStreamBenchmark {
     
     //Benchmark
     fun filterAndMap(bh: Blackhole) {
+        var result = 0
         for (item in data.asSequence().filter { filterLoad(it) }.map { mapLoad(it) })
-            bh.consume(item)
+            result += item.length
+        bh.consume(result)
     }
     
     //Benchmark
     fun filterAndMapManual(bh: Blackhole) {
+        var result = 0
         for (it in data.asSequence()) {
             if (filterLoad(it)) {
-                val item = mapLoad(it)
-                bh.consume(item)
+                result += mapLoad(it).length
             }
         }
+        bh.consume(result)
     }
     
     //Benchmark
     fun filter(bh: Blackhole) {
+        var result = 0
         for (item in data.asSequence().filter { filterLoad(it) })
-            bh.consume(item)
+            result += item
+        bh.consume(result)
     }
     
     //Benchmark
     fun filterManual(bh: Blackhole){
+        var result = 0
         for (it in data.asSequence()) {
             if (filterLoad(it))
-                bh.consume(it)
+                result += it
         }
+        bh.consume(result)
     }
     
     //Benchmark

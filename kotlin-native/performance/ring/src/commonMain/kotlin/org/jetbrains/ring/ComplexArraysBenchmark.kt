@@ -39,7 +39,7 @@ open class ComplexArraysBenchmark {
 
     init {
         // Use the same seed for reproducibility
-        val rnd = Random(0)
+        val rnd = Random(6478)
         for (i in 0 until size) {
             a[i] = ComplexDouble(rnd.nextDouble(), rnd.nextDouble())
             b[i] = ComplexDouble(rnd.nextDouble(), rnd.nextDouble())

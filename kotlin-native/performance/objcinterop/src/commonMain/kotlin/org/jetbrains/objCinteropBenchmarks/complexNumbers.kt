@@ -7,8 +7,6 @@ package org.jetbrains.complexNumbers
 
 import kotlinx.benchmark.Blackhole
 
-const val benchmarkSize = 10000
-
 expect class ComplexNumber
 
 expect class ComplexNumbersBenchmark() {

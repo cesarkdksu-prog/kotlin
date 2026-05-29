@@ -41,6 +41,8 @@
 // also has to deal with a lot of changes to the large tree object
 // graph.
 
+@file:OptIn(kotlin.native.concurrent.ObsoleteWorkersApi::class)
+
 import kotlin.native.concurrent.*
 import kotlin.concurrent.*
 import kotlin.random.Random

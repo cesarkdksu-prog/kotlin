@@ -19,12 +19,13 @@ package org.jetbrains.typesBenchmarks
 import kotlin.random.Random
 import kotlinx.benchmark.Blackhole
 import kotlinx.cinterop.*
+import org.jetbrains.benchmarksLauncher.BENCHMARK_SIZE
 
-const val benchmarkSize = 1000
+const val benchmarkSize = BENCHMARK_SIZE / 10
 
 actual class StringBenchmark actual constructor() {
     // Use the same seed for reproducibility
-    private val rnd = Random(0)
+    private val rnd = Random(756)
 
     val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
     val randomString = generateRandomString()
@@ -46,22 +47,20 @@ actual class StringBenchmark actual constructor() {
     }
 
     actual fun stringToCBenchmark(bh: Blackhole) {
-        // Generate random strings.
+        var result = 0
         for (i in 1..benchmarkSize) {
-            bh.consume(charFrequency(randomString, randomChar.toByte()))
+            result += charFrequency(randomString, randomChar.code.toByte())
         }
+        bh.consume(result)
     }
 
     actual fun stringToKotlinBenchmark(bh: Blackhole) {
         memScoped {
-            val result = StringBuilder()
             for (i in 1..benchmarkSize) {
                 val pointer = findSuitableString(strings.toCStringArray(this), benchmarkSize, "a")
-                val str = pointer?.toKString()
-                result.append(str)
+                bh.consume(pointer?.toKString())
                 freeSuitableString(pointer)
             }
-            bh.consume(result.toString())
         }
     }
 }
@@ -110,11 +109,13 @@ actual class IntBenchmark actual constructor() {
     val array = Array<Int>(size, { (0 until size).random() })
 
     actual fun intBenchmark(bh: Blackhole) {
+        var result = 0.0
         for (i in 1..benchmarkSize) {
-            bh.consume(average(array[0], array[1], array[2], array[3], array[4], array[5], array[6], array[7], array[8],
+            result += average(array[0], array[1], array[2], array[3], array[4], array[5], array[6], array[7], array[8],
                     array[9], array[10], array[11], array[12], array[13], array[14], array[15], array[16],
-                    array[17], array[18], array[19]))
+                    array[17], array[18], array[19])
         }
+        bh.consume(result)
     }
 }
 
@@ -130,11 +131,13 @@ actual class BoxedIntBenchmark actual constructor() {
     }
 
     actual fun boxedIntBenchmark(bh: Blackhole) {
+        var result = 0.0
         for (i in 1..benchmarkSize) {
-            bh.consume(average(array[0]!!, array[1]!!, array[2]!!, array[3]!!, array[4]!!, array[5]!!, array[6]!!, array[7]!!, array[8]!!,
+            result += average(array[0]!!, array[1]!!, array[2]!!, array[3]!!, array[4]!!, array[5]!!, array[6]!!, array[7]!!, array[8]!!,
                     array[9]!!, array[10]!!, array[11]!!, array[12]!!, array[13]!!, array[14]!!, array[15]!!, array[16]!!,
-                    array[17]!!, array[18]!!, array[19]!!))
+                    array[17]!!, array[18]!!, array[19]!!)
         }
+        bh.consume(result)
     }
 }
 

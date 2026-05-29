@@ -20,16 +20,18 @@ class NumericalHideName {
 }
 
 fun konanBellardPi(bh: Blackhole) {
+    var result = 0
     for (n in 1 .. 1000 step 9) {
-        val result = pi_nth_digit(n)
-        bh.consume(result)
+        result += pi_nth_digit(n)
     }
+    bh.consume(result)
 }
 
 fun clangBellardPi(bh: Blackhole) {
+    var result = 0
     for (n in 1 .. 1000 step 9) {
         @OptIn(kotlinx.cinterop.ExperimentalForeignApi::class)
-        val result = cinterop.pi_nth_digit(n)
-        bh.consume(result)
+        result += cinterop.pi_nth_digit(n)
     }
+    bh.consume(result)
 }
