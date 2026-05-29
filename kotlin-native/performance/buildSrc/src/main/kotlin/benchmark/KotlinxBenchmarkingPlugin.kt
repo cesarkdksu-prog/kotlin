@@ -41,6 +41,12 @@ open class KotlinxBenchmarkExtension @Inject constructor(private val project: Pr
      */
     val hideNamePostfix: Property<String> = project.objects.property(String::class.java).convention("HideName")
 
+    /**
+     * Strip package name from all benchmark names.
+     * Package name is everything but the last 2 components. This filter is applied before [hideNamePostfix].
+     */
+    val hidePackage: Property<Boolean> = project.objects.property(Boolean::class.java).convention(true)
+
     val runBenchmark
         get() = project.tasks.named("${hostKotlinNativeTargetName}Benchmark", NativeBenchmarkExec::class)
 
@@ -107,6 +113,9 @@ open class KotlinxBenchmarkingPlugin : BenchmarkingPlugin() {
                 arguments.add(benchmark.applicationName.map { "$it::" })
             }
             arguments.add(benchmark.hideNamePostfix.map { "--hidePostfix=$it" })
+            if (benchmark.hidePackage.get()) {
+                arguments.add("--hidePackage")
+            }
 
             finalizedBy(benchmark.konanJsonReport)
         }
