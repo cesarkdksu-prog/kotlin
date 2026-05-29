@@ -23,6 +23,7 @@ private fun Benchmark.toBenchmarkResult(
         namePrefix: String,
         metric: BenchmarkResult.Metric,
         hidePostfix: String?,
+        hidePackage: Boolean,
 ): List<BenchmarkResult> {
     check(primaryMetric.scoreUnit == "us/op") {
         "Unexpected scoreUnit `${primaryMetric.scoreUnit}`; needs `us/op`"
@@ -32,7 +33,11 @@ private fun Benchmark.toBenchmarkResult(
 
         fun String.shouldHide() = hidePostfix?.let { endsWith(it) } ?: false
         val separator = "."
-        benchmark.split(separator).filterNot { it.shouldHide() }.joinTo(this, separator = separator)
+        benchmark
+            .split(separator)
+            .let { if (hidePackage) it.takeLast(2) else it }
+            .filterNot { it.shouldHide() }
+            .joinTo(this, separator = separator)
     }
     return primaryMetric.rawData.flatten().mapIndexed { index, score ->
         BenchmarkResult(
@@ -55,11 +60,12 @@ fun main(args: Array<String>) {
     val prefix by argParser.option(ArgType.String, shortName = "p", description = "Prepend to each benchmark name").default("")
     val metric by argParser.option(ArgType.Choice<BenchmarkResult.Metric>(), shortName = "m", description = "Type of the metric").default(BenchmarkResult.Metric.EXECUTION_TIME)
     val hidePostfix by argParser.option(ArgType.String, description = "In benchmark names hide components that end with the given postfix")
+    val hidePackage by argParser.option(ArgType.Boolean, description = "In benchmark names hide package names").default(false)
 
     argParser.parse(args)
 
     jmh.decodeFromString<List<Benchmark>>(File(jmhReport).readText()).flatMap {
-        it.toBenchmarkResult(prefix, metric, hidePostfix)
+        it.toBenchmarkResult(prefix, metric, hidePostfix, hidePackage)
     }.joinToString(prefix = "[", postfix = "]") { it.toJson() }.let {
         File(output).writeText(it)
     }
